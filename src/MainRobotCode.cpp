@@ -3,13 +3,15 @@
 // 20156 Stronghold ROBOT CODE
 //------------------------------------------------------------------------------
 #include "WPILib.h" // Instruction to preprocessor to include the WPI Library
+
                     // header file
 #include <cmath>
 
-//#define CONSOLE
+#define CONSOLE
 //#define VISION
 
 #include "../H/CameraLights.h"
+#include "../H/Elevator.h"
 
 //------------------------------------------------------------------------------
 // DEFINE StrongholdRobot CLASS
@@ -81,8 +83,9 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// Driver Station Joystick ports
 
-		static const uint JS_PORT          =  0;
-		static const uint CCI_PORT         =  1;  // eStop Robots CCI Inputs
+		static const uint JS_PORT_LEFT           =  0;
+		static const uint JS_PORT_RIGHT			 =  1;
+		static const uint CCI_PORT        	     =  2;  // eStop Robots CCI Inputs
 
 		// Driver Station CCI Channels (Uses joystick button references)
 		static const uint CAMERA_LIGHTS_SW_CH       =  1;
@@ -93,9 +96,11 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 
 		// roboRio GPIO Channels
-
+		static const uint TOP_LIMIT_SW_CH		     =  0;
+		static const uint BOTTOM_LIMIT_SW_CH	     =  1;
 
 		// roboRio Analog Channels
+		static const uint ELEVATOR_POT_CH 		   = 0;
 
 		// navX MXP Inertial Measurement Unit (IMU) Constants
 		static const uint8_t IMU_UPDATE_RATE       = 50;
@@ -110,6 +115,7 @@ class StrongholdRobot : public IterativeRobot
 		static const uint LEFT_REAR_MOTOR_CH	   = 1;
 		static const uint RIGHT_FRONT_MOTOR_CH	   = 2;
 		static const uint RIGHT_REAR_MOTOR_CH      = 3;
+		static const uint ELEVATOR_MOTOR_CH		   = 4;
 
 		// roboRio Relay Channels
 		static const uint CAMERA_LIGHTS_CH         = 2;
@@ -155,7 +161,8 @@ class StrongholdRobot : public IterativeRobot
 		// Includes driver station laptop, joysticks, switches and other digital
 		// and analog devices connected through the eStop Robotics CCI.
 		//----------------------------------------------------------------------
-		Joystick		 *pDriveStick;
+		Joystick		 *pDriveStickLeft;
+		Joystick		 *pDriveStickRight;
 
 		// eStop Robotics Custom Control Interface (CCI)
 		Joystick         *pCCI;                     // CCI
@@ -181,6 +188,7 @@ class StrongholdRobot : public IterativeRobot
 		// Robot Objects
 		//----------------------------------------------------------------------
 		RobotDrive		*pDriveTrain;
+		Elevator 		*pElevator;
 #ifdef VISION
 		Vision			*pVision;
 #endif
@@ -251,7 +259,8 @@ StrongholdRobot::StrongholdRobot()
 	//----------------------------------------------------------------------
 
 	// Define joysticks & CCI
-	pDriveStick			 = new Joystick(JS_PORT);
+	pDriveStickLeft		 = new Joystick(JS_PORT_LEFT);
+	pDriveStickRight	 = new Joystick(JS_PORT_RIGHT);
 	pCCI                 = new Joystick(CCI_PORT); // CCI uses joystick object
 
 	// CCI Switches
@@ -275,7 +284,9 @@ StrongholdRobot::StrongholdRobot()
 
 	// Drive Train
 	pDriveTrain		     = new RobotDrive(LEFT_FRONT_MOTOR_CH,LEFT_REAR_MOTOR_CH,
-									      RIGHT_FRONT_MOTOR_CH,RIGHT_REAR_MOTOR_CH);
+										  RIGHT_FRONT_MOTOR_CH, RIGHT_REAR_MOTOR_CH);
+	pElevator			 = new Elevator (ELEVATOR_MOTOR_CH, ELEVATOR_POT_CH, TOP_LIMIT_SW_CH,
+										  BOTTOM_LIMIT_SW_CH);
 
 	
 	//----------------------------------------------------------------------
@@ -496,7 +507,7 @@ void StrongholdRobot::GetDriverStationInput()
     // Field Orientation Joystick Button Values
 	// Camera Switches
     lightsOn  				 = pCameraLightSwitch->Get();
-    pDriveTrain->TankDrive(pDriveStick->GetX(),pDriveStick->GetTwist());
+    pDriveTrain->TankDrive(pDriveStickLeft,pDriveStickRight);
 
 #ifdef CONSOLE
     ShowDSValues();
@@ -516,9 +527,8 @@ void StrongholdRobot::ShowDSValues()
 // Show the values for driver station inputs
 	SmartDashboard::PutBoolean("Camera Lights Switch",lightsOn);
 
-	SmartDashboard::PutNumber("Joystick X",pDriveStick->GetX());
-	SmartDashboard::PutNumber("Joystick Y",pDriveStick->GetY());
-	SmartDashboard::PutNumber("Joystick Twist",pDriveStick->GetTwist());
+	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
+	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
 
 	return;
 }
@@ -552,6 +562,12 @@ void StrongholdRobot::ShowRobotValues()
 	SmartDashboard::PutNumber("Packet count",loopCount);
 	SmartDashboard::PutNumber("AM Mode",autoMode);
 	SmartDashboard::PutBoolean("Camera Lights",pCameraLights->GetCameraStatus());
+	SmartDashboard::PutNumber("Elev POT Current Position",pElevator->GetCurrentPosition());
+//	SmartDashboard::PutNumber("Elev POT Target Position",pElevator->GetPositionTarget());
+	SmartDashboard::PutBoolean("Upper Limit Switch",pElevator->GetUpperLimitSwitch());
+	SmartDashboard::PutBoolean("Lower Limit Switch",pElevator->GetLowerLimitSwitch());
+	SmartDashboard::PutNumber("Elevator Target Motor Speed",pElevator->GetTargetMotorSpeed());
+	SmartDashboard::PutNumber("Elevator Motor Speed",pElevator->GetMotorSpeed());
 
 #ifdef VISION
 	SmartDashboard::PutBoolean("Camera sees bright", pVision->getIsBright());
