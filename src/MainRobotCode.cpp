@@ -305,9 +305,11 @@ StrongholdRobot::StrongholdRobot()
 	loopCount      = 0;
 
 	// Initialize robot control variables
-	autoMode           = kAutoModeOff;
-	fieldOrientationOn = false;  // CONFIG
-	lightsOn           = false;  // CONFIG
+	autoMode              = kAutoModeOff;
+	elevatorArmInPosition = true;
+	elevatorTarget        = 0;
+	fieldOrientationOn    = false;  // CONFIG
+	lightsOn              = false;  // CONFIG
 
 	return;
 }
@@ -547,6 +549,9 @@ void StrongholdRobot::ShowDSValues()
 
 	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
 	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
+
+	SmartDashboard::PutBoolean("Elevator Arm in Position",elevatorArmInPosition);
+	SmartDashboard::PutNumber("Elev Target Position",elevatorTarget);
 
 	return;
 }

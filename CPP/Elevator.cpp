@@ -179,7 +179,7 @@ bool  Elevator::GoToPotTargetNoPID(double inputPotValue)
 	{
 		if ( pElevatorPot->Get() > targetHighValue )  // Elevator moving down
 		{
-			if ( pLowerLimitHit->Get() )  // If lower limit switch is hit, stop motors
+			if ( !pLowerLimitHit->Get() )  // If lower limit switch is hit, stop motors
 			{
 				pElevatorMotor->Set(ALL_STOP);
 				targetMotorSpeed = ALL_STOP;
@@ -194,7 +194,7 @@ bool  Elevator::GoToPotTargetNoPID(double inputPotValue)
 		else
 			if ( pElevatorPot->Get() < targetLowValue )  // Elevator moving up
 			{
-				if ( pUpperLimitHit->Get() )  // If upper limit switch is hit, stop motors
+				if ( !pUpperLimitHit->Get() )  // If upper limit switch is hit, stop motors
 				{
 					pElevatorMotor->Set(ALL_STOP);
 					targetMotorSpeed = ALL_STOP;
