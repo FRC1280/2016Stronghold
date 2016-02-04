@@ -56,12 +56,12 @@ class StrongholdRobot : public IterativeRobot
 
 		// Driver station and robot input gathering methods
 		void   GetDriverStationInput();
-		void   GetElevatorTarget();
-		void   GetElevatorBase();
-		void   GetElevatorOffset();
 		void   ShowDSValues();
 		void   GetRobotSensorInput();
 		void   ShowRobotValues();
+
+		// Robot output methods
+		void   MoveElevToPosition();
 
 		// Autonomous mode methods
 		void   CalcAutoModeTimings();
@@ -88,7 +88,9 @@ class StrongholdRobot : public IterativeRobot
 		static const uint CCI_PORT        	     =  2;  // eStop Robots CCI Inputs
 
 		// Driver Station CCI Channels (Uses joystick button references)
-		static const uint CAMERA_LIGHTS_SW_CH       =  1;
+		static const uint ELEVATOR_TOP_SW_CH     =  1;
+		static const uint ELEVATOR_BOTTOM_SW_CH  =  2;
+		static const uint CAMERA_LIGHTS_SW_CH    = 11;
 		//----------------------------------------------------------------------
 		// ROBOT CHANNELS - INPUTS AND OUTPUTS
 		//----------------------------------------------------------------------
@@ -166,6 +168,8 @@ class StrongholdRobot : public IterativeRobot
 
 		// eStop Robotics Custom Control Interface (CCI)
 		Joystick         *pCCI;                     // CCI
+		JoystickButton   *pElevTopSwitch;
+		JoystickButton   *pElevBottomSwitch;
 		JoystickButton 	 *pCameraLightSwitch;
 
 		//----------------------------------------------------------------------
@@ -200,7 +204,7 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// Joystick drive speed inputs for tank drive
 		// Disk shooting aim angle position
-		// - Manual input based on potentionmeter setting
+		// - Manual input based on potentiometer setting
 		// Elevator Position
 		// - Manual input based on potentiometer setting
 		//----------------------------------------------------------------------
@@ -212,6 +216,9 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// Field Orientation Buttons
 		bool   fieldOrientationOn;
+		// Arm Elevator Controls
+		bool   elevatorArmInPosition;
+		uint   elevatorTarget;
 		// Camera Switches
 		bool   lightsOn;
 		// Robot Switches
@@ -259,12 +266,14 @@ StrongholdRobot::StrongholdRobot()
 	//----------------------------------------------------------------------
 
 	// Define joysticks & CCI
-	pDriveStickLeft		 = new Joystick(JS_PORT_LEFT);
-	pDriveStickRight	 = new Joystick(JS_PORT_RIGHT);
-	pCCI                 = new Joystick(CCI_PORT); // CCI uses joystick object
+	pDriveStickLeft		  = new Joystick(JS_PORT_LEFT);
+	pDriveStickRight	  = new Joystick(JS_PORT_RIGHT);
+	pCCI                  = new Joystick(CCI_PORT); // CCI uses joystick object
 
 	// CCI Switches
-	pCameraLightSwitch   			 = new JoystickButton(pCCI,CAMERA_LIGHTS_SW_CH);
+	pElevTopSwitch        = new JoystickButton(pCCI,ELEVATOR_TOP_SW_CH);
+	pElevBottomSwitch     = new JoystickButton(pCCI,ELEVATOR_BOTTOM_SW_CH);
+	pCameraLightSwitch    = new JoystickButton(pCCI,CAMERA_LIGHTS_SW_CH);
 
 	//----------------------------------------------------------------------
 	// ROBOT INPUTS
@@ -396,6 +405,8 @@ void StrongholdRobot::TeleopInit()
 
 	fieldOrientationOn = false;  // CONFIG
 
+	elevatorArmInPosition = true;
+
 	return;
 }
 //------------------------------------------------------------------------------
@@ -476,11 +487,17 @@ void StrongholdRobot::TeleopPeriodic()
 	// Get robot sensor input
 	GetRobotSensorInput();
 
+	// Move elevator arm to position defined by driver station switches
+	MoveElevToPosition();
+
 	// Turn camera LED lights on or off based on driver station input
 	if ( lightsOn )
 		pCameraLights->TurnOn();
 	else
 		pCameraLights->TurnOff();
+
+	// Drive Robot using Tank Drive
+    pDriveTrain->TankDrive(pDriveStickLeft,pDriveStickRight);
 
 	return;
 }
@@ -507,7 +524,6 @@ void StrongholdRobot::GetDriverStationInput()
     // Field Orientation Joystick Button Values
 	// Camera Switches
     lightsOn  				 = pCameraLightSwitch->Get();
-    pDriveTrain->TankDrive(pDriveStickLeft,pDriveStickRight);
 
 #ifdef CONSOLE
     ShowDSValues();
@@ -525,6 +541,8 @@ void StrongholdRobot::GetDriverStationInput()
 void StrongholdRobot::ShowDSValues()
 {
 // Show the values for driver station inputs
+	SmartDashboard::PutBoolean("Elev Top Switch",pElevTopSwitch->Get());
+	SmartDashboard::PutBoolean("Elev Bottom Switch",pElevBottomSwitch->Get());
 	SmartDashboard::PutBoolean("Camera Lights Switch",lightsOn);
 
 	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
@@ -563,7 +581,7 @@ void StrongholdRobot::ShowRobotValues()
 	SmartDashboard::PutNumber("AM Mode",autoMode);
 	SmartDashboard::PutBoolean("Camera Lights",pCameraLights->GetCameraStatus());
 	SmartDashboard::PutNumber("Elev POT Current Position",pElevator->GetCurrentPosition());
-//	SmartDashboard::PutNumber("Elev POT Target Position",pElevator->GetPositionTarget());
+	SmartDashboard::PutNumber("Elev POT Target Position",pElevator->GetPositionTarget());
 	SmartDashboard::PutBoolean("Upper Limit Switch",pElevator->GetUpperLimitSwitch());
 	SmartDashboard::PutBoolean("Lower Limit Switch",pElevator->GetLowerLimitSwitch());
 	SmartDashboard::PutNumber("Elevator Target Motor Speed",pElevator->GetTargetMotorSpeed());
@@ -577,12 +595,45 @@ void StrongholdRobot::ShowRobotValues()
 }
 #endif
 //------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::MoveElevToPosition()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Determines which position to move the arm based on driver station switch
+// values.
+//------------------------------------------------------------------------------
+void StrongholdRobot::MoveElevToPosition()
+{
+	if ( pElevTopSwitch->Get() )
+	{
+		elevatorArmInPosition = false;
+		elevatorTarget        = Elevator::kHang;
+	}
+	else
+	{
+		if ( pElevBottomSwitch->Get() )
+		{
+			elevatorArmInPosition = false;
+			elevatorTarget        = Elevator::kGround;
+		}
+	}
+
+	if ( ! elevatorArmInPosition )
+	{
+		elevatorArmInPosition = pElevator->MoveElevator(elevatorTarget);
+	}
+
+	return;
+}
+//------------------------------------------------------------------------------
 // METHOD:  StrongholdRobot::GetAutoModeSwitches()
 // Type:	Public accessor for StrongholdRobot class
 //------------------------------------------------------------------------------
-//
+// Determines which position to move the arm based on driver station switch
+// values.
 //------------------------------------------------------------------------------
-void StrongholdRobot::GetAutoModeSwitches(){
+void StrongholdRobot::GetAutoModeSwitches()
+{
+	return;
 }
 //------------------------------------------------------------------------------
 // METHOD:  StrongholdRobot::RunAutonomousMode()
@@ -590,7 +641,9 @@ void StrongholdRobot::GetAutoModeSwitches(){
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void StrongholdRobot::RunAutonomousMode(){
+void StrongholdRobot::RunAutonomousMode()
+{
+	return;
 }
 //------------------------------------------------------------	------------------
 // METHOD:  StrongholdRobot::AMDriveRobot()
