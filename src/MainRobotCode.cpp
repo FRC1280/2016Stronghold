@@ -1,17 +1,15 @@
 //------------------------------------------------------------------------------
 // TEAM 1280 - SAN RAMON VALLEY HIGH SCHOOL RAGIN' C-BISCUITS
-// 20156 Stronghold ROBOT CODE
+// 2016 STRONGHOLD ROBOT CODE
 //------------------------------------------------------------------------------
 #include "WPILib.h" // Instruction to preprocessor to include the WPI Library
-
                     // header file
 #include <cmath>
+#include "../H/CameraLights.h"
+#include "../H/Elevator.h"
 
 #define CONSOLE
 //#define VISION
-
-#include "../H/CameraLights.h"
-#include "../H/Elevator.h"
 
 //------------------------------------------------------------------------------
 // DEFINE StrongholdRobot CLASS
@@ -66,13 +64,7 @@ class StrongholdRobot : public IterativeRobot
 		// Autonomous mode methods
 		void   CalcAutoModeTimings();
 		void   GetAutoModeSwitches();
-		uint   DeterminePiecesToSet();
 		void   RunAutonomousMode();
-		void   RunSetRobot();
-		void   RunSetToteLeft();
-		void   RunSetToteRight();
-		void   RunStackTotes();
-		void   AMDriveRobot(float driveX, float driveY, float driveZ);
 		void   ShowAMStatus();
 
 	private:
@@ -82,7 +74,6 @@ class StrongholdRobot : public IterativeRobot
 		// DRIVER STATION PORTS AND CHANNELS
 		//----------------------------------------------------------------------
 		// Driver Station Joystick ports
-
 		static const uint JS_PORT_LEFT           =  0;
 		static const uint JS_PORT_RIGHT			 =  1;
 		static const uint CCI_PORT        	     =  2;  // eStop Robots CCI Inputs
@@ -91,6 +82,7 @@ class StrongholdRobot : public IterativeRobot
 		static const uint ELEVATOR_TOP_SW_CH     =  1;
 		static const uint ELEVATOR_BOTTOM_SW_CH  =  2;
 		static const uint CAMERA_LIGHTS_SW_CH    = 11;
+
 		//----------------------------------------------------------------------
 		// ROBOT CHANNELS - INPUTS AND OUTPUTS
 		//----------------------------------------------------------------------
@@ -98,29 +90,28 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 
 		// roboRio GPIO Channels
-		static const uint TOP_LIMIT_SW_CH		     =  0;
-		static const uint BOTTOM_LIMIT_SW_CH	     =  1;
+		static const uint TOP_LIMIT_SW_CH		  =  0;
+		static const uint BOTTOM_LIMIT_SW_CH	  =  1;
 
 		// roboRio Analog Channels
-		static const uint ELEVATOR_POT_CH 		   = 0;
+		static const uint ELEVATOR_POT_CH 		  = 0;
 
 		// navX MXP Inertial Measurement Unit (IMU) Constants
-		static const uint8_t IMU_UPDATE_RATE       = 50;
+		static const uint8_t IMU_UPDATE_RATE      = 50;
 
 		//----------------------------------------------------------------------
         // ROBOT OUTPUTS
 		//----------------------------------------------------------------------
 
-		// roboRio PWM Channels
-		// PWM = Pulsed width modulation
-		static const uint LEFT_FRONT_MOTOR_CH	   = 0;
-		static const uint LEFT_REAR_MOTOR_CH	   = 1;
-		static const uint RIGHT_FRONT_MOTOR_CH	   = 2;
-		static const uint RIGHT_REAR_MOTOR_CH      = 3;
-		static const uint ELEVATOR_MOTOR_CH		   = 4;
+		// roboRio PWM Channels (PWM = Pulsed width modulation)
+		static const uint LEFT_FRONT_MOTOR_CH	  =  0;
+		static const uint LEFT_REAR_MOTOR_CH	  =  1;
+		static const uint RIGHT_FRONT_MOTOR_CH	  =  2;
+		static const uint RIGHT_REAR_MOTOR_CH     =  3;
+		static const uint ELEVATOR_MOTOR_CH		  =  4;
 
 		// roboRio Relay Channels
-		static const uint CAMERA_LIGHTS_CH         = 2;
+		static const uint CAMERA_LIGHTS_CH        =  2;
 
 		// roboRio Solenoid Channels
 
@@ -136,17 +127,8 @@ class StrongholdRobot : public IterativeRobot
 		// AUTONOMOUS MODE ROBOT CONTROL CONSTANTS (OUTPUTS)
 		//----------------------------------------------------------------------
         // Robot drive variables
-        const float  AM_STOP_ROBOT_X   =  0.0;   // CONFIG
-        const float  AM_STOP_ROBOT_Y   =  0.0;   // CONFIG
-        const float  AM_STOP_ROBOT_Z   =  0.0;   // CONFIG
 
         // Robot Set Drive Speeds
-        const float  AM_DRIVE_FWD_X =  0.00;   // CONFIG
-        const float  AM_DRIVE_FWD_Y =  0.50;   // CONFIG
-        const float  AM_DRIVE_FWD_Z =  0.00;   // CONFIG
-        const float  AM_TURN_LEFT_X =  0.0;   // CONFIG
-        const float  AM_TURN_LEFT_Y =  0.0;   // CONFIG
-        const float  AM_TURN_LEFT_Z =  0.45;  // CONFIG
 
         //----------------------------------------------------------------------
 		// AUTONOMOUS MODE ROBOT STATE & TIMING TRACKING
@@ -175,7 +157,6 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// ROBOT INPUT & OUTPUT POINTERS
 		//----------------------------------------------------------------------
-
 		// navX MXP Inertial Measurement Unit (IMU)
 		SerialPort       *pIMUPort;
 
@@ -188,6 +169,7 @@ class StrongholdRobot : public IterativeRobot
 		// Robot Digital Outputs - Relays (Spikes)
 		//----------------------------------------------------------------------
 		CameraLights	*pCameraLights;			// Camera LED lights
+
 		//----------------------------------------------------------------------
 		// Robot Objects
 		//----------------------------------------------------------------------
@@ -199,29 +181,13 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// VARIABLES USED IN CLASS
 		//----------------------------------------------------------------------
-		// DRIVER STATION INPUTS - Analog inputs from joysticks and
-		// eStop Robotics CCI.
+		// DRIVER STATION INPUTS
+		// Analog inputs from joysticks and eStop Robotics CCI.
 		//----------------------------------------------------------------------
-		// Joystick drive speed inputs for tank drive
-		// Disk shooting aim angle position
-		// - Manual input based on potentiometer setting
-		// Elevator Position
-		// - Manual input based on potentiometer setting
-		//----------------------------------------------------------------------
-//		float  leftDriveSpeed;
-//		float  rightDriveSpeed;
 
 		//----------------------------------------------------------------------
 		// DRIVER STATION INPUTS - Digital Inputs from eStop Robotics CCI
 		//----------------------------------------------------------------------
-		// Field Orientation Buttons
-		bool   fieldOrientationOn;
-		// Arm Elevator Controls
-		bool   elevatorArmInPosition;
-		uint   elevatorTarget;
-		// Camera Switches
-		bool   lightsOn;
-		// Robot Switches
 
 		//----------------------------------------------------------------------
 		// CLASS VARIABLES USED TO TRACK ROBOT STATUS
@@ -232,9 +198,20 @@ class StrongholdRobot : public IterativeRobot
 		uint   loopCount;
 
 		//----------------------------------------------------------------------
+		// Elevator Arm Positioning
+		//----------------------------------------------------------------------
+		// Arm Elevator Controls
+		bool   elevatorArmInPosition;
+		uint   elevatorTarget;
+
+		//----------------------------------------------------------------------
 		// Camera Image Processing
 		//----------------------------------------------------------------------
+		// Camera Switches
+		bool   lightsOn;
 
+		//----------------------------------------------------------------------
+		// ROBOT INPUTS
 		//----------------------------------------------------------------------
 		// Autonomous Mode Switches & variables
 		//----------------------------------------------------------------------
@@ -296,7 +273,6 @@ StrongholdRobot::StrongholdRobot()
 										  RIGHT_FRONT_MOTOR_CH, RIGHT_REAR_MOTOR_CH);
 	pElevator			 = new Elevator (ELEVATOR_MOTOR_CH, ELEVATOR_POT_CH, TOP_LIMIT_SW_CH,
 										  BOTTOM_LIMIT_SW_CH);
-
 	
 	//----------------------------------------------------------------------
 	// INITIALIZE VARIABLES
@@ -308,7 +284,6 @@ StrongholdRobot::StrongholdRobot()
 	autoMode              = kAutoModeOff;
 	elevatorArmInPosition = true;
 	elevatorTarget        = 0;
-	fieldOrientationOn    = false;  // CONFIG
 	lightsOn              = false;  // CONFIG
 
 	return;
@@ -330,9 +305,6 @@ StrongholdRobot::~StrongholdRobot()
 //------------------------------------------------------------------------------
 // Functions:
 // - Initializes the SmartDashboard
-// - Sets type of input used to determine elevator position
-// - Sets target values for three preset elevator positions
-// - Initializes robot status tracking settings
 //------------------------------------------------------------------------------
 void StrongholdRobot::RobotInit()
 {
@@ -344,7 +316,7 @@ void StrongholdRobot::RobotInit()
 }
 //------------------------------------------------------------------------------
 // METHOD:  StrongholdRobot::DisabledInit()
-// Type:	Executes when the robot is placed in Disabled mode.  Overrides
+// Type:	Executes when the robot is first placed in Disabled mode.  Overrides
 //			DisabledInit() virtual method contained in WPILib.
 //------------------------------------------------------------------------------
 // Functions:
@@ -359,14 +331,14 @@ void StrongholdRobot::DisabledInit()
 }
 //------------------------------------------------------------------------------
 // METHOD:  StrongholdRobot::AutonomousInit()
-// Type:	Executes when the robot is placed in Autonomous mode.  Overrides
-//			AutonomousInit() virtual method contained in WPILib.
+// Type:	Executes when the robot is first placed in Autonomous mode.
+//			Overrides AutonomousInit() virtual method contained in WPILib.
 //------------------------------------------------------------------------------
 // Functions:
 // - Resets the loop counter for autonomous mode
-// - Resets the AutoState
-// - Resets the encoders on the wheels that measure distance traveled.
-// - Optionally prints the status of the autonomous mode switches for debugging
+// - Sets camera lights to desired setting for autonomous mode
+// - Determines which autonomous mode we want to use
+// - Optionally displays the status of the autonomous mode switches for debugging
 //   purposes
 //------------------------------------------------------------------------------
 void StrongholdRobot::AutonomousInit()
@@ -377,8 +349,6 @@ void StrongholdRobot::AutonomousInit()
 	// Set Robot Components to Default Starting Positions
 	pCameraLights->TurnOff();                  // CONFIG
 
-	fieldOrientationOn = true;                 // CONFIG
-
 	GetAutoModeSwitches();
 	GetRobotSensorInput();
 	ShowAMStatus();
@@ -387,14 +357,12 @@ void StrongholdRobot::AutonomousInit()
 }
 //------------------------------------------------------------------------------
 // METHOD:  StrongholdRobot::TeleopInit()
-// Type:	Executes when the robot is placed in Teleoperated mode.  Overrides
-//			TeleopInit() virtual method contained in WPILib.
+// Type:	Executes when the robot is first placed in Teleoperated mode.
+//			Overrides TeleopInit() virtual method contained in WPILib.
 //------------------------------------------------------------------------------
 // Functions:
 // - Resets the loop counters for teleoperated mode
-// - Resets the distance tracking variables
-// - Resets the wheel encoder counters
-// - Obtain the current position of the elevator from the robot
+// - Sets the elevator arm in position variable to true so arm doesn't move
 //------------------------------------------------------------------------------
 void StrongholdRobot::TeleopInit()
 {
@@ -404,8 +372,6 @@ void StrongholdRobot::TeleopInit()
 
 	// Loop count initialization
 	loopCount      = 0;
-
-	fieldOrientationOn = false;  // CONFIG
 
 	elevatorArmInPosition = true;
 
@@ -418,6 +384,7 @@ void StrongholdRobot::TeleopInit()
 //------------------------------------------------------------------------------
 // Functions:
 // - Increment the disabled loop counter
+// - Optionally displays robot inputs (autonomous mode switches and sensors)
 //------------------------------------------------------------------------------
 void StrongholdRobot::DisabledPeriodic()
 {
@@ -441,7 +408,8 @@ void StrongholdRobot::DisabledPeriodic()
 //------------------------------------------------------------------------------
 // Functions:
 // - Increments the count of loops while in autonomous mode.
-// - Feeds to watchdog to prevent robot shut-down
+// - Gets robot sensor inputs
+// - Runs autonomous mode
 //------------------------------------------------------------------------------
 void StrongholdRobot::AutonomousPeriodic()
 {
@@ -467,12 +435,13 @@ void StrongholdRobot::AutonomousPeriodic()
 // Functions:
 // - Increments the count of loops processed and packets received while
 //   in teleoperated mode.
-// - Feeds to watchdog to prevent robot shut-down
-// - Obtains input from the driver station (joystick inputs, switches, arm
-//   rotator potentiometer)
+// - Obtains input from the driver station (joystick inputs, switches,
+//   potentiometers, etc.)
+// - Obtains inputs from the robot (analog and digital sensors)
+// - Moves the arm elevator to the target position based on driver station
+//   inputs
+// - Turns camera lights on/off
 // - Sets the drive motor values based on joystick movement
-// - Sets the ball launcher motor speed values based on on/off switch and
-//   potentiometer position
 //------------------------------------------------------------------------------
 void StrongholdRobot::TeleopPeriodic()
 {
@@ -510,20 +479,12 @@ void StrongholdRobot::TeleopPeriodic()
 //------------------------------------------------------------------------------
 // Obtains the input from the DriverStation required for teleoperated mode.
 // Includes obtaining input for the following switches:
-// -
-// May also need to include reading additional switches depending on where
-// functions are included on the robot or driver station.
-// -
-// Include also:
-// - Reading joystick function
-// Does not include:
-// - Robot drive input from the joystick.  This is coded directly in the
-//   SetDriveMotors() method.
+// - Camera lights switch
+// - Optionally displays driver station values
 //------------------------------------------------------------------------------
 void StrongholdRobot::GetDriverStationInput()
 {
 	// Obtain the position of switches on the driver station
-    // Field Orientation Joystick Button Values
 	// Camera Switches
     lightsOn  				 = pCameraLightSwitch->Get();
 
@@ -538,20 +499,18 @@ void StrongholdRobot::GetDriverStationInput()
 // METHOD:  StrongholdRobot::ShowDSValues()
 // Type:	Public accessor for StrongholdRobot class
 //------------------------------------------------------------------------------
-//
+// Displays desired driver station values to the SmartDashboard for display
+// purposes.
 //------------------------------------------------------------------------------
 void StrongholdRobot::ShowDSValues()
 {
-// Show the values for driver station inputs
+	// Show the values for driver station inputs
 	SmartDashboard::PutBoolean("Elev Top Switch",pElevTopSwitch->Get());
 	SmartDashboard::PutBoolean("Elev Bottom Switch",pElevBottomSwitch->Get());
 	SmartDashboard::PutBoolean("Camera Lights Switch",lightsOn);
 
 	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
 	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
-
-	SmartDashboard::PutBoolean("Elevator Arm in Position",elevatorArmInPosition);
-	SmartDashboard::PutNumber("Elev Target Position",elevatorTarget);
 
 	return;
 }
@@ -582,7 +541,6 @@ void StrongholdRobot::GetRobotSensorInput()
 //------------------------------------------------------------------------------
 void StrongholdRobot::ShowRobotValues()
 {
-	SmartDashboard::PutNumber("Packet count",loopCount);
 	SmartDashboard::PutNumber("AM Mode",autoMode);
 	SmartDashboard::PutBoolean("Camera Lights",pCameraLights->GetCameraStatus());
 	SmartDashboard::PutNumber("Elev POT Current Position",pElevator->GetCurrentPosition());
@@ -603,8 +561,8 @@ void StrongholdRobot::ShowRobotValues()
 // METHOD:  StrongholdRobot::MoveElevToPosition()
 // Type:	Public accessor for StrongholdRobot class
 //------------------------------------------------------------------------------
-// Determines which position to move the arm based on driver station switch
-// values.
+// Determines which position to move the arm elevator based on driver station
+// switch values then moves to arm to the target position.
 //------------------------------------------------------------------------------
 void StrongholdRobot::MoveElevToPosition()
 {
@@ -633,8 +591,8 @@ void StrongholdRobot::MoveElevToPosition()
 // METHOD:  StrongholdRobot::GetAutoModeSwitches()
 // Type:	Public accessor for StrongholdRobot class
 //------------------------------------------------------------------------------
-// Determines which position to move the arm based on driver station switch
-// values.
+// Obtains the autonomous mode switch values from the robot and determines
+// which autonomous mode we want to run.
 //------------------------------------------------------------------------------
 void StrongholdRobot::GetAutoModeSwitches()
 {
@@ -644,30 +602,17 @@ void StrongholdRobot::GetAutoModeSwitches()
 // METHOD:  StrongholdRobot::RunAutonomousMode()
 // Type:	Public accessor for StrongholdRobot class
 //------------------------------------------------------------------------------
-//
+// Executes autonomous mode functions.
 //------------------------------------------------------------------------------
 void StrongholdRobot::RunAutonomousMode()
 {
-	return;
-}
-//------------------------------------------------------------	------------------
-// METHOD:  StrongholdRobot::AMDriveRobot()
-// Type:	Public accessor for StrongholdRobot class
-//------------------------------------------------------------------------------
-//
-//------------------------------------------------------------------------------
-void StrongholdRobot::AMDriveRobot(float driveX, float driveY, float driveZ)
-{
-	//Set Drive Speed and drive mode with or without field orientation
-	
 	return;
 }
 //------------------------------------------------------------------------------
 // METHOD:  StrongholdRobot::ShowAMStatus()
 // Type:	Public accessor for StrongholdRobot class
 //------------------------------------------------------------------------------
-// Shifts gear on Grabber to match input from driver station.  Gear shift
-// are via a pneumatic cylinder controlled by a solenoid.
+// Displays information about autonomous mode for debugging purposes.
 //------------------------------------------------------------------------------
 void StrongholdRobot::ShowAMStatus()
 {
