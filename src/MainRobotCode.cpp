@@ -81,7 +81,7 @@ class StrongholdRobot : public IterativeRobot
 		// Driver Station CCI Channels (Uses joystick button references)
 		static const uint ELEVATOR_TOP_SW_CH     =  1;
 		static const uint ELEVATOR_BOTTOM_SW_CH  =  2;
-		static const uint CAMERA_LIGHTS_SW_CH    = 11;
+		static const uint CAMERA_LIGHTS_SW_CH    =  4;
 
 		//----------------------------------------------------------------------
 		// ROBOT CHANNELS - INPUTS AND OUTPUTS
@@ -94,7 +94,7 @@ class StrongholdRobot : public IterativeRobot
 		static const uint BOTTOM_LIMIT_SW_CH	  =  1;
 
 		// roboRio Analog Channels
-		static const uint ELEVATOR_POT_CH 		  = 0;
+		static const uint ELEVATOR_POT_CH 		  =  0;
 
 		// navX MXP Inertial Measurement Unit (IMU) Constants
 		static const uint8_t IMU_UPDATE_RATE      = 50;
