@@ -109,41 +109,27 @@ uint   Elevator::GetPositionTargetInput() const
 // METHOD:  Elevator::GetUpperLimitSwitch()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Returns the value of the upper limit switch.  Note the limit switches read
-// the opposite of what we want them to read to be intuitive.
-// *** WE WANT TO CHANGE THE WIRING ON THE LIMIT SWITCHES TO READ THE OPPOSITE
-// *** OF WHAT THEY DO NOW SO THE CODE WILL BE MORE INTUITIVE
+// Returns the value of the upper limit switch.
+//------------------------------------------------------------------------------
+// *** NOTE TO ALLOW THE LIMIT SWITCHES TO READ THE WAY WE WANT THEM TO IN THE
+// *** CODE - WIRE THEM "NORMAL CLOSED" OR NC.
 //------------------------------------------------------------------------------
 bool   Elevator::GetUpperLimitSwitch() const
 {
-	bool upperLimit = false;
-
-	if (pUpperLimitHit->Get() == true)
-		upperLimit = false;
-	else
-		upperLimit = true;
-
-	return upperLimit;
+	return pUpperLimitHit->Get();
 }
 //------------------------------------------------------------------------------
 // METHOD:  Elevator::GetLowerLimitSwitch()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Returns the value of the lower limit switch.  Note the limit switches read
-// the opposite of what we want them to read to be intuitive.
-// *** WE WANT TO CHANGE THE WIRING ON THE LIMIT SWITCHES TO READ THE OPPOSITE
-// *** OF WHAT THEY DO NOW SO THE CODE WILL BE MORE INTUITIVE
+// Returns the value of the lower limit switch.
+//------------------------------------------------------------------------------
+// *** NOTE TO ALLOW THE LIMIT SWITCHES TO READ THE WAY WE WANT THEM TO IN THE
+// *** CODE - WIRE THEM "NORMAL CLOSED" OR NC.
 //------------------------------------------------------------------------------
 bool   Elevator::GetLowerLimitSwitch() const
 {
-	bool lowerLimit = false;
-
-	if (pLowerLimitHit->Get() == true)
-		lowerLimit = false;
-	else
-		lowerLimit = true;
-
-	return lowerLimit;
+	return pLowerLimitHit->Get();
 }
 //------------------------------------------------------------------------------
 // METHOD:  Elevator::CalcPOTTarget()
@@ -180,10 +166,8 @@ double Elevator::CalcPOTTarget(uint targetPosition)
 //------------------------------------------------------------------------------
 // Moves the arm elevator until it reaches the target position, or activates
 // the upper or lower limit switches.
-// *** NOTE THE LIMIT SWITCHES CURRENTLY READ THE OPPOSITION OF WHAT IS
-// *** INTUITIVE.  WE WANT TO CHANGE THE WIRING SO THE LIMIT SWITCHES WILL
-// *** READ FALSE WHEN NOT ACTIVATED AND TRUE WHEN ACTIVATED SO THE CODE CAN
-// *** BE MORE INTUITIVE.
+// *** NOTE TO ALLOW THE LIMIT SWITCHES TO READ THE WAY WE WANT THEM TO IN THE
+// **  CODE - WIRE THEM "NORMAL CLOSED" OR NC.
 //------------------------------------------------------------------------------
 bool  Elevator::GoToPotTarget(double inputPotValue)
 {
@@ -202,7 +186,7 @@ bool  Elevator::GoToPotTarget(double inputPotValue)
 	{
 		if ( pElevatorPot->Get() > targetHighValue )  // Elevator moving down
 		{
-			if ( !pLowerLimitHit->Get() )  // If lower limit switch is hit, stop motors
+			if ( pLowerLimitHit->Get() )  // If lower limit switch is hit, stop motors
 			{
 				pElevatorMotor->Set(ALL_STOP);
 				targetMotorSpeed = ALL_STOP;
@@ -217,7 +201,7 @@ bool  Elevator::GoToPotTarget(double inputPotValue)
 		else
 			if ( pElevatorPot->Get() < targetLowValue )  // Elevator moving up
 			{
-				if ( !pUpperLimitHit->Get() )  // If upper limit switch is hit, stop motors
+				if ( pUpperLimitHit->Get() )  // If upper limit switch is hit, stop motors
 				{
 					pElevatorMotor->Set(ALL_STOP);
 					targetMotorSpeed = ALL_STOP;

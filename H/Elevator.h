@@ -28,16 +28,16 @@ class Elevator
 		bool   GetLowerLimitSwitch() const;
 
 	private:
-		const float   MOTOR_SPEED_UP            =   0.25;   // CONFIGURE
-		const float   MOTOR_SPEED_DOWN          =  -0.25;   // CONFIGURE
-		const float   ALL_STOP                  =   0.00;
+		const float   MOTOR_SPEED_UP           =    0.25;   // CONFIGURE
+		const float   MOTOR_SPEED_DOWN         =   -0.25;   // CONFIGURE
+		const float   ALL_STOP                 =    0.00;
 
-		const double  ELEV_POS_UPPER_LIMIT      =  75.0;    // CONFIGURE
-		const double  ELEV_POS_LOWER_LIMIT      =  25.0;    // CONFIGURE
-		const double  TARGET_TOLERANCE          =   1.0;    // CONFIGURE
+		const double  ELEV_POS_UPPER_LIMIT     =   75.0;    // CONFIGURE
+		const double  ELEV_POS_LOWER_LIMIT     =   25.0;    // CONFIGURE
+		const double  TARGET_TOLERANCE         =    1.0;    // CONFIGURE
 
-		const double  POT_FULL_RANGE            = 100.0;    // CONFIGURE
-		const double  POT_OFFSET                =   0.0;    // CONFIGURE
+		const double  POT_FULL_RANGE           = -100.0;    // CONFIGURE
+		const double  POT_OFFSET               =  100.0;    // CONFIGURE
 
 		double CalcTargetPotValue(double inputPotValue);
  		double CalcPOTTarget(uint targetPosition);
