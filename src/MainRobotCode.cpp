@@ -7,6 +7,8 @@
 #include <cmath>
 #include "../H/CameraLights.h"
 #include "../H/Elevator.h"
+#include "../H/Loader.h"
+#include "../H/Shooter.h"
 
 #define CONSOLE
 //#define VISION
@@ -60,6 +62,8 @@ class StrongholdRobot : public IterativeRobot
 
 		// Robot output methods
 		void   MoveElevToPosition();
+		void   CheckBallLoader();
+		void   ShootBall();
 
 		// Autonomous mode methods
 		void   CalcAutoModeTimings();
@@ -76,12 +80,19 @@ class StrongholdRobot : public IterativeRobot
 		// Driver Station Joystick ports
 		static const uint JS_PORT_LEFT           =  0;
 		static const uint JS_PORT_RIGHT			 =  1;
-		static const uint CCI_PORT        	     =  2;  // eStop Robots CCI Inputs
+		static const uint CCI_PORT1        	     =  2;  // eStop Robots CCI Inputs
+		static const uint CCI_PORT2				 =  3;
 
-		// Driver Station CCI Channels (Uses joystick button references)
-		static const uint ELEVATOR_TOP_SW_CH     =  1;
-		static const uint ELEVATOR_BOTTOM_SW_CH  =  2;
-		static const uint CAMERA_LIGHTS_SW_CH    =  4;
+		// Driver Station CCI1 Channels (Uses joystick button references)
+		static const uint SHOOT_BALL_SW_CH       =  2;
+		static const uint LOAD_BALL_SW_CH		 =  11;
+		static const uint EJECT_BALL_SW_CH       =  12;
+
+		// Driver Station CCI2 Channels (Uses joystick button references)
+		static const uint ELEVATOR_TOP_SW_CH     =  4;
+		static const uint ELEVATOR_BOTTOM_SW_CH  =  5;
+//		static const uint CAMERA_LIGHTS_SW_CH    =  4;
+		static const uint SHOOTER_MOTOR_SW_CH    =  9;
 
 		//----------------------------------------------------------------------
 		// ROBOT CHANNELS - INPUTS AND OUTPUTS
@@ -90,8 +101,11 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 
 		// roboRio GPIO Channels
-		static const uint TOP_LIMIT_SW_CH		  =  0;
-		static const uint BOTTOM_LIMIT_SW_CH	  =  1;
+		static const uint TOP_LIMIT_SW_CH		   =  0;
+		static const uint BOTTOM_LIMIT_SW_CH	   =  1;
+		static const uint LOADER_BANNER_SENSOR_CH  =  2;
+		static const uint SHOOTER_BANNER_SENSOR_CH =  3;
+
 
 		// roboRio Analog Channels
 		static const uint ELEVATOR_POT_CH 		  =  0;
@@ -109,9 +123,11 @@ class StrongholdRobot : public IterativeRobot
 		static const uint RIGHT_FRONT_MOTOR_CH	  =  2;
 		static const uint RIGHT_REAR_MOTOR_CH     =  3;
 		static const uint ELEVATOR_MOTOR_CH		  =  4;
+		static const uint LOADER_MOTOR_CH		  =  5;
+		static const uint SHOOTER_MOTOR_CH		  =  6;
 
 		// roboRio Relay Channels
-		static const uint CAMERA_LIGHTS_CH        =  2;
+//		static const uint CAMERA_LIGHTS_CH        =  2;
 
 		// roboRio Solenoid Channels
 
@@ -147,12 +163,17 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		Joystick		 *pDriveStickLeft;
 		Joystick		 *pDriveStickRight;
+		Joystick         *pCCI1;             // CCI
+		Joystick 		 *pCCI2;
 
 		// eStop Robotics Custom Control Interface (CCI)
-		Joystick         *pCCI;                     // CCI
 		JoystickButton   *pElevTopSwitch;
 		JoystickButton   *pElevBottomSwitch;
-		JoystickButton 	 *pCameraLightSwitch;
+//		JoystickButton 	 *pCameraLightSwitch;
+		JoystickButton   *pLoadBallSwitch;
+		JoystickButton   *pEjectBallSwitch;
+        JoystickButton   *pShootBallSwitch;
+        JoystickButton   *pShooterMotorSwitch;
 
 		//----------------------------------------------------------------------
 		// ROBOT INPUT & OUTPUT POINTERS
@@ -168,15 +189,18 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// Robot Digital Outputs - Relays (Spikes)
 		//----------------------------------------------------------------------
-		CameraLights	*pCameraLights;			// Camera LED lights
+//		CameraLights	*pCameraLights;			// Camera LED lights
 
 		//----------------------------------------------------------------------
 		// Robot Objects
 		//----------------------------------------------------------------------
+		Loader 			*pBallLoader;
 		RobotDrive		*pDriveTrain;
 		Elevator 		*pElevator;
+		Shooter         *pBallShooter;
 #ifdef VISION
-		Vision			*pVision;
+		JoystickButton   *pElevBottomSwitch;
+Vision			*pVision;
 #endif
 		//----------------------------------------------------------------------
 		// VARIABLES USED IN CLASS
@@ -203,12 +227,20 @@ class StrongholdRobot : public IterativeRobot
 		// Arm Elevator Controls
 		bool   elevatorArmInPosition;
 		uint   elevatorTarget;
-
+		//----------------------------------------------------------------------
+		// Loader
+		//----------------------------------------------------------------------
+		bool   ballLoaded;
+		bool   ballEjected;
+		//----------------------------------------------------------------------
+		// Shooter
+		//----------------------------------------------------------------------
+		bool shooterReset;
 		//----------------------------------------------------------------------
 		// Camera Image Processing
 		//----------------------------------------------------------------------
 		// Camera Switches
-		bool   lightsOn;
+//		bool   lightsOn;
 
 		//----------------------------------------------------------------------
 		// ROBOT INPUTS
@@ -245,12 +277,19 @@ StrongholdRobot::StrongholdRobot()
 	// Define joysticks & CCI
 	pDriveStickLeft		  = new Joystick(JS_PORT_LEFT);
 	pDriveStickRight	  = new Joystick(JS_PORT_RIGHT);
-	pCCI                  = new Joystick(CCI_PORT); // CCI uses joystick object
+	pCCI1                 = new Joystick(CCI_PORT1); // CCI uses joystick object
+	pCCI2				  = new Joystick(CCI_PORT2);
 
-	// CCI Switches
-	pElevTopSwitch        = new JoystickButton(pCCI,ELEVATOR_TOP_SW_CH);
-	pElevBottomSwitch     = new JoystickButton(pCCI,ELEVATOR_BOTTOM_SW_CH);
-	pCameraLightSwitch    = new JoystickButton(pCCI,CAMERA_LIGHTS_SW_CH);
+	// CCI1 Switches
+	pLoadBallSwitch 	  = new JoystickButton(pCCI1,LOAD_BALL_SW_CH);
+	pEjectBallSwitch	  = new JoystickButton(pCCI1,EJECT_BALL_SW_CH);
+	pShootBallSwitch 	  = new JoystickButton(pCCI1,SHOOT_BALL_SW_CH);
+
+	// CCI2 Switches
+	pElevTopSwitch        = new JoystickButton(pCCI2,ELEVATOR_TOP_SW_CH);
+	pElevBottomSwitch     = new JoystickButton(pCCI2,ELEVATOR_BOTTOM_SW_CH);
+//	pCameraLightSwitch    = new JoystickButton(pCCI1,CAMERA_LIGHTS_SW_CH);
+	pShooterMotorSwitch   = new JoystickButton(pCCI2,SHOOTER_MOTOR_SW_CH);
 
 	//----------------------------------------------------------------------
 	// ROBOT INPUTS
@@ -266,7 +305,7 @@ StrongholdRobot::StrongholdRobot()
 	//----------------------------------------------------------------------
 	// Spike Relays (Relay Connections)
 	// lights
-	pCameraLights		 = new CameraLights(CAMERA_LIGHTS_CH);
+//	pCameraLights		 = new CameraLights(CAMERA_LIGHTS_CH);
 
 	// Drive Train
 	pDriveTrain		     = new RobotDrive(LEFT_FRONT_MOTOR_CH,LEFT_REAR_MOTOR_CH,
@@ -274,6 +313,11 @@ StrongholdRobot::StrongholdRobot()
 	pElevator			 = new Elevator (ELEVATOR_MOTOR_CH, ELEVATOR_POT_CH, TOP_LIMIT_SW_CH,
 										  BOTTOM_LIMIT_SW_CH);
 	
+	//Ball Loader
+	pBallLoader			 = new Loader(LOADER_MOTOR_CH, LOADER_BANNER_SENSOR_CH);
+
+	pBallShooter		 = new Shooter(SHOOTER_MOTOR_CH, SHOOTER_BANNER_SENSOR_CH, &pBallLoader);
+
 	//----------------------------------------------------------------------
 	// INITIALIZE VARIABLES
 	//----------------------------------------------------------------------
@@ -283,8 +327,11 @@ StrongholdRobot::StrongholdRobot()
 	// Initialize robot control variables
 	autoMode              = kAutoModeOff;
 	elevatorArmInPosition = true;
+	ballLoaded            = false;
+	ballEjected           = true;
 	elevatorTarget        = 0;
-	lightsOn              = false;  // CONFIG
+	shooterReset		  = false;
+//	lightsOn              = false;  // CONFIG
 
 	return;
 }
@@ -340,14 +387,14 @@ void StrongholdRobot::DisabledInit()
 // - Determines which autonomous mode we want to use
 // - Optionally displays the status of the autonomous mode switches for debugging
 //   purposes
-//------------------------------------------------------------------------------
+//--------------------------------------------------- ---------------------------
 void StrongholdRobot::AutonomousInit()
 {
 	// Reset loop counter
 	loopCount  = 0;
 
 	// Set Robot Components to Default Starting Positions
-	pCameraLights->TurnOff();                  // CONFIG
+//	pCameraLights->TurnOff();                  // CONFIG
 
 	GetAutoModeSwitches();
 	GetRobotSensorInput();
@@ -372,6 +419,17 @@ void StrongholdRobot::TeleopInit()
 
 	// Loop count initialization
 	loopCount      = 0;
+
+	ballLoaded = pBallLoader->GetBannerSensor();
+
+	if ( ballLoaded )
+	{
+		ballEjected = false;
+	}
+	else
+	{
+		ballEjected = true;
+	}
 
 	elevatorArmInPosition = true;
 
@@ -462,13 +520,18 @@ void StrongholdRobot::TeleopPeriodic()
 	MoveElevToPosition();
 
 	// Turn camera LED lights on or off based on driver station input
-	if ( lightsOn )
+/*	if ( lightsOn )
 		pCameraLights->TurnOn();
 	else
 		pCameraLights->TurnOff();
-
+*/
 	// Drive Robot using Tank Drive
     pDriveTrain->TankDrive(pDriveStickLeft,pDriveStickRight);
+
+
+    CheckBallLoader();
+
+    ShootBall();
 
 	return;
 }
@@ -486,7 +549,7 @@ void StrongholdRobot::GetDriverStationInput()
 {
 	// Obtain the position of switches on the driver station
 	// Camera Switches
-    lightsOn  				 = pCameraLightSwitch->Get();
+//    lightsOn  				 = pCameraLightSwitch->Get();
 
 #ifdef CONSOLE
     ShowDSValues();
@@ -507,10 +570,14 @@ void StrongholdRobot::ShowDSValues()
 	// Show the values for driver station inputs
 	SmartDashboard::PutBoolean("Elev Top Switch",pElevTopSwitch->Get());
 	SmartDashboard::PutBoolean("Elev Bottom Switch",pElevBottomSwitch->Get());
-	SmartDashboard::PutBoolean("Camera Lights Switch",lightsOn);
+//	SmartDashboard::PutBoolean("Camera Lights Switch",lightsOn);
 
 	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
 	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
+	SmartDashboard::PutBoolean("Load Ball Switch",pLoadBallSwitch->Get());
+	SmartDashboard::PutBoolean("Eject Ball Switch",pEjectBallSwitch->Get());
+	SmartDashboard::PutBoolean("Shoot Ball Switch",pShootBallSwitch->Get());
+	SmartDashboard::PutBoolean("Shooter Motor Switch",pShooterMotorSwitch->Get());
 
 	return;
 }
@@ -542,13 +609,18 @@ void StrongholdRobot::GetRobotSensorInput()
 void StrongholdRobot::ShowRobotValues()
 {
 	SmartDashboard::PutNumber("AM Mode",autoMode);
-	SmartDashboard::PutBoolean("Camera Lights",pCameraLights->GetCameraStatus());
+//	SmartDashboard::PutBoolean("Camera Lights",pCameraLights->GetCameraStatus());
 	SmartDashboard::PutNumber("Elev POT Current Position",pElevator->GetCurrentPosition());
 	SmartDashboard::PutNumber("Elev POT Target Position",pElevator->GetPositionTarget());
 	SmartDashboard::PutBoolean("Upper Limit Switch",pElevator->GetUpperLimitSwitch());
 	SmartDashboard::PutBoolean("Lower Limit Switch",pElevator->GetLowerLimitSwitch());
 	SmartDashboard::PutNumber("Elevator Target Motor Speed",pElevator->GetTargetMotorSpeed());
 	SmartDashboard::PutNumber("Elevator Motor Speed",pElevator->GetMotorSpeed());
+	SmartDashboard::PutNumber("Loader Eject Counter",pBallLoader->GetEjectCounter());
+	SmartDashboard::PutBoolean("Loader Banner Sensor",pBallLoader->GetBannerSensor());
+	SmartDashboard::PutNumber("Loader Motor Speed",pBallLoader->GetMotorSpeed());
+	SmartDashboard::PutNumber("Shooter Motor Speed",pBallShooter->GetMotorSpeed());
+	SmartDashboard::PutBoolean("Shooter Banner Sensor",pBallShooter->GetBannerSensor());
 
 #ifdef VISION
 	SmartDashboard::PutBoolean("Camera sees bright", pVision->getIsBright());
@@ -583,6 +655,68 @@ void StrongholdRobot::MoveElevToPosition()
 	if ( ! elevatorArmInPosition )
 	{
 		elevatorArmInPosition = pElevator->MoveElevator(elevatorTarget);
+	}
+
+	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::MoveElevToPosition()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Determines which position to move the arm elevator based on driver station
+// switch values then moves to arm to the target position.
+//------------------------------------------------------------------------------
+void StrongholdRobot::CheckBallLoader()
+{
+	if ( pLoadBallSwitch->Get() )
+	{
+		if ( !ballLoaded )
+		{
+			ballLoaded = pBallLoader->LoadBall();
+		}
+	}
+
+	if ( pEjectBallSwitch->Get() )
+	{
+		if ( !ballEjected )
+		{
+			ballEjected = pBallLoader->EjectBall();
+			if ( ballEjected )
+			{
+				ballLoaded = false;
+			}
+		}
+	}
+
+	return;
+}
+
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::ShootBall()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+//
+//------------------------------------------------------------------------------
+void StrongholdRobot::ShootBall()
+{
+	if ( pShootBallSwitch->Get() )
+	{
+		if ( !shooterReset )
+		{
+			shooterReset = pBallShooter->ShootBall();
+		}
+	}
+
+	else
+	{
+		if ( pShooterMotorSwitch->Get() )
+		{
+			pBallShooter->RunShooter();
+		}
+		else
+		{
+			pBallShooter->StopShooter();
+		}
 	}
 
 	return;
