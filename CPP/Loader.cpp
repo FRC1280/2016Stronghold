@@ -12,7 +12,7 @@
 //------------------------------------------------------------------------------
 Loader::Loader(uint loadMotorCh, uint loadBannerCh)
 {
-	pLoaderMotor      = new Talon(loadMotorCh);
+	pLoaderMotor      = new Spark(loadMotorCh);
 	pBannerSensor     = new DigitalInput(loadBannerCh);
 
 	// Initialize class variables

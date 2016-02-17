@@ -40,7 +40,7 @@ class Loader
 		void RunLoader(float motorSpeed);
 		void StopLoader();
 
-		Talon               *pLoaderMotor;
+		Spark               *pLoaderMotor;
 		DigitalInput        *pBannerSensor;
 
 };
