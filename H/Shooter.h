@@ -14,7 +14,7 @@ class Shooter
 {
 	public:
 
-		Shooter(uint loadMotorCh, uint loadBannerCh, Loader pRobotLoader);
+		Shooter(uint loadMotorCh, uint loadBannerCh, Loader *pRobotLoader);
 		~Shooter();
 
 		bool   ShootBall();
@@ -25,7 +25,7 @@ class Shooter
 		void   StopShooter();
 
 	private:
-		const float   MOTOR_SPEED_SHOOT			 = 	  0.75;
+		const float   MOTOR_SPEED_SHOOT			 = 	  0.25;
 		const float   ALL_STOP                   =    0.00;
 
 		bool 		  firstLoop   				 =    true;
@@ -36,7 +36,7 @@ class Shooter
 
 		void   RunShooter(float motorSpeed);
 
-		Talon               *pShooterMotor;
+		Spark               *pShooterMotor;
 		DigitalInput        *pBannerSensor;
 		Loader              *pBallLoader;
 };

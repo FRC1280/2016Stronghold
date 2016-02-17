@@ -10,12 +10,12 @@
 // - Upper limit switch digital I/O channel
 // - Lower limit switch digital I/O channel
 //------------------------------------------------------------------------------
-Shooter::Shooter(uint loadMotorCh, uint loadBannerCh, Loader pRobotLoader)
+Shooter::Shooter(uint loadMotorCh, uint loadBannerCh, Loader *pRobotLoader)
 {
-	pShooterMotor     = new Talon(loadMotorCh);
+	pShooterMotor     = new Spark(loadMotorCh);
 	pBannerSensor     = new DigitalInput(loadBannerCh);
 
-	pBallLoader       = &pRobotLoader;
+	pBallLoader       =  pRobotLoader;
 
 	// Initialize class variables
 	prevBannerValue   = false;
