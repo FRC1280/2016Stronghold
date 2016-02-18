@@ -1,112 +1,112 @@
-#include "../H/Elevator.h"
+#include "../H/Arm.h"
 
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::Elevator()
+// METHOD:  Arm::Arm()
 // Type:	Public constructor method
 //------------------------------------------------------------------------------
-// Creates an elevator object using as input:
-// - Elevator motor PWM channel
-// - Elevator potentiometer analog channel
+// Creates an Arm object using as input:
+// - Arm motor PWM channel
+// - Arm potentiometer analog channel
 // - Upper limit switch digital I/O channel
 // - Lower limit switch digital I/O channel
 //------------------------------------------------------------------------------
-Elevator::Elevator(uint elevMotorCh, uint elevPotCh, uint upperLimitSwCh, uint lowerLimitSwCh)
+Arm::Arm(uint armMotorCh, uint armPotCh, uint upperLimitSwCh, uint lowerLimitSwCh)
 {
-	pElevatorMotor    = new Talon(elevMotorCh);
-	pElevatorPot      = new AnalogPotentiometer(elevPotCh, POT_FULL_RANGE, POT_OFFSET);
+	pArmMotor         = new Talon(armMotorCh);
+	pArmPot           = new AnalogPotentiometer(armPotCh, POT_FULL_RANGE, POT_OFFSET);
 	pUpperLimitHit    = new DigitalInput(upperLimitSwCh);
 	pLowerLimitHit    = new DigitalInput(lowerLimitSwCh);
 
 	// Initialize class variables
-	elevatorTarget   = 0.0;
+	armTarget        = 0.0;
 	targetMotorSpeed = 0.0;
 
-	// Set default starting position for elevator to current position
-	MoveElevator(pElevatorPot->Get());
+	// Set default starting position for Arm to current position
+	MoveArm(pArmPot->Get());
 }
 
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::Elevator()
+// METHOD:  Arm::Arm()
 // Type:	Public destructor method
 //------------------------------------------------------------------------------
-// Destroys the elevator object
+// Destroys the Arm object
 //------------------------------------------------------------------------------
-Elevator::~Elevator()
+Arm::~Arm()
 {
 }
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::MoveElevator()
+// METHOD:  Arm::MoveArm()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
 // Calculates a target robot POT value based on input target position
-// and then moves the elevator to the desired position.
+// and then moves the Arm to the desired position.
 //------------------------------------------------------------------------------
-bool  Elevator::MoveElevator(uint inputTarget)
+bool  Arm::MoveArm(uint inputTarget)
 {
 	bool   targetFound  = false;
 
 	targetInput    = inputTarget;
 
-	elevatorTarget = CalcPOTTarget(inputTarget);
+	armTarget = CalcPOTTarget(inputTarget);
 
-	targetFound = GoToPotTarget(elevatorTarget);
+	targetFound = GoToPotTarget(armTarget);
 
 	return targetFound;
 }
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::GetTargetMotorSpeed()
+// METHOD:  Arm::GetTargetMotorSpeed()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Returns the current targeted elevator motor speed.
+// Returns the current targeted Arm motor speed.
 //------------------------------------------------------------------------------
-float  Elevator::GetTargetMotorSpeed() const
+float  Arm::GetTargetMotorSpeed() const
 {
 	return targetMotorSpeed;
 }
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::GetMotorSpeed()
+// METHOD:  Arm::GetMotorSpeed()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Returns the current actual elevator motor speed.
+// Returns the current actual Arm motor speed.
 //------------------------------------------------------------------------------
-float  Elevator::GetMotorSpeed() const
+float  Arm::GetMotorSpeed() const
 {
-	return pElevatorMotor->Get();
+	return pArmMotor->Get();
 }
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::GetCurrentPosition()
+// METHOD:  Arm::GetCurrentPosition()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Returns the current actual elevator position potentiometer reading.
+// Returns the current actual Arm position potentiometer reading.
 //------------------------------------------------------------------------------
-double Elevator::GetCurrentPosition() const
+double Arm::GetCurrentPosition() const
 {
-	return pElevatorPot->Get();
+	return pArmPot->Get();
 }
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::GetPositionTarget()
+// METHOD:  Arm::GetPositionTarget()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Returns the target elevator position potentiometer reading.
+// Returns the target Arm position potentiometer reading.
 //------------------------------------------------------------------------------
-double Elevator::GetPositionTarget() const
+double Arm::GetPositionTarget() const
 {
-	return elevatorTarget;
+	return armTarget;
 }
 
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::GetPositionTargetInput()
+// METHOD:  Arm::GetPositionTargetInput()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Returns the target elevator position input value.
+// Returns the target Arm position input value.
 //------------------------------------------------------------------------------
-uint   Elevator::GetPositionTargetInput() const
+uint   Arm::GetPositionTargetInput() const
 {
  	return targetInput;
 }
 
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::GetUpperLimitSwitch()
+// METHOD:  Arm::GetUpperLimitSwitch()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
 // Returns the value of the upper limit switch.
@@ -114,12 +114,12 @@ uint   Elevator::GetPositionTargetInput() const
 // *** NOTE TO ALLOW THE LIMIT SWITCHES TO READ THE WAY WE WANT THEM TO IN THE
 // *** CODE - WIRE THEM "NORMAL CLOSED" OR NC.
 //------------------------------------------------------------------------------
-bool   Elevator::GetUpperLimitSwitch() const
+bool   Arm::GetUpperLimitSwitch() const
 {
 	return pUpperLimitHit->Get();
 }
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::GetLowerLimitSwitch()
+// METHOD:  Arm::GetLowerLimitSwitch()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
 // Returns the value of the lower limit switch.
@@ -127,33 +127,37 @@ bool   Elevator::GetUpperLimitSwitch() const
 // *** NOTE TO ALLOW THE LIMIT SWITCHES TO READ THE WAY WE WANT THEM TO IN THE
 // *** CODE - WIRE THEM "NORMAL CLOSED" OR NC.
 //------------------------------------------------------------------------------
-bool   Elevator::GetLowerLimitSwitch() const
+bool   Arm::GetLowerLimitSwitch() const
 {
 	return pLowerLimitHit->Get();
 }
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::CalcPOTTarget()
+// METHOD:  Arm::CalcPOTTarget()
 // Type:	Private method
 //------------------------------------------------------------------------------
-// Determines the elevator potentiometer target based on a passed target input
+// Determines the Arm potentiometer target based on a passed target input
 // position.
 //------------------------------------------------------------------------------
-double Elevator::CalcPOTTarget(uint targetPosition)
+double Arm::CalcPOTTarget(uint targetPosition)
 {
 	double targetPot = 0;
 
     switch ( targetPosition )
     {
-    	case kGround:
-			targetPot = ELEV_POS_LOWER_LIMIT;
+    	case kPosition1:
+			targetPot = ARM_POSITION_1;
     		break;
 
-    	case kHang:
-			targetPot = ELEV_POS_UPPER_LIMIT;
+    	case kPosition2:
+			targetPot = ARM_POSITION_2;
+			break;
+
+    	case kPosition3:
+			targetPot = ARM_POSITION_3;
 			break;
 
     	default:
-    		targetPot = pElevatorPot->Get();
+    		targetPot = pArmPot->Get();
     		break;
     }
 
@@ -161,55 +165,55 @@ double Elevator::CalcPOTTarget(uint targetPosition)
 }
 
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::GoToPotTarget()
+// METHOD:  Arm::GoToPotTarget()
 // Type:	Private method
 //------------------------------------------------------------------------------
-// Moves the arm elevator until it reaches the target position, or activates
+// Moves the arm Arm until it reaches the target position, or activates
 // the upper or lower limit switches.
 // *** NOTE TO ALLOW THE LIMIT SWITCHES TO READ THE WAY WE WANT THEM TO IN THE
 // **  CODE - WIRE THEM "NORMAL CLOSED" OR NC.
 //------------------------------------------------------------------------------
-bool  Elevator::GoToPotTarget(double inputPotValue)
+bool  Arm::GoToPotTarget(double inputPotValue)
 {
 	bool   potTargetFound  = false;
 	double targetLowValue  = inputPotValue - TARGET_TOLERANCE;
 	double targetHighValue = inputPotValue + TARGET_TOLERANCE;
 
-	if ( pElevatorPot->Get() >= targetLowValue  &&
-		 pElevatorPot->Get() <= targetHighValue )
+	if ( pArmPot->Get() >= targetLowValue  &&
+		 pArmPot->Get() <= targetHighValue )
 	{
-		pElevatorMotor->Set(ALL_STOP);
+		pArmMotor->Set(ALL_STOP);
 		targetMotorSpeed = ALL_STOP;
 		potTargetFound = true;
 	}
 	else
 	{
-		if ( pElevatorPot->Get() > targetHighValue )  // Elevator moving down
+		if ( pArmPot->Get() > targetHighValue )  // Arm moving down
 		{
 			if ( pLowerLimitHit->Get() )  // If lower limit switch is hit, stop motors
 			{
-				pElevatorMotor->Set(ALL_STOP);
+				pArmMotor->Set(ALL_STOP);
 				targetMotorSpeed = ALL_STOP;
 				potTargetFound = true;
 			}
 			else
 			{
-				pElevatorMotor->Set(MOTOR_SPEED_DOWN);
+				pArmMotor->Set(MOTOR_SPEED_DOWN);
 				targetMotorSpeed = MOTOR_SPEED_DOWN;
 			}
 		}
 		else
-			if ( pElevatorPot->Get() < targetLowValue )  // Elevator moving up
+			if ( pArmPot->Get() < targetLowValue )  // Arm moving up
 			{
 				if ( pUpperLimitHit->Get() )  // If upper limit switch is hit, stop motors
 				{
-					pElevatorMotor->Set(ALL_STOP);
+					pArmMotor->Set(ALL_STOP);
 					targetMotorSpeed = ALL_STOP;
 					potTargetFound = true;
 				}
 				else
 				{
-					pElevatorMotor->Set(MOTOR_SPEED_UP);
+					pArmMotor->Set(MOTOR_SPEED_UP);
 					targetMotorSpeed = MOTOR_SPEED_UP;
 				}
 			}
