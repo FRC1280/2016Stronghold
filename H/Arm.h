@@ -1,24 +1,24 @@
-#ifndef ELEVATOR_H
-#define ELEVATOR_H
+#ifndef ARM_H
+#define ARM_H
 
 #include "WPILib.h"
 
 //------------------------------------------------------------------------------
-// DEFINE Elevator CLASS
+// DEFINE Arm CLASS
 //------------------------------------------------------------------------------
-// Positions the elevator based on a target position.  The target position
+// Positions the Arm based on a target position.  The target position
 // translates into a target potentiometer reading.
 //------------------------------------------------------------------------------
-class Elevator
+class Arm
 {
 	public:
 
-		enum  target {kGround, kHang};
+		enum  target {kPosition1, kPosition2, kPosition3};
 
-		Elevator(uint elevMotorCh, uint elevPotCh, uint upperLimitSwCh, uint lowerLimitSwCh);
-		~Elevator();
+		Arm(uint armMotorCh, uint armPotCh, uint upperLimitSwCh, uint lowerLimitSwCh);
+		~Arm();
 
-		bool   MoveElevator(uint inputTarget);
+		bool   MoveArm(uint inputTarget);
 		float  GetTargetMotorSpeed() const;
 		float  GetMotorSpeed() const;
 		double GetCurrentPosition() const;
@@ -32,8 +32,9 @@ class Elevator
 		const float   MOTOR_SPEED_DOWN         =   -0.25;   // CONFIGURE
 		const float   ALL_STOP                 =    0.00;
 
-		const double  ELEV_POS_UPPER_LIMIT     =   75.0;    // CONFIGURE
-		const double  ELEV_POS_LOWER_LIMIT     =   25.0;    // CONFIGURE
+		const double  ARM_POSITION_1           =   25.0;    // CONFIGURE
+		const double  ARM_POSITION_2           =   50.0;    // CONFIGURE
+		const double  ARM_POSITION_3           =   75.0;    // CONFIGURE
 		const double  TARGET_TOLERANCE         =    1.0;    // CONFIGURE
 
 		const double  POT_FULL_RANGE           = -100.0;    // CONFIGURE
@@ -43,14 +44,14 @@ class Elevator
  		double CalcPOTTarget(uint targetPosition);
  		bool   GoToPotTarget(double potTarget);
 
-		Talon               *pElevatorMotor;
-		AnalogPotentiometer *pElevatorPot;
+		Talon               *pArmMotor;
+		AnalogPotentiometer *pArmPot;
 		DigitalInput        *pUpperLimitHit;
 		DigitalInput        *pLowerLimitHit;
 		PIDController       *pPIDController;
 
 		uint                targetInput;
-		double              elevatorTarget;
+		double              armTarget;
 		float               targetMotorSpeed;
 };
 
