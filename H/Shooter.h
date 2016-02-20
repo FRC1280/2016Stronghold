@@ -24,6 +24,8 @@ class Shooter
 		void   RunShooter();
 		void   StopShooter();
 
+		//Change code - add limit switch to detect loaded ball in shooter
+
 	private:
 		const float   MOTOR_SPEED_SHOOT			 = 	  0.25;
 		const float   ALL_STOP                   =    0.00;

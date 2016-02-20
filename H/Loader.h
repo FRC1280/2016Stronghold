@@ -13,20 +13,22 @@ class Loader
 {
 	public:
 
-		Loader(uint loadMotorCh, uint loadBannerCh);
+		Loader(uint loadMotorCh, uint loadBannerCh);// uint loadLimitSwitch
 		~Loader();
 
 		bool   LoadBall();
 		bool   EjectBall();
 		bool   LoadToShooter();
-		float  GetMotorSpeed() const;
-		bool   GetBannerSensor() const;
-		int    GetEjectCounter() const;
+		float  GetMotorSpeed()       const;
+		bool   GetBannerSensor()     const;
+		bool   GetPrevBannerSensor() const;
+//		bool   GetLimitSwitch()      const;
+		int    GetEjectCounter()     const;
 
 	private:
-		const float   MOTOR_SPEED_LOAD           =    0.25;   // CONFIGURE
-		const float   MOTOR_SPEED_SHOOT			 = 	  0.75;
-		const float   MOTOR_SPEED_EJECT          =   -0.25;   // CONFIGURE
+		const float   MOTOR_SPEED_LOAD           =   -0.25;   // CONFIGURE
+		const float   MOTOR_SPEED_SHOOT			 = 	 -0.75;
+		const float   MOTOR_SPEED_EJECT          =    0.25;   // CONFIGURE
 		const float   ALL_STOP                   =    0.00;
 		const int 	  EJECT_LOOPS				 =   50;
 		const int     SHOOT_LOOPS				 =   25;
@@ -42,6 +44,7 @@ class Loader
 
 		Spark               *pLoaderMotor;
 		DigitalInput        *pBannerSensor;
+//		DigitalInput		*pLimitSwitch;
 
 };
 

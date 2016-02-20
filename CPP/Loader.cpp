@@ -10,16 +10,18 @@
 // - Upper limit switch digital I/O channel
 // - Lower limit switch digital I/O channel
 //------------------------------------------------------------------------------
-Loader::Loader(uint loadMotorCh, uint loadBannerCh)
+Loader::Loader(uint loadMotorCh, uint loadBannerCh)//uint loadLimitCh
 {
 	pLoaderMotor      = new Spark(loadMotorCh);
 	pBannerSensor     = new DigitalInput(loadBannerCh);
+//	pLimitSwitch	  = new DigitalInput(loadLimitCh);
 
 	// Initialize class variables
 	prevBannerValue   = false;
 	ejectCounter 	  = 0;
-	shootCounter				 =    0;
-	firstShootLoop			 = 	  true;
+	shootCounter      = 0;
+	firstLoop         = true;
+	firstShootLoop	  = true;
 
 	// Set default starting position for Loader to current position
 	StopLoader();
@@ -44,15 +46,11 @@ bool  Loader::LoadBall()
 {
 	bool ballLoaded = false;
 
-	if(prevBannerValue == false	 &&	 pBannerSensor->Get() == true)
-	{
-		StopLoader();
-		ballLoaded = true;
-	}
-	else
-		RunLoader(MOTOR_SPEED_LOAD);
-
 	prevBannerValue = pBannerSensor->Get();
+	if ( !pBannerSensor->Get() )
+	{
+		RunLoader(MOTOR_SPEED_LOAD);
+	}
 
 	return ballLoaded;
 }
@@ -64,7 +62,7 @@ bool  Loader::LoadBall()
 //------------------------------------------------------------------------------
 bool  Loader::EjectBall()
 {
-	bool ballEjected =  false;
+	bool ballEjected = false;
 
 	if(firstLoop)
 	{
@@ -135,6 +133,16 @@ float  Loader::GetMotorSpeed() const
 bool Loader::GetBannerSensor() const
 {
 	return pBannerSensor->Get();
+}
+//------------------------------------------------------------------------------
+// METHOD:  Loader::GetPrevBannerSensor()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the current actual Banner Sensor reading.
+//------------------------------------------------------------------------------
+bool Loader::GetPrevBannerSensor() const
+{
+	return prevBannerValue;
 }
 //------------------------------------------------------------------------------
 // METHOD:  Loader::GetEjectCounter()

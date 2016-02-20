@@ -27,6 +27,8 @@ Shooter::Shooter(uint loadMotorCh, uint loadBannerCh, Loader *pRobotLoader)
 	StopShooter();
 }
 
+//Change code - add limit switch to detect loaded ball in shooter
+
 //------------------------------------------------------------------------------
 // METHOD:  Shooter::Shooter()
 // Type:	Public destructor method
