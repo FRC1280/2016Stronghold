@@ -3,3 +3,5 @@
 *.xml
 *.cproject
 *.properties
+*.xml
+sysProps.xml
