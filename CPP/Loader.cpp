@@ -49,12 +49,13 @@ bool  Loader::LoadBall()
 	if ( pLoadedSensor->Get() )
 	{
 		StopLoader();
-		ballLoaded = true;
+		ballLoaded  = true;
+		ballEjected = false;
 	}
 	else
 	{
 		RunLoader(MOTOR_SPEED_LOAD);
-		ballLoaded = false;
+		ballLoaded  = false;
 	}
 
 	return ballLoaded;
@@ -74,7 +75,7 @@ bool  Loader::EjectBall()
 		firstEjectLoop = false;
 	}
 
-	if ( ejectCounter <= MAX_EJECT_LOOPS )
+	if ( ejectCounter >= MAX_EJECT_LOOPS )
 	{
 		StopLoader();
 		ballEjected    = true;
@@ -100,6 +101,8 @@ bool Loader::LoadToShooter()
 	{
 		StopLoader();
 		ballInShooter = true;
+		ballEjected   = true;
+		ballLoaded    = false;
 	}
 	else
 	{
@@ -170,12 +173,12 @@ bool Loader::GetBallEjected() const
 	return ballEjected;
 }
 //------------------------------------------------------------------------------
-// METHOD:  Loader::GetShooterSensor()
+// METHOD:  Loader::GetBallInShooter()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
 // Returns the current eject loop.
 //------------------------------------------------------------------------------
-bool Loader::GetShooterSensor() const
+bool Loader::GetBallInShooterSensor() const
 {
 	return pInShooterSensor->Get();
 }
@@ -185,7 +188,7 @@ bool Loader::GetShooterSensor() const
 //------------------------------------------------------------------------------
 // Returns the current eject loop.
 //------------------------------------------------------------------------------
-bool Loader::GetBallInShooter() const
+bool Loader::GetBallInShooterFlag() const
 {
 	return ballInShooter;
 }
