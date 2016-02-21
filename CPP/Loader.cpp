@@ -6,22 +6,24 @@
 //------------------------------------------------------------------------------
 // Creates an Loader object using as input:
 // - Loader motor PWM channel
-// - Loader potentiometer analog channel
-// - Upper limit switch digital I/O channel
-// - Lower limit switch digital I/O channel
+// - Ball loaded sensor digital I/O channel
+// - Ball in shooter sensor digital I/O channel
 //------------------------------------------------------------------------------
-Loader::Loader(uint loadMotorCh, uint loadBannerCh)//uint loadLimitCh
+Loader::Loader(uint loadMotorCh, uint loadedSensorCh, uint inShooterSensorCh)
 {
 	pLoaderMotor      = new Spark(loadMotorCh);
-	pBannerSensor     = new DigitalInput(loadBannerCh);
-//	pLimitSwitch	  = new DigitalInput(loadLimitCh);
+	pLoadedSensor     = new DigitalInput(loadedSensorCh);
+	pInShooterSensor  = new DigitalInput(inShooterSensorCh);
 
 	// Initialize class variables
-	prevBannerValue   = false;
-	ejectCounter 	  = 0;
-	shootCounter      = 0;
-	firstLoop         = true;
-	firstShootLoop	  = true;
+	// Load Ball
+	ballLoaded          = false;
+	// Eject Ball
+	ballEjected         = true;
+	firstEjectLoop      = true;
+	ejectCounter 	    = 0;
+	// Load Ball in Shooter
+	ballInShooter       = false;
 
 	// Set default starting position for Loader to current position
 	StopLoader();
@@ -44,47 +46,50 @@ Loader::~Loader()
 //------------------------------------------------------------------------------
 bool  Loader::LoadBall()
 {
-	bool ballLoaded = false;
-
-	prevBannerValue = pBannerSensor->Get();
-	if ( !pBannerSensor->Get() )
+	if ( pLoadedSensor->Get() )
+	{
+		StopLoader();
+		ballLoaded  = true;
+		ballEjected = false;
+	}
+	else
 	{
 		RunLoader(MOTOR_SPEED_LOAD);
+		ballLoaded  = false;
 	}
 
 	return ballLoaded;
 }
 //------------------------------------------------------------------------------
-// METHOD:  Elevator::GetTargetMotorSpeed()
+// METHOD:  Elevator::EjectBall()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
 // Returns the current targeted elevator motor speed.
 //------------------------------------------------------------------------------
 bool  Loader::EjectBall()
 {
-	bool ballEjected = false;
-
-	if(firstLoop)
+	if ( firstEjectLoop )
 	{
-		ejectCounter = 0;
-		firstLoop    = false;
+		ejectCounter   = 0;
+		ballEjected    = false;
+		firstEjectLoop = false;
 	}
 
-	if (ejectCounter == EJECT_LOOPS)
+	if ( ejectCounter >= MAX_EJECT_LOOPS )
 	{
 		StopLoader();
-		ballEjected  = true;
-		firstLoop    = true;
+		ballEjected    = true;
+		firstEjectLoop = true;
 	}
 	else
 	{
-		ejectCounter++;
 		RunLoader(MOTOR_SPEED_EJECT);
+		ejectCounter++;
 	}
 
 	return ballEjected;
-
-}//------------------------------------------------------------------------------
+}
+//------------------------------------------------------------------------------
 // METHOD:  Loader::LoadToShooter()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
@@ -92,27 +97,20 @@ bool  Loader::EjectBall()
 //------------------------------------------------------------------------------
 bool Loader::LoadToShooter()
 {
-	bool shooterLoaded = false;
-
-	if ( firstShootLoop )
-	{
-		shootCounter 	  = 0;
-		firstShootLoop 	  = false;
-	}
-
-	if ( shootCounter == SHOOT_LOOPS )
+	if ( pInShooterSensor->Get() )
 	{
 		StopLoader();
-		shooterLoaded  	  = true;
-		firstShootLoop    = true;
+		ballInShooter = true;
+		ballEjected   = true;
+		ballLoaded    = false;
 	}
 	else
 	{
-		shootCounter++;
 		RunLoader(MOTOR_SPEED_SHOOT);
+		ballInShooter = false;
 	}
 
-	return shooterLoaded;
+	return ballInShooter;
 }
 //------------------------------------------------------------------------------
 // METHOD:  Loader::GetMotorSpeed()
@@ -125,24 +123,34 @@ float  Loader::GetMotorSpeed() const
 	return pLoaderMotor->Get();
 }
 //------------------------------------------------------------------------------
-// METHOD:  Loader::GetBannerSensor()
+// METHOD:  Loader::GetLoadedSensor()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
 // Returns the current actual Banner Sensor reading.
 //------------------------------------------------------------------------------
-bool Loader::GetBannerSensor() const
+bool Loader::GetLoadedSensor() const
 {
-	return pBannerSensor->Get();
+	return pLoadedSensor->Get();
 }
 //------------------------------------------------------------------------------
-// METHOD:  Loader::GetPrevBannerSensor()
+// METHOD:  Loader::GetBallLoaded()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
 // Returns the current actual Banner Sensor reading.
 //------------------------------------------------------------------------------
-bool Loader::GetPrevBannerSensor() const
+bool Loader::GetBallLoaded() const
 {
-	return prevBannerValue;
+	return ballLoaded;
+}
+//------------------------------------------------------------------------------
+// METHOD:  Loader::GetFirstEjectLoop()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the current actual Banner Sensor reading.
+//------------------------------------------------------------------------------
+bool Loader::GetFirstEjectLoop() const
+{
+	return firstEjectLoop;
 }
 //------------------------------------------------------------------------------
 // METHOD:  Loader::GetEjectCounter()
@@ -153,6 +161,36 @@ bool Loader::GetPrevBannerSensor() const
 int Loader::GetEjectCounter() const
 {
 	return ejectCounter;
+}
+//------------------------------------------------------------------------------
+// METHOD:  Loader::GetBallEjected()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the current eject loop.
+//------------------------------------------------------------------------------
+bool Loader::GetBallEjected() const
+{
+	return ballEjected;
+}
+//------------------------------------------------------------------------------
+// METHOD:  Loader::GetBallInShooter()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the current eject loop.
+//------------------------------------------------------------------------------
+bool Loader::GetBallInShooterSensor() const
+{
+	return pInShooterSensor->Get();
+}
+//------------------------------------------------------------------------------
+// METHOD:  Loader::GetBallInShooter()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the current eject loop.
+//------------------------------------------------------------------------------
+bool Loader::GetBallInShooterFlag() const
+{
+	return ballInShooter;
 }
 //------------------------------------------------------------------------------
 // METHOD:  Loader::RunLoader()
@@ -166,7 +204,6 @@ void Loader::RunLoader(float motorSpeed)
 
 	return;
 }
-
 //------------------------------------------------------------------------------
 // METHOD:  Loader::StopLoader()
 // Type:	Public accessor method
@@ -179,4 +216,3 @@ void Loader::StopLoader()
 
 	return;
 }
-

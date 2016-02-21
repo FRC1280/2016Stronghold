@@ -18,22 +18,22 @@ class Shooter
 		~Shooter();
 
 		bool   ShootBall();
-		float  GetMotorSpeed() const;
-		int    GetShooterCounter() const;
-		bool   GetBannerSensor() const;
 		void   RunShooter();
 		void   StopShooter();
-
-		//Change code - add limit switch to detect loaded ball in shooter
+		float  GetMotorSpeed()       const;
+		bool   GetBannerSensor()     const;
+		bool   GetShooterFirstLoop() const;
+		bool   GetPrevShooterReset() const;
+		bool   GetShooterReset()     const;
+		bool   GetBallInShooter()    const;
 
 	private:
-		const float   MOTOR_SPEED_SHOOT			 = 	  0.25;
+		const float   MOTOR_SPEED_SHOOT			 = 	  1.00;
 		const float   ALL_STOP                   =    0.00;
 
 		bool 		  firstLoop   				 =    true;
 		bool      	  prevBannerValue			 =    false;
-		bool		  shootBannerSensor			 =    false;
-		bool 		  shooterReady				 =    false;
+		bool 		  shooterReset				 =    true;
 		bool          ballLoaded                 =    false;
 
 		void   RunShooter(float motorSpeed);

@@ -13,39 +13,43 @@ class Loader
 {
 	public:
 
-		Loader(uint loadMotorCh, uint loadBannerCh);// uint loadLimitSwitch
+		Loader(uint loadMotorCh, uint loadedSensorCh, uint inShooterSensorCh);
 		~Loader();
 
 		bool   LoadBall();
 		bool   EjectBall();
 		bool   LoadToShooter();
-		float  GetMotorSpeed()       const;
-		bool   GetBannerSensor()     const;
-		bool   GetPrevBannerSensor() const;
-//		bool   GetLimitSwitch()      const;
-		int    GetEjectCounter()     const;
+		float  GetMotorSpeed()           const;
+		bool   GetLoadedSensor()         const;
+		bool   GetBallLoaded()           const;
+		bool   GetFirstEjectLoop()       const;
+		int    GetEjectCounter()         const;
+		bool   GetBallEjected()          const;
+		bool   GetBallInShooterSensor()  const;
+		bool   GetBallInShooterFlag()    const;
 
 	private:
-		const float   MOTOR_SPEED_LOAD           =   -0.25;   // CONFIGURE
-		const float   MOTOR_SPEED_SHOOT			 = 	 -0.75;
-		const float   MOTOR_SPEED_EJECT          =    0.25;   // CONFIGURE
+		const float   MOTOR_SPEED_LOAD           =   -0.50;   // CONFIGURE
+		const float   MOTOR_SPEED_EJECT          =    0.75;   // CONFIGURE
+		const float   MOTOR_SPEED_SHOOT			 = 	 -1.00;   // CONFIGURE
 		const float   ALL_STOP                   =    0.00;
-		const int 	  EJECT_LOOPS				 =   50;
-		const int     SHOOT_LOOPS				 =   25;
+		const int 	  MAX_EJECT_LOOPS	    	 =    75;      // CONFIGURE
 
-		bool 		  prevBannerValue			 = 	  false;
-		bool 		  firstLoop   				 =    true;
-		bool 		  firstShootLoop			 = 	  true;
-		int 		  ejectCounter 				 =    0;
-		int 		  shootCounter				 =    0;
+		// Load Ball
+		bool  ballLoaded;
+		// Eject Ball
+		bool  ballEjected;
+		bool  firstEjectLoop;
+		int   ejectCounter;
+		// Load Ball in Shooter
+		bool  ballInShooter;
 
 		void RunLoader(float motorSpeed);
 		void StopLoader();
 
 		Spark               *pLoaderMotor;
-		DigitalInput        *pBannerSensor;
-//		DigitalInput		*pLimitSwitch;
-
+		DigitalInput        *pLoadedSensor;
+		DigitalInput        *pInShooterSensor;
 };
 
 #endif
