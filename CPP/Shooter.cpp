@@ -21,7 +21,7 @@ Shooter::Shooter(uint loadMotorCh, uint loadBannerCh, Loader *pRobotLoader)
 	prevBannerValue   = true;
 	shooterReset	  = true;
 	firstLoop 		  = true;
-	ballLoaded        = false;
+	ballInShooter     = false;
 
 	// Set default starting position for Shooter to current position
 	StopShooter();
@@ -46,27 +46,27 @@ bool  Shooter::ShootBall()
 {
 	if ( firstLoop )
 	{
-		firstLoop    = false;
-		shooterReset = false;
-		ballLoaded   = false;
+		firstLoop     = false;
+		shooterReset  = false;
+		ballInShooter = false;
 	}
 
-	if ( ! ballLoaded )
-		ballLoaded = pBallLoader->LoadToShooter();
+	if ( ! ballInShooter )
+		ballInShooter = pBallLoader->LoadToShooter();
 
-	if ( ballLoaded )
+	if ( ballInShooter )
 	{
 		RunShooter();
 	}
 
-	if (  prevBannerValue        &&
-		! pBannerSensor->Get()   &&
-		! pBallLoader->GetBallInShooterSensor() )
+	if ( ! prevBannerValue        &&
+		   pBannerSensor->Get()   &&
+		 ! pBallLoader->GetBallInShooterSensor() )
 	{
 		StopShooter();
-		firstLoop    = true;
-		shooterReset = true;
-		ballLoaded   = false;
+		firstLoop     = true;
+		shooterReset  = true;
+		ballInShooter = false;
 	}
 
 	prevBannerValue = pBannerSensor->Get();
@@ -154,5 +154,5 @@ bool Shooter::GetShooterReset() const
 //------------------------------------------------------------------------------
 bool Shooter::GetBallInShooter() const
 {
-	return ballLoaded;
+	return ballInShooter;
 }

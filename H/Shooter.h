@@ -34,7 +34,7 @@ class Shooter
 		bool 		  firstLoop   				 =    true;
 		bool      	  prevBannerValue			 =    false;
 		bool 		  shooterReset				 =    true;
-		bool          ballLoaded                 =    false;
+		bool          ballInShooter          =    false;
 
 		void   RunShooter(float motorSpeed);
 

@@ -3,5 +3,5 @@
 *.xml
 *.cproject
 *.properties
-*.cproject
-*.properties
+*.xml
+sysProps.xml
