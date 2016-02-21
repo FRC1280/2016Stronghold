@@ -861,16 +861,18 @@ void StrongholdRobot::ShootBall()
 {
 	CheckShootBallSwitch();
 
-	if ( shootBall )
+	if ( shootBall &&
+		 pBallLoader->GetBallLoaded() )
 	{
 		shooterReset = pBallShooter->ShootBall();
 
 		if ( shooterReset )
 		{
-			shootBall = false;
+			shootBall   = false;
+			ballLoaded  = false;
+			ballEjected = true;
 		}
 	}
-
 	else
 	{
 		if ( pShooterMotorSwitch->Get() )

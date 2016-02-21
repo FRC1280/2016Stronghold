@@ -59,13 +59,13 @@ bool  Shooter::ShootBall()
 		RunShooter();
 	}
 
-	if(   prevBannerValue        &&
+	if (  prevBannerValue        &&
 		! pBannerSensor->Get()   &&
-		! pBallLoader->GetBallLoaded()        )
+		! pBallLoader->GetBallInShooterSensor() )
 	{
-		shooterReset = true;
 		StopShooter();
 		firstLoop    = true;
+		shooterReset = true;
 		ballLoaded   = false;
 	}
 
