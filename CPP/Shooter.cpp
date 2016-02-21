@@ -18,8 +18,8 @@ Shooter::Shooter(uint loadMotorCh, uint loadBannerCh, Loader *pRobotLoader)
 	pBallLoader       =  pRobotLoader;
 
 	// Initialize class variables
-	prevBannerValue   = false;
-	shooterReady	  = true;
+	prevBannerValue   = true;
+	shooterReset	  = true;
 	firstLoop 		  = true;
 	ballLoaded        = false;
 
@@ -46,28 +46,57 @@ bool  Shooter::ShootBall()
 {
 	if ( firstLoop )
 	{
-		firstLoop = false;
-		shooterReady = false;
-		ballLoaded = false;
+		firstLoop    = false;
+		shooterReset = false;
+		ballLoaded   = false;
 	}
 
 	if ( ! ballLoaded )
 		ballLoaded = pBallLoader->LoadToShooter();
 
-	RunShooter(MOTOR_SPEED_SHOOT);
-
-	if( !prevBannerValue && pBannerSensor->Get() )
+	if ( ballLoaded )
 	{
-		shooterReady = true;
+		RunShooter();
+	}
+
+	if(   prevBannerValue        &&
+		! pBannerSensor->Get()   &&
+		! pBallLoader->GetBallLoaded()        )
+	{
+		shooterReset = true;
 		StopShooter();
-		firstLoop = true;
+		firstLoop    = true;
+		ballLoaded   = false;
 	}
 
 	prevBannerValue = pBannerSensor->Get();
 
-	return shooterReady;
+	return shooterReset;
 }
 //------------------------------------------------------------------------------
+// METHOD:  Shooter::RunShooter()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Sets motor speed.
+//------------------------------------------------------------------------------
+void Shooter::RunShooter()
+{
+	pShooterMotor->Set(MOTOR_SPEED_SHOOT);
+
+	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  Shooter::StopShooter()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Stops the Shooter.
+//------------------------------------------------------------------------------
+void Shooter::StopShooter()
+{
+	pShooterMotor->Set(ALL_STOP);
+
+	return;
+}//------------------------------------------------------------------------------
 // METHOD:  Shooter::GetMotorSpeed()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
@@ -88,41 +117,42 @@ bool Shooter::GetBannerSensor() const
 	return pBannerSensor->Get();
 }
 //------------------------------------------------------------------------------
-// METHOD:  Shooter::RunShooter()
+// METHOD:  Shooter::GetBannerSensor()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Sets motor speed.
+// Returns the current actual Banner Sensor reading.
 //------------------------------------------------------------------------------
-void Shooter::RunShooter()
+bool Shooter::GetShooterFirstLoop() const
 {
-	RunShooter(MOTOR_SPEED_SHOOT);
-
-	return;
+	return firstLoop;
 }
 //------------------------------------------------------------------------------
-// METHOD:  Shooter::RunShooter()
+// METHOD:  Shooter::GetBannerSensor()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Sets motor speed.
+// Returns the current actual Banner Sensor reading.
 //------------------------------------------------------------------------------
-void Shooter::RunShooter(float motorSpeed)
+bool Shooter::GetPrevShooterReset() const
 {
-	pShooterMotor->Set(motorSpeed);
-
-	return;
+	return prevBannerValue;
 }
-
 //------------------------------------------------------------------------------
-// METHOD:  Shooter::StopShooter()
+// METHOD:  Shooter::GetBannerSensor()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Stops the Shooter.
+// Returns the current actual Banner Sensor reading.
 //------------------------------------------------------------------------------
-void Shooter::StopShooter()
+bool Shooter::GetShooterReset() const
 {
-	pShooterMotor->Set(ALL_STOP);
-
-	return;
+	return shooterReset;
 }
-
-
+//------------------------------------------------------------------------------
+// METHOD:  Shooter::GetBannerSensor()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the current actual Banner Sensor reading.
+//------------------------------------------------------------------------------
+bool Shooter::GetBallInShooter() const
+{
+	return ballLoaded;
+}
