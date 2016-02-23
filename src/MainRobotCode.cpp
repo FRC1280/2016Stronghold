@@ -75,7 +75,8 @@ class StrongholdRobot : public IterativeRobot
 //		static const uint CAMERA_LIGHTS_SW_CH    =  4;
 		static const uint LOWER_SW_CH			 =  6;
 		static const uint CLIMB_SW_CH    		 =  7;
-		static const uint SHOOT_BALL_SW_CH       =  8;
+		static const uint SHOOT_BALL_SW_CH       =  1;
+//		static const uint SHOOT_BALL_SW_CH       =  8;
 		static const uint SHOOTER_MOTOR_SW_CH    =  9;
 
 		static const uint CH01                   =  1;
@@ -406,7 +407,7 @@ StrongholdRobot::StrongholdRobot()
 	ejectBall             = false;
 	ballEjected           = true;
 
-	prevShootBallSw		  = true;
+	prevShootBallSw		  = false;
 	shootBall 			  = false;
 	shooterReset		  = true;
 	rightDriveSpeed       = 0.0;
@@ -447,7 +448,7 @@ void StrongholdRobot::RobotInit()
 	ejectBall       = false;
 	ballEjected     = true;
 
-	prevShootBallSw = true;
+	prevShootBallSw = false;
 	shootBall   	= false;
 	shooterReset 	= true;
 
@@ -666,11 +667,12 @@ void StrongholdRobot::ShowDSValues()
 //	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
  	SmartDashboard::PutBoolean("Load Ball Switch",pLoadBallSwitch->Get());
  	SmartDashboard::PutBoolean("Eject Ball Switch",pEjectBallSwitch->Get());
+	SmartDashboard::PutBoolean("Prev Eject Ball Switch",prevEjectBallSw);
 	SmartDashboard::PutBoolean("Prev Shoot Ball Switch",prevShootBallSw);
 	SmartDashboard::PutBoolean("Shoot Ball Switch",pShootBallSwitch->Get());
 	SmartDashboard::PutBoolean("Shooter Motor Switch",pShooterMotorSwitch->Get());
-//	SmartDashboard::PutBoolean("Climb Switch",pClimberSwitch->Get());
-//	SmartDashboard::PutBoolean("Lower Switch",pLowerSwitch->Get());
+	SmartDashboard::PutBoolean("Raise Switch",pClimberSwitch->Get());
+	SmartDashboard::PutBoolean("Lower Switch",pLowerSwitch->Get());
 
 /*	SmartDashboard::PutBoolean("CCI1 CH01",pCCI1Ch01->Get());
 	SmartDashboard::PutBoolean("CCI1 CH02",pCCI1Ch02->Get());
@@ -857,6 +859,7 @@ void StrongholdRobot::CheckLoaderSwitches()
 	{
 		ejectBall = true;
 		loadBall  = false;
+		ballEjected = false;
 	}
 
 	prevEjectBallSw = pEjectBallSwitch->Get();
@@ -907,8 +910,8 @@ void StrongholdRobot::ShootBall()
 //------------------------------------------------------------------------------
 void StrongholdRobot::CheckShootBallSwitch()
 {
-	if (   prevShootBallSw           &&
-		 ! pShootBallSwitch->Get()       )
+	if ( ! prevShootBallSw           &&
+		   pShootBallSwitch->Get()       )
 	{
 		shootBall  = true;
 	}
