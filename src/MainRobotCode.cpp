@@ -893,7 +893,7 @@ void StrongholdRobot::MoveArmUsingSwitchPosition()
 		{
 			lowerArmInPosition = false;
 			upperArmInPosition = false;
-			armTarget        = ArmLower::kPosition2;
+			armTarget          = ArmLower::kPosition2;
 		}
 	}
 
