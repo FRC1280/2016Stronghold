@@ -29,7 +29,7 @@ class Loader
 		bool   GetBallInShooterFlag()    const;
 
 	private:
-		const float   MOTOR_SPEED_LOAD           =   -0.50;   // CONFIGURE
+		const float   MOTOR_SPEED_LOAD           =   -1.00;   // CONFIGURE
 		const float   MOTOR_SPEED_EJECT          =    0.75;   // CONFIGURE
 		const float   MOTOR_SPEED_SHOOT			 = 	 -1.00;   // CONFIGURE
 		const float   ALL_STOP                   =    0.00;

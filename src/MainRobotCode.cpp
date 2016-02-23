@@ -666,6 +666,7 @@ void StrongholdRobot::ShowDSValues()
 //	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
  	SmartDashboard::PutBoolean("Load Ball Switch",pLoadBallSwitch->Get());
  	SmartDashboard::PutBoolean("Eject Ball Switch",pEjectBallSwitch->Get());
+	SmartDashboard::PutBoolean("Prev Eject Ball Switch",prevEjectBallSw);
 	SmartDashboard::PutBoolean("Prev Shoot Ball Switch",prevShootBallSw);
 	SmartDashboard::PutBoolean("Shoot Ball Switch",pShootBallSwitch->Get());
 	SmartDashboard::PutBoolean("Shooter Motor Switch",pShooterMotorSwitch->Get());
@@ -857,6 +858,7 @@ void StrongholdRobot::CheckLoaderSwitches()
 	{
 		ejectBall = true;
 		loadBall  = false;
+		ballEjected = false;
 	}
 
 	prevEjectBallSw = pEjectBallSwitch->Get();
