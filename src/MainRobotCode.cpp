@@ -406,7 +406,7 @@ StrongholdRobot::StrongholdRobot()
 	ejectBall             = false;
 	ballEjected           = true;
 
-	prevShootBallSw		  = true;
+	prevShootBallSw		  = false;
 	shootBall 			  = false;
 	shooterReset		  = true;
 	rightDriveSpeed       = 0.0;
@@ -447,7 +447,7 @@ void StrongholdRobot::RobotInit()
 	ejectBall       = false;
 	ballEjected     = true;
 
-	prevShootBallSw = true;
+	prevShootBallSw = false;
 	shootBall   	= false;
 	shooterReset 	= true;
 
@@ -909,8 +909,8 @@ void StrongholdRobot::ShootBall()
 //------------------------------------------------------------------------------
 void StrongholdRobot::CheckShootBallSwitch()
 {
-	if (   prevShootBallSw           &&
-		 ! pShootBallSwitch->Get()       )
+	if ( ! prevShootBallSw           &&
+		   pShootBallSwitch->Get()       )
 	{
 		shootBall  = true;
 	}
