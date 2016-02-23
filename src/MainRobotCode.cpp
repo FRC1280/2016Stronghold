@@ -75,7 +75,8 @@ class StrongholdRobot : public IterativeRobot
 //		static const uint CAMERA_LIGHTS_SW_CH    =  4;
 		static const uint LOWER_SW_CH			 =  6;
 		static const uint CLIMB_SW_CH    		 =  7;
-		static const uint SHOOT_BALL_SW_CH       =  8;
+		static const uint SHOOT_BALL_SW_CH       =  1;
+//		static const uint SHOOT_BALL_SW_CH       =  8;
 		static const uint SHOOTER_MOTOR_SW_CH    =  9;
 
 		static const uint CH01                   =  1;
@@ -670,8 +671,8 @@ void StrongholdRobot::ShowDSValues()
 	SmartDashboard::PutBoolean("Prev Shoot Ball Switch",prevShootBallSw);
 	SmartDashboard::PutBoolean("Shoot Ball Switch",pShootBallSwitch->Get());
 	SmartDashboard::PutBoolean("Shooter Motor Switch",pShooterMotorSwitch->Get());
-//	SmartDashboard::PutBoolean("Climb Switch",pClimberSwitch->Get());
-//	SmartDashboard::PutBoolean("Lower Switch",pLowerSwitch->Get());
+	SmartDashboard::PutBoolean("Raise Switch",pClimberSwitch->Get());
+	SmartDashboard::PutBoolean("Lower Switch",pLowerSwitch->Get());
 
 /*	SmartDashboard::PutBoolean("CCI1 CH01",pCCI1Ch01->Get());
 	SmartDashboard::PutBoolean("CCI1 CH02",pCCI1Ch02->Get());
