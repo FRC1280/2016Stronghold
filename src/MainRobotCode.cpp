@@ -52,6 +52,10 @@ class StrongholdRobot : public IterativeRobot
 		void   AutonomousPeriodic();
 		void   TeleopPeriodic();
 
+		//Autonomous
+		void   AMDriveRobot(float driveLeft, float driveRight);
+
+
 	private:
 		//----------------------------------------------------------------------
 		// CONSTANTS USED IN CLASS
@@ -1126,6 +1130,12 @@ void StrongholdRobot::GetAutoModeSwitches()
 //------------------------------------------------------------------------------
 void StrongholdRobot::RunAutonomousMode()
 {
+	if ( loopCount <= 100)
+	{
+//		pDriveTrain->TankDrive(0.5 , 0.5);
+		AMDriveRobot(0.5 , 0.5);
+		loopCount++;
+	}
 	return;
 }
 //------------------------------------------------------------------------------
