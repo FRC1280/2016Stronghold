@@ -23,8 +23,8 @@ class Climber
 		void   StopClimber();
 
 	private:
-		const float   MOTOR_SPEED_CLIMB			 = 	  0.25;
-		const float   MOTOR_SPEED_LOWER			 = 	 -0.25;
+		const float   MOTOR_SPEED_CLIMB			 = 	  1.00;
+		const float   MOTOR_SPEED_LOWER			 = 	 -1.00;
 		const float   ALL_STOP                   =    0.00;
 
 		Talon        *pClimberMotor1;

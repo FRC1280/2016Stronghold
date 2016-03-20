@@ -52,6 +52,10 @@ class StrongholdRobot : public IterativeRobot
 		void   AutonomousPeriodic();
 		void   TeleopPeriodic();
 
+		//Autonomous
+		void   AMDriveRobot(float driveLeft, float driveRight);
+
+
 	private:
 		//----------------------------------------------------------------------
 		// CONSTANTS USED IN CLASS
@@ -727,12 +731,14 @@ void StrongholdRobot::ShowDSValues()
 	SmartDashboard::PutBoolean("Shooter Motor Switch",pShooterMotorSwitch->Get());
 	SmartDashboard::PutBoolean("Raise Switch",pClimberSwitch->Get());
 	SmartDashboard::PutBoolean("Lower Switch",pLowerSwitch->Get());
+	SmartDashboard::PutBoolean("Arm Exec Switch Auto", pAutoExecSwitch->Get());
+	SmartDashboard::PutBoolean("Arm Pot Switch", pArmPOTSwitch->Get());
 
-/*	SmartDashboard::PutBoolean("CCI1 CH01",pCCI1Ch01->Get());
+	SmartDashboard::PutBoolean("CCI1 CH01",pCCI1Ch01->Get());
 	SmartDashboard::PutBoolean("CCI1 CH02",pCCI1Ch02->Get());
 	SmartDashboard::PutBoolean("CCI1 CH03",pCCI1Ch03->Get());
 	SmartDashboard::PutBoolean("CCI1 CH04",pCCI1Ch04->Get());
-	SmartDashboard::PutBoolean("CCI1 CH05",pCCI1Ch05->Get());
+/*	SmartDashboard::PutBoolean("CCI1 CH05",pCCI1Ch05->Get());
 	SmartDashboard::PutBoolean("CCI1 CH06",pCCI1Ch06->Get());
 	SmartDashboard::PutBoolean("CCI1 CH07",pCCI1Ch07->Get());
 	SmartDashboard::PutBoolean("CCI1 CH08",pCCI1Ch08->Get());
@@ -807,6 +813,8 @@ void StrongholdRobot::ShowRobotValues()
 	SmartDashboard::PutBoolean("Shooter Reset prev banner",pBallShooter->GetPrevShooterReset());
 	SmartDashboard::PutBoolean("Shooter Reset-Shooter banner sensor",
 			                    pBallShooter->GetBannerSensor());
+	SmartDashboard::PutNumber("Lower Arm Motor Speed",pLowerArm->GetMotorSpeed());
+	SmartDashboard::PutNumber("Upper Arm Motor Speed",pUpperArm->GetMotorSpeed());
 //	SmartDashboard::PutNumber("Shooter Motor Speed",pBallShooter->GetMotorSpeed());
 
 //	SmartDashboard::PutNumber("Climber Motor 1 Speed",pClimber->GetMotor1Speed());
@@ -841,6 +849,8 @@ void StrongholdRobot::MoveArmToPosition()
 		}
 		else
 		{
+			pLowerArm->StopArm();
+			pUpperArm->StopArm();
 			if ( pArmPOTSwitch->Get() )
 			{
 				MoveArmUsingPOT();
@@ -1126,6 +1136,13 @@ void StrongholdRobot::GetAutoModeSwitches()
 //------------------------------------------------------------------------------
 void StrongholdRobot::RunAutonomousMode()
 {
+/*	if ( loopCount <= 100)
+	{
+//		pDriveTrain->TankDrive(0.5 , 0.5);
+//		AMDriveRobot(0.5 , 0.5);
+		loopCount++;
+	}
+*/
 	return;
 }
 //------------------------------------------------------------------------------
