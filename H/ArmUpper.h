@@ -1,5 +1,5 @@
-#ifndef ARM_H
-#define ARM_H
+#ifndef ARMUPPER_H
+#define ARMUPPER_H
 
 #include "WPILib.h"
 
@@ -9,27 +9,30 @@
 // Positions the Arm based on a target position.  The target position
 // translates into a target potentiometer reading.
 //------------------------------------------------------------------------------
-class Arm
+class ArmUpper
 {
 	public:
 
 		enum  target {kPosition1, kPosition2, kPosition3};
 
-		Arm(uint armMotorCh, uint armPotCh, uint upperLimitSwCh, uint lowerLimitSwCh);
-		~Arm();
+		ArmUpper(uint armMotorCh, uint armPotCh);
+		~ArmUpper();
 
 		bool   MoveArm(uint inputTarget);
+		void   MoveArm(float inputTarget);
+		void   MoveArmUp();
+		void   MoveArmDown();
+		void   StopArm();
 		float  GetTargetMotorSpeed() const;
-		float  GetMotorSpeed() const;
-		double GetCurrentPosition() const;
-		double GetPositionTarget() const;
-		uint   GetPositionTargetInput() const;
-		bool   GetUpperLimitSwitch() const;
-		bool   GetLowerLimitSwitch() const;
+		float  GetMotorSpeed()       const;
+		double GetCurrentPosition()  const;
+		double GetTargetPOTInput()   const;
+		double GetTargetPOTCalc()    const;
+		uint   GetTargetPosition()   const;
 
 	private:
-		const float   MOTOR_SPEED_UP           =    0.25;   // CONFIGURE
-		const float   MOTOR_SPEED_DOWN         =   -0.25;   // CONFIGURE
+		const float   MOTOR_SPEED_UP           =    1.00;   // CONFIGURE
+		const float   MOTOR_SPEED_DOWN         =   -1.00;   // CONFIGURE
 		const float   ALL_STOP                 =    0.00;
 
 		const double  ARM_POSITION_1           =   25.0;    // CONFIGURE
@@ -46,12 +49,10 @@ class Arm
 
 		Talon               *pArmMotor;
 		AnalogPotentiometer *pArmPot;
-		DigitalInput        *pUpperLimitHit;
-		DigitalInput        *pLowerLimitHit;
-		PIDController       *pPIDController;
 
-		uint                targetInput;
-		double              armTarget;
+		double              targetPOTInput;
+		double              targetPOTCalc;
+		uint                targetPosition;
 		float               targetMotorSpeed;
 };
 
