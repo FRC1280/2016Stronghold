@@ -787,32 +787,35 @@ void StrongholdRobot::ShowRobotValues()
 
 //	SmartDashboard::PutNumber("Loader Motor Speed",pBallLoader->GetMotorSpeed());
 
-	SmartDashboard::PutBoolean("Load Ball Mode",loadBall);
-	SmartDashboard::PutBoolean("Ball Loaded? Limit switch",pBallLoader->GetLoadedSensor());
-	SmartDashboard::PutBoolean("Ball Loaded? Loader code",pBallLoader->GetBallLoaded());
-	SmartDashboard::PutBoolean("Ball Loaded? Robot code",ballLoaded);
+//	SmartDashboard::PutBoolean("Load Ball Mode",loadBall);
+//	SmartDashboard::PutBoolean("Ball Loaded? Limit switch",pBallLoader->GetLoadedSensor());
+//	SmartDashboard::PutBoolean("Ball Loaded? Loader code",pBallLoader->GetBallLoaded());
+//	SmartDashboard::PutBoolean("Ball Loaded? Robot code",ballLoaded);
 
-	SmartDashboard::PutBoolean("Eject Ball Mode",ejectBall);
-	SmartDashboard::PutBoolean("First Eject Loop",pBallLoader->GetFirstEjectLoop());
-	SmartDashboard::PutNumber("Eject Counter",pBallLoader->GetEjectCounter());
-	SmartDashboard::PutBoolean("Ball Ejected? Loader code",pBallLoader->GetBallEjected());
-	SmartDashboard::PutBoolean("Ball Ejected? Robot code",ballEjected);
+//	SmartDashboard::PutBoolean("Eject Ball Mode",ejectBall);
+//	SmartDashboard::PutBoolean("First Eject Loop",pBallLoader->GetFirstEjectLoop());
+//	SmartDashboard::PutNumber("Eject Counter",pBallLoader->GetEjectCounter());
+//	SmartDashboard::PutBoolean("Ball Ejected? Loader code",pBallLoader->GetBallEjected());
+//	SmartDashboard::PutBoolean("Ball Ejected? Robot code",ballEjected);
 
-	SmartDashboard::PutBoolean("Shoot Ball Mode",shootBall);
-	SmartDashboard::PutBoolean("Shooter 1st loop",pBallShooter->GetShooterFirstLoop());
+//	SmartDashboard::PutBoolean("Shoot Ball Mode",shootBall);
+//	SmartDashboard::PutBoolean("Shooter 1st loop",pBallShooter->GetShooterFirstLoop());
 
-	SmartDashboard::PutBoolean("Ball in shooter? Limit Switch",
-			                    pBallLoader->GetBallInShooterSensor());
-	SmartDashboard::PutBoolean("Ball in shooter? Loader code flag",
-			                    pBallLoader->GetBallInShooterFlag());
-	SmartDashboard::PutBoolean("Ball in shooter? Shooter code flag",
-			                    pBallShooter->GetBallInShooter());
+//	SmartDashboard::PutBoolean("Ball in shooter? Limit Switch",
+//			                    pBallLoader->GetBallInShooterSensor());
+//	SmartDashboard::PutBoolean("Ball in shooter? Loader code flag",
+//			                    pBallLoader->GetBallInShooterFlag());
+//	SmartDashboard::PutBoolean("Ball in shooter? Shooter code flag",
+//			                    pBallShooter->GetBallInShooter());
 
-	SmartDashboard::PutBoolean("Shooter Reset-Robot code",shooterReset);
-	SmartDashboard::PutBoolean("Shooter Reset-Shooter code",pBallShooter->GetShooterReset());
-	SmartDashboard::PutBoolean("Shooter Reset prev banner",pBallShooter->GetPrevShooterReset());
-	SmartDashboard::PutBoolean("Shooter Reset-Shooter banner sensor",
-			                    pBallShooter->GetBannerSensor());
+//	SmartDashboard::PutBoolean("Shooter Reset-Robot code",shooterReset);
+//	SmartDashboard::PutBoolean("Shooter Reset-Shooter code",pBallShooter->GetShooterReset());
+//	SmartDashboard::PutBoolean("Shooter Reset prev banner",pBallShooter->GetPrevShooterReset());
+//	SmartDashboard::PutBoolean("Shooter Reset-Shooter banner sensor",
+//			                    pBallShooter->GetBannerSensor());
+	SmartDashboard::PutNumber("Lower Arm POT",pLowerArm->GetCurrentPosition());
+	SmartDashboard::PutNumber("Upper Arm POT",pUpperArm->GetCurrentPosition());
+
 	SmartDashboard::PutNumber("Lower Arm Motor Speed",pLowerArm->GetMotorSpeed());
 	SmartDashboard::PutNumber("Upper Arm Motor Speed",pUpperArm->GetMotorSpeed());
 //	SmartDashboard::PutNumber("Shooter Motor Speed",pBallShooter->GetMotorSpeed());
