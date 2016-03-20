@@ -20,7 +20,7 @@ ArmUpper::ArmUpper(uint armMotorCh, uint armPotCh)
 	targetMotorSpeed  = 0.0;
 
 	// Set default starting position for Arm to current position
-	MoveArm(pArmPot->Get());
+//	MoveArm(pArmPot->Get());
 }
 //------------------------------------------------------------------------------
 // METHOD:  ArmUpper::~ArmUpper()
@@ -49,6 +49,19 @@ bool  ArmUpper::MoveArm(uint inputTarget)
 	targetFound = GoToPotTarget(targetPOTCalc);
 
 	return targetFound;
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmUpper::MoveArm()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Calculates a target robot POT value based on input target position
+// and then moves the Arm to the desired position.
+//------------------------------------------------------------------------------
+void  ArmUpper::MoveArm(float inputTarget)
+{
+	targetMotorSpeed = inputTarget;
+	pArmMotor->Set(inputTarget);
+	return;
 }
 //------------------------------------------------------------------------------
 // METHOD:  ArmUpper::MoveArmUp()

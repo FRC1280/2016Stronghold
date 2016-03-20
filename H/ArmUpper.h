@@ -19,6 +19,7 @@ class ArmUpper
 		~ArmUpper();
 
 		bool   MoveArm(uint inputTarget);
+		void   MoveArm(float inputTarget);
 		void   MoveArmUp();
 		void   MoveArmDown();
 		void   StopArm();
@@ -30,8 +31,8 @@ class ArmUpper
 		uint   GetTargetPosition()   const;
 
 	private:
-		const float   MOTOR_SPEED_UP           =    0.25;   // CONFIGURE
-		const float   MOTOR_SPEED_DOWN         =   -0.25;   // CONFIGURE
+		const float   MOTOR_SPEED_UP           =    1.00;   // CONFIGURE
+		const float   MOTOR_SPEED_DOWN         =   -1.00;   // CONFIGURE
 		const float   ALL_STOP                 =    0.00;
 
 		const double  ARM_POSITION_1           =   25.0;    // CONFIGURE

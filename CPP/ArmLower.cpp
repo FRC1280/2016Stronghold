@@ -20,7 +20,7 @@ ArmLower::ArmLower(uint armMotorCh, uint armPotCh)
 	targetMotorSpeed  = 0.0;
 
 	// Set default starting position for Arm to current position
-	MoveArm(pArmPot->Get());
+//	MoveArm(pArmPot->Get());
 }
 //------------------------------------------------------------------------------
 // METHOD:  ArmLower::~ArmLower()
@@ -30,6 +30,21 @@ ArmLower::ArmLower(uint armMotorCh, uint armPotCh)
 //------------------------------------------------------------------------------
 ArmLower::~ArmLower()
 {
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmLower::MoveArm()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Calculates a target robot POT value based on input target position
+// and then moves the Arm to the desired position.
+//------------------------------------------------------------------------------
+void  ArmLower::MoveArm(float inputTarget)
+{
+
+	targetMotorSpeed = inputTarget;
+	pArmMotor->Set(inputTarget);
+
+	return;
 }
 //------------------------------------------------------------------------------
 // METHOD:  ArmLower::MoveArm()
