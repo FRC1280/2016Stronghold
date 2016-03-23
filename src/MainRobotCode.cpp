@@ -14,7 +14,6 @@
 #include "../H/Climber.h"
 
 #define CONSOLE
-//#define VISION
 
 //------------------------------------------------------------------------------
 // DEFINE StrongholdRobot CLASS
@@ -230,9 +229,6 @@ class StrongholdRobot : public IterativeRobot
 		Shooter         *pBallShooter;
 		Climber			*pClimber;
 
-#ifdef VISION
-		Vision			*pVision;
-#endif
 		//----------------------------------------------------------------------
 		// VARIABLES USED IN CLASS
 		//----------------------------------------------------------------------
@@ -521,10 +517,6 @@ void StrongholdRobot::AutonomousInit()
 //------------------------------------------------------------------------------
 void StrongholdRobot::TeleopInit()
 {
-#ifdef VISION
-	pVision = new Vision;
-#endif
-
 	// Loop count initialization
 	loopCount      = 0;
 
@@ -603,10 +595,6 @@ void StrongholdRobot::TeleopPeriodic()
 {
 	// Increment & display loop counter
 	loopCount++;
-
-#ifdef VISION
-	pVision->processImage();
-#endif
 
 	// Get inputs from the driver station
 	GetDriverStationInput();
@@ -792,10 +780,6 @@ void StrongholdRobot::ShowRobotValues()
 
 //	SmartDashboard::PutNumber("Climber Motor 1 Speed",pClimber->GetMotor1Speed());
 //	SmartDashboard::PutNumber("Climber Motor 2 Speed",pClimber->GetMotor2Speed());
-
-#ifdef VISION
-	SmartDashboard::PutBoolean("Camera sees bright", pVision->getIsBright());
-#endif
 
 	return;
 }
