@@ -13,7 +13,7 @@ class ArmLower
 {
 	public:
 
-		enum  target {kPosition1, kPosition2, kPosition3};
+		enum  target {kTop, kMiddle, kBottom};
 
 		ArmLower(uint armMotorCh, uint armPotCh);
 		~ArmLower();
@@ -35,9 +35,9 @@ class ArmLower
 		const float   MOTOR_SPEED_DOWN         =   -1.00;
 		const float   ALL_STOP                 =    0.00;
 
-		const double  ARM_POSITION_1           =   25.0;    // CONFIGURE ROBOT POT TARGET
-		const double  ARM_POSITION_2           =   50.0;    // CONFIGURE ROBOT POT TARGET
-		const double  ARM_POSITION_3           =   75.0;    // CONFIGURE ROBOT POT TARGET
+		const double  ARM_TOP                  =   25.0;    // CONFIGURE ROBOT POT TARGET
+		const double  ARM_MIDDLE               =   50.0;    // CONFIGURE ROBOT POT TARGET
+		const double  ARM_BOTTOM               =   75.0;    // CONFIGURE ROBOT POT TARGET
 		const double  TARGET_TOLERANCE         =    1.0;    // CONFIGURE ROBOT POT TOLERANCE
 
 		const double  POT_FULL_RANGE           =  194.580;  // CONFIGURE

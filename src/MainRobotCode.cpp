@@ -810,7 +810,7 @@ void StrongholdRobot::MoveArmUsingSwitchPosition()
 	{
 		lowerArmInPosition   = false;
 		upperArmInPosition   = false;
-		armTarget            = ArmLower::kPosition3;
+		armTarget            = ArmLower::kTop;
 	}
 	else
 	{
@@ -818,13 +818,13 @@ void StrongholdRobot::MoveArmUsingSwitchPosition()
 		{
 			lowerArmInPosition = false;
 			upperArmInPosition = false;
-			armTarget          = ArmLower::kPosition1;
+			armTarget          = ArmLower::kBottom;
 		}
 		else
 		{
 			lowerArmInPosition = false;
 			upperArmInPosition = false;
-			armTarget          = ArmLower::kPosition2;
+			armTarget          = ArmLower::kMiddle;
 		}
 	}
 

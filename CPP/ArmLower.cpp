@@ -190,16 +190,16 @@ double ArmLower::CalcPOTTarget(uint targetPosition)
 
     switch ( targetPosition )
     {
-    	case kPosition1:
-			targetPot = ARM_POSITION_1;
+    	case kTop:
+			targetPot = ARM_TOP;
     		break;
 
-    	case kPosition2:
-			targetPot = ARM_POSITION_2;
+    	case kMiddle:
+			targetPot = ARM_MIDDLE;
 			break;
 
-    	case kPosition3:
-			targetPot = ARM_POSITION_3;
+    	case kBottom:
+			targetPot = ARM_BOTTOM;
 			break;
 
     	default:
