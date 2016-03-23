@@ -11,8 +11,7 @@
 ArmLower::ArmLower(uint armMotorCh, uint armPotCh)
 {
 	pArmMotor         = new Talon(armMotorCh);
-//	pArmPot           = new AnalogPotentiometer(armPotCh, POT_FULL_RANGE, POT_OFFSET);
-	pArmPot           = new AnalogPotentiometer(armPotCh);
+	pArmPot           = new AnalogPotentiometer(armPotCh, POT_FULL_RANGE, POT_OFFSET);
 
 	// Initialize class variables
 	targetPOTInput    = 0.0;
@@ -33,13 +32,13 @@ ArmLower::~ArmLower()
 {
 }
 //------------------------------------------------------------------------------
-// METHOD:  ArmLower::MoveArm()
+// METHOD:  ArmLower::MoveArmPOTInput()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Calculates a target robot POT value based on input target position
-// and then moves the Arm to the desired position.
+// Calculates a target robot POT value based on input target POT from driver
+// station and then moves the Arm to the desired position.
 //------------------------------------------------------------------------------
-void  ArmLower::MoveArm(float inputTarget)
+void  ArmLower::MoveArmPOTInput(float inputTarget)
 {
 	targetMotorSpeed = inputTarget;
 	pArmMotor->Set(inputTarget);
@@ -47,13 +46,13 @@ void  ArmLower::MoveArm(float inputTarget)
 	return;
 }
 //------------------------------------------------------------------------------
-// METHOD:  ArmLower::MoveArm()
+// METHOD:  ArmLower::MoveArmPositionInput()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Calculates a target robot POT value based on input target position
-// and then moves the Arm to the desired position.
+// Calculates a target robot POT value based on input target switch position
+// from driver station and then moves the Arm to the desired position.
 //------------------------------------------------------------------------------
-bool  ArmLower::MoveArm(uint inputTarget)
+bool  ArmLower::MoveArmPositionInput(uint inputTarget)
 {
 	bool   targetFound  = false;
 
@@ -74,7 +73,7 @@ bool  ArmLower::MoveArm(uint inputTarget)
 //------------------------------------------------------------------------------
 void  ArmLower::MoveArmUp()
 {
-	MoveArm(MOTOR_SPEED_UP);
+	RunArmMotor(MOTOR_SPEED_UP);
 
 	return;
 }
@@ -87,7 +86,7 @@ void  ArmLower::MoveArmUp()
 //------------------------------------------------------------------------------
 void  ArmLower::MoveArmDown()
 {
-	MoveArm(MOTOR_SPEED_DOWN);
+	RunArmMotor(MOTOR_SPEED_DOWN);
 
 	return;
 }
@@ -100,7 +99,7 @@ void  ArmLower::MoveArmDown()
 //------------------------------------------------------------------------------
 void  ArmLower::StopArm()
 {
-	MoveArm(ALL_STOP);
+	RunArmMotor(ALL_STOP);
 
 	return;
 }
@@ -165,6 +164,20 @@ uint   ArmLower::GetTargetPosition() const
  	return targetPosition;
 }
 //------------------------------------------------------------------------------
+// METHOD:  ArmLower::RunaArmMotor()
+// Type:	Private method
+//------------------------------------------------------------------------------
+// Runs the arm motor at a given speed.
+//------------------------------------------------------------------------------
+void  ArmLower::RunArmMotor(float motorSpeed)
+{
+	targetMotorSpeed = motorSpeed;
+
+	pArmMotor->Set(motorSpeed);
+
+	return;
+}
+//------------------------------------------------------------------------------
 // METHOD:  ArmLower::CalcPOTTarget()
 // Type:	Private method
 //------------------------------------------------------------------------------
@@ -215,23 +228,20 @@ bool  ArmLower::GoToPotTarget(double inputPotValue)
 	if ( pArmPot->Get() >= targetLowValue  &&
 		 pArmPot->Get() <= targetHighValue )
 	{
-		pArmMotor->Set(ALL_STOP);
-		targetMotorSpeed = ALL_STOP;
+		StopArm();
 		potTargetFound   = true;
 	}
 	else
 	{
 		if ( pArmPot->Get() > targetHighValue )  // Arm moving down
 		{
-			pArmMotor->Set(MOTOR_SPEED_DOWN);
-			targetMotorSpeed = MOTOR_SPEED_DOWN;
+			MoveArmDown();
 		}
 		else
 		{
 			if ( pArmPot->Get() < targetLowValue )  // Arm moving up
 			{
-					pArmMotor->Set(MOTOR_SPEED_UP);
-					targetMotorSpeed = MOTOR_SPEED_UP;
+					MoveArmUp();
 			}
 		}
 	}

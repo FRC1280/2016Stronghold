@@ -18,8 +18,8 @@ class ArmLower
 		ArmLower(uint armMotorCh, uint armPotCh);
 		~ArmLower();
 
-		void   MoveArm(float inputTarget);
-		bool   MoveArm(uint inputTarget);
+		void   MoveArmPOTInput(float inputTarget);
+		bool   MoveArmPositionInput(uint inputTarget);
 		void   MoveArmUp();
 		void   MoveArmDown();
 		void   StopArm();
@@ -31,18 +31,19 @@ class ArmLower
 		uint   GetTargetPosition()   const;
 
 	private:
-		const float   MOTOR_SPEED_UP           =    1.00;   // CONFIGURE
-		const float   MOTOR_SPEED_DOWN         =   -1.00;   // CONFIGURE
+		const float   MOTOR_SPEED_UP           =    1.00;
+		const float   MOTOR_SPEED_DOWN         =   -1.00;
 		const float   ALL_STOP                 =    0.00;
 
-		const double  ARM_POSITION_1           =   25.0;    // CONFIGURE
-		const double  ARM_POSITION_2           =   50.0;    // CONFIGURE
-		const double  ARM_POSITION_3           =   75.0;    // CONFIGURE
-		const double  TARGET_TOLERANCE         =    1.0;    // CONFIGURE
+		const double  ARM_POSITION_1           =   25.0;    // CONFIGURE ROBOT POT TARGET
+		const double  ARM_POSITION_2           =   50.0;    // CONFIGURE ROBOT POT TARGET
+		const double  ARM_POSITION_3           =   75.0;    // CONFIGURE ROBOT POT TARGET
+		const double  TARGET_TOLERANCE         =    1.0;    // CONFIGURE ROBOT POT TOLERANCE
 
-		const double  POT_FULL_RANGE           = -100.0;    // CONFIGURE
-		const double  POT_OFFSET               =  100.0;    // CONFIGURE
+		const double  POT_FULL_RANGE           =  194.580;  // CONFIGURE
+		const double  POT_OFFSET               =   -0.308;  // CONFIGURE
 
+		void   RunArmMotor(float motorSpeed);
 		double CalcTargetPotValue(double inputPotValue);
  		double CalcPOTTarget(uint targetPosition);
  		bool   GoToPotTarget(double potTarget);
@@ -50,9 +51,9 @@ class ArmLower
 		Talon               *pArmMotor;
 		AnalogPotentiometer *pArmPot;
 
-		double              targetPOTInput;
-		double              targetPOTCalc;
-		uint                targetPosition;
+		double              targetPOTInput;      // Input from driver station POT
+		double              targetPOTCalc;       // Calculated target robot POT reading
+		uint                targetPosition;      // Input from driver station switches
 		float               targetMotorSpeed;
 };
 

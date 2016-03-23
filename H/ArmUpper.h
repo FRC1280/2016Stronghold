@@ -40,8 +40,8 @@ class ArmUpper
 		const double  ARM_POSITION_3           =   75.0;    // CONFIGURE
 		const double  TARGET_TOLERANCE         =    1.0;    // CONFIGURE
 
-		const double  POT_FULL_RANGE           = -100.0;    // CONFIGURE
-		const double  POT_OFFSET               =  100.0;    // CONFIGURE
+		const double  POT_FULL_RANGE           =-3600.0;    // CONFIGURE
+		const double  POT_OFFSET               = 3081.6;    // CONFIGURE
 
 		double CalcTargetPotValue(double inputPotValue);
  		double CalcPOTTarget(uint targetPosition);

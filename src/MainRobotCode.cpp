@@ -8,7 +8,6 @@
 
 #include "../H/ArmLower.h"
 #include "../H/ArmUpper.h"
-#include "../H/CameraLights.h"
 #include "../H/Loader.h"
 #include "../H/Shooter.h"
 #include "../H/Climber.h"
@@ -133,7 +132,6 @@ class StrongholdRobot : public IterativeRobot
 		static const uint ARM_UPPER_MOTOR_CH	  =  9;
 
 		// roboRio Relay Channels
-//		static const uint CAMERA_LIGHTS_CH        =  2;
 
 		// roboRio Solenoid Channels
 
@@ -197,7 +195,6 @@ class StrongholdRobot : public IterativeRobot
         JoystickButton   *pArmPOTSwitch;
 		JoystickButton   *pArmTopSwitch;
 		JoystickButton   *pArmBottomSwitch;
-//		JoystickButton 	 *pCameraLightSwitch;
         JoystickButton   *pShooterMotorSwitch;
         JoystickButton   *pClimberSwitch;
         JoystickButton   *pLowerSwitch;
@@ -206,10 +203,6 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// ROBOT INPUT & OUTPUT POINTERS
 		//----------------------------------------------------------------------
-		// navX MXP Inertial Measurement Unit (IMU)
-		SerialPort       *pIMUPort;
-
-		//----------------------------------------------------------------------
 		// Robot Digital Inputs - GPIO Inputs including Encoders
 		//----------------------------------------------------------------------
 		// Autonomous Mode Switches
@@ -217,7 +210,6 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// Robot Digital Outputs - Relays (Spikes)
 		//----------------------------------------------------------------------
-//		CameraLights	*pCameraLights;			// Camera LED lights
 
 		//----------------------------------------------------------------------
 		// Robot Objects
@@ -273,12 +265,6 @@ class StrongholdRobot : public IterativeRobot
 		bool prevShootBallSw;
 		bool shootBall;
 		bool shooterReset;
-
-		//----------------------------------------------------------------------
-		// Camera Image Processing
-		//----------------------------------------------------------------------
-		// Camera Switches
-//		bool   lightsOn;
 
 		//----------------------------------------------------------------------
 		// ROBOT INPUTS
@@ -380,14 +366,9 @@ StrongholdRobot::StrongholdRobot()
 	// GPIO & Spare Power Inputs
 	// - Autonomous Mode Switches
 	
-	// navX MXP Intertial Measurement Unit (IMU)
-	pIMUPort             = new SerialPort(57600,SerialPort::kMXP);
-
 	//----------------------------------------------------------------------
 	// ROBOT CONTROLS (OUTPUTS)
 	//----------------------------------------------------------------------
-//	pCameraLights		 = new CameraLights(CAMERA_LIGHTS_CH);
-
 	pDriveTrain		     = new RobotDrive(LEFT_FRONT_MOTOR_CH,LEFT_REAR_MOTOR_CH,
 										  RIGHT_FRONT_MOTOR_CH, RIGHT_REAR_MOTOR_CH);
 
@@ -487,7 +468,6 @@ void StrongholdRobot::DisabledInit()
 //------------------------------------------------------------------------------
 // Functions:
 // - Resets the loop counter for autonomous mode
-// - Sets camera lights to desired setting for autonomous mode
 // - Determines which autonomous mode we want to use
 // - Optionally displays the status of the autonomous mode switches for debugging
 //   purposes
@@ -496,9 +476,6 @@ void StrongholdRobot::AutonomousInit()
 {
 	// Reset loop counter
 	loopCount  = 0;
-
-	// Set Robot Components to Default Starting Positions
-//	pCameraLights->TurnOff();                  // CONFIG
 
 	GetAutoModeSwitches();
 	GetRobotSensorInput();
@@ -588,7 +565,6 @@ void StrongholdRobot::AutonomousPeriodic()
 // - Obtains inputs from the robot (analog and digital sensors)
 // - Moves the arm ator to the target position based on driver station
 //   inputs
-// - Turns camera lights on/off
 // - Sets the drive motor values based on joystick movement
 //------------------------------------------------------------------------------
 void StrongholdRobot::TeleopPeriodic()
@@ -617,12 +593,6 @@ void StrongholdRobot::TeleopPeriodic()
     // Determine if climber should run
     RunClimber();
 
-	// Turn camera LED lights on or off based on driver station input
-/*	if ( lightsOn )
-		pCameraLights->TurnOn();
-	else
-		pCameraLights->TurnOff();
-*/
 	return;
 }
 
@@ -632,15 +602,10 @@ void StrongholdRobot::TeleopPeriodic()
 //------------------------------------------------------------------------------
 // Obtains the input from the DriverStation required for teleoperated mode.
 // Includes obtaining input for the following switches:
-// - Camera lights switch
 // - Optionally displays driver station values
 //------------------------------------------------------------------------------
 void StrongholdRobot::GetDriverStationInput()
 {
-	// Obtain the position of switches on the driver station
-	// Camera Switches
-//    lightsOn  				 = pCameraLightSwitch->Get();
-
 	rightDriveSpeed		= pDriveStickRight->GetY();
 	leftDriveSpeed		= pDriveStickLeft->GetY();
 	rightDriveSpeed		= rightDriveSpeed * -1;
@@ -735,7 +700,6 @@ void StrongholdRobot::GetRobotSensorInput()
 void StrongholdRobot::ShowRobotValues()
 {
 //	SmartDashboard::PutNumber("AM Mode",autoMode);
-//	SmartDashboard::PutBoolean("Camera Lights",pCameraLights->GetCameraStatus());
 //	SmartDashboard::PutNumber("Arm POT Current Position",pLowerArm->GetCurrentPosition());
 //	SmartDashboard::PutNumber("Arm POT Target Position",pLowerArm->GetPositionTarget());
 //	SmartDashboard::PutBoolean("Upper Limit Switch",pLowerArm->GetUpperLimitSwitch());
@@ -866,7 +830,7 @@ void StrongholdRobot::MoveArmUsingSwitchPosition()
 
 	if ( ! lowerArmInPosition )
 	{
-		lowerArmInPosition = pLowerArm->MoveArm(armTarget);
+		lowerArmInPosition = pLowerArm->MoveArmPositionInput(armTarget);
 	}
 
 	if ( ! upperArmInPosition )
