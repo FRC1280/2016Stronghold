@@ -37,8 +37,8 @@ class ArmLower
 		const float   MOTOR_SPEED_DOWN         =   -1.00;
 		const float   ALL_STOP                 =    0.00;
 
-		const double  INPUT_POT_FULL_FWD       =   -0.977;  // CONFIGURE
-		const double  INPUT_POT_FULL_BACK      =   -0.906;  // CONFIGURE
+		const double  INPUT_POT_FULL_FWD       =   -1.000;  // CONFIGURE
+		const double  INPUT_POT_FULL_BACK      =   -0.953;  // CONFIGURE
 
 		const double  POT_FULL_RANGE           =  194.580;  // CONFIGURE
 		const double  POT_OFFSET               =   -0.308;  // CONFIGURE
