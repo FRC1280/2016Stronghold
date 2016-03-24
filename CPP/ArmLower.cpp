@@ -11,8 +11,7 @@
 ArmLower::ArmLower(uint armMotorCh, uint armPotCh)
 {
 	pArmMotor         = new Talon(armMotorCh);
-//	pArmPot           = new AnalogPotentiometer(armPotCh, POT_FULL_RANGE, POT_OFFSET);
-	pArmPot           = new AnalogPotentiometer(armPotCh);
+	pArmPot           = new AnalogPotentiometer(armPotCh, POT_FULL_RANGE, POT_OFFSET);
 
 	// Initialize class variables
 	targetRatio       = 0.0;
