@@ -14,13 +14,20 @@ ArmUpper::ArmUpper(uint armMotorCh, uint armPotCh)
 	pArmPot           = new AnalogPotentiometer(armPotCh, POT_FULL_RANGE, POT_OFFSET);
 
 	// Initialize class variables
+	targetRatio       = 0.0;
+	targetConstant    = 0.0;
 	targetPOTInput    = 0.0;
-	targetPOTCalc     = 0.0;
 	targetPosition    = 0;
+	targetPOTOutput   = 0.0;
 	targetMotorSpeed  = 0.0;
 
+	// Calculate Ratio and Constant
+	CalcTargetRatioConstant();
+
 	// Set default starting position for Arm to current position
-//	MoveArm(pArmPot->Get());
+	targetPOTOutput = pArmPot->Get();
+	targetPOTInput  = CalcInputPOT(targetPOTOutput);
+	MoveArmPOTInput(targetPOTInput);
 }
 //------------------------------------------------------------------------------
 // METHOD:  ArmUpper::~ArmUpper()
@@ -32,36 +39,46 @@ ArmUpper::~ArmUpper()
 {
 }
 //------------------------------------------------------------------------------
-// METHOD:  ArmUpper::MoveArm()
+// METHOD:  ArmUpper::MoveArmPOTInput()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Calculates a target robot POT value based on input target position
-// and then moves the Arm to the desired position.
+// Calculates a target robot POT value based on input target POT from driver
+// station and then moves the Arm to the desired position.
 //------------------------------------------------------------------------------
-bool  ArmUpper::MoveArm(uint inputTarget)
+bool  ArmUpper::MoveArmPOTInput(double inputPOT)
 {
-	bool   targetFound  = false;
+	bool  targetFound = false;
 
-	targetPosition = inputTarget;
+	targetPOTInput = inputPOT;
 
-	targetPOTCalc  = CalcPOTTarget(inputTarget);
+	targetPosition = 0;
 
-	targetFound = GoToPotTarget(targetPOTCalc);
+	targetPOTOutput = CalcOutputPOT(inputPOT);
+
+	targetFound = GoToPOTTarget(targetPOTOutput);
 
 	return targetFound;
 }
 //------------------------------------------------------------------------------
-// METHOD:  ArmUpper::MoveArm()
+// METHOD:  ArmUpper::MoveArmPositionInput()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Calculates a target robot POT value based on input target position
-// and then moves the Arm to the desired position.
+// Calculates a target robot POT value based on input target switch position
+// from driver station and then moves the Arm to the desired position.
 //------------------------------------------------------------------------------
-void  ArmUpper::MoveArm(float inputTarget)
+bool  ArmUpper::MoveArmPositionInput(uint inputTarget)
 {
-	targetMotorSpeed = inputTarget;
-	pArmMotor->Set(inputTarget);
-	return;
+	bool   targetFound  = false;
+
+	targetPosition  = inputTarget;
+
+	targetPOTOutput = CalcOutputPOT(inputTarget);
+
+	targetPOTInput  = CalcInputPOT(targetPOTOutput);
+
+	targetFound = GoToPOTTarget(targetPOTOutput);
+
+	return targetFound;
 }
 //------------------------------------------------------------------------------
 // METHOD:  ArmUpper::MoveArmUp()
@@ -72,7 +89,7 @@ void  ArmUpper::MoveArm(float inputTarget)
 //------------------------------------------------------------------------------
 void  ArmUpper::MoveArmUp()
 {
-	MoveArm(MOTOR_SPEED_UP);
+	RunArmMotor(MOTOR_SPEED_UP);
 
 	return;
 }
@@ -85,7 +102,7 @@ void  ArmUpper::MoveArmUp()
 //------------------------------------------------------------------------------
 void  ArmUpper::MoveArmDown()
 {
-	MoveArm(MOTOR_SPEED_DOWN);
+	RunArmMotor(MOTOR_SPEED_DOWN);
 
 	return;
 }
@@ -98,9 +115,49 @@ void  ArmUpper::MoveArmDown()
 //------------------------------------------------------------------------------
 void  ArmUpper::StopArm()
 {
-	MoveArm(ALL_STOP);
+	RunArmMotor(ALL_STOP);
 
 	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmUpper::GetTargetPOTInput()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the target arm position potentiometer reading.
+//------------------------------------------------------------------------------
+double ArmUpper::GetTargetPOTInput() const
+{
+	return targetPOTInput;
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmUpper::GetTargetPosition()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the target arm position input value.
+//------------------------------------------------------------------------------
+uint   ArmUpper::GetTargetPosition() const
+{
+ 	return targetPosition;
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmUpper::GetTargetPOTOutput()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the target arm position potentiometer reading.
+//------------------------------------------------------------------------------
+double ArmUpper::GetTargetPOTOutput() const
+{
+	return targetPOTOutput;
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmUpper::GetCurrentPosition()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the current actual Arm position potentiometer reading.
+//------------------------------------------------------------------------------
+double ArmUpper::GetCurrentPosition() const
+{
+	return pArmPot->Get();
 }
 //------------------------------------------------------------------------------
 // METHOD:  ArmUpper::GetTargetMotorSpeed()
@@ -123,78 +180,103 @@ float  ArmUpper::GetMotorSpeed() const
 	return pArmMotor->Get();
 }
 //------------------------------------------------------------------------------
-// METHOD:  ArmUpper::GetCurrentPosition()
+// METHOD:  ArmUpper::GetRatio()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Returns the current actual Arm position potentiometer reading.
+// Returns the ratio used to convert the input POT to the target POT reading.
 //------------------------------------------------------------------------------
-double ArmUpper::GetCurrentPosition() const
+double ArmUpper::GetRatio() const
 {
-	return pArmPot->Get();
+	return targetRatio;
 }
 //------------------------------------------------------------------------------
-// METHOD:  ArmUpper::GetPositionTarget()
+// METHOD:  ArmUpper::GetConstant()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
-// Returns the target Arm position potentiometer reading.
+// Returns the ratio used to convert the input POT to the target POT reading.
 //------------------------------------------------------------------------------
-double ArmUpper::GetTargetPOTInput() const
+double ArmUpper::GetConstant() const
 {
-	return targetPOTInput;
+	return targetConstant;
 }
 //------------------------------------------------------------------------------
-// METHOD:  ArmUpper::GetPositionTarget()
-// Type:	Public accessor method
+// METHOD:  ArmUpper::CalcTargetRatioConstant()
+// Type:	Private method
 //------------------------------------------------------------------------------
-// Returns the target Arm position potentiometer reading.
+// Calculates the ratio and constant used to convert the driver station input
+// POT value to the target robot POT value
 //------------------------------------------------------------------------------
-double ArmUpper::GetTargetPOTCalc() const
+void  ArmUpper::CalcTargetRatioConstant()
 {
-	return targetPOTCalc;
+	targetRatio    = ( ( OUTPUT_POT_FULL_FWD - OUTPUT_POT_FULL_BACK )
+			         / ( INPUT_POT_FULL_FWD  - INPUT_POT_FULL_BACK  ) );
+
+	targetConstant = ( OUTPUT_POT_FULL_BACK - ( INPUT_POT_FULL_BACK * targetRatio ) );
+
+	return;
 }
 //------------------------------------------------------------------------------
-// METHOD:  ArmUpper::GetPositionTargetInput()
-// Type:	Public accessor method
+// METHOD:  ArmUpper::CalcOutputPOT()
+// Type:	Private method
 //------------------------------------------------------------------------------
-// Returns the target Arm position input value.
+// Determines the Arm potentiometer target based on a passed target POT
+// reading.
 //------------------------------------------------------------------------------
-uint   ArmUpper::GetTargetPosition() const
+double  ArmUpper::CalcOutputPOT(double inputPOTValue)
 {
- 	return targetPosition;
+	double targetPOT = 0.0;
+
+	targetPOT  = ( ( inputPOTValue * targetRatio ) + targetConstant );
+
+	return targetPOT;
 }
 //------------------------------------------------------------------------------
-// METHOD:  ArmUpper::CalcPOTTarget()
+// METHOD:  ArmUpper::CalcOutputPOT()
 // Type:	Private method
 //------------------------------------------------------------------------------
 // Determines the Arm potentiometer target based on a passed target input
 // position.
 //------------------------------------------------------------------------------
-double ArmUpper::CalcPOTTarget(uint targetPosition)
+double ArmUpper::CalcOutputPOT(uint inputPosition)
 {
-	double targetPot = 0;
+	double targetPOT = 0.0;
 
-    switch ( targetPosition )
+    switch ( inputPosition )
     {
     	case kTop:
-			targetPot = ARM_TOP;
+			targetPOT = ARM_TOP;
     		break;
 
     	case kMiddle:
-			targetPot = ARM_MIDDLE;
+			targetPOT = ARM_MIDDLE;
 			break;
 
     	case kBottom:
-			targetPot = ARM_BOTTOM;
+			targetPOT = ARM_BOTTOM;
 			break;
 
     	default:
-    		targetPot = pArmPot->Get();
+    		targetPOT = pArmPot->Get();
     		break;
     }
 
-	return targetPot;
+	return targetPOT;
 }
+//------------------------------------------------------------------------------
+// METHOD:  ArmUpper::CalcInputPOT()
+// Type:	Private method
+//------------------------------------------------------------------------------
+// Determines the input Arm potentiometer reading based on the robot
+// potentiometer reading.
+//------------------------------------------------------------------------------
+double ArmUpper::CalcInputPOT(double outputPotValue)
+{
+	double inputPot = 0.0;
 
+	inputPot  = ( ( outputPotValue - targetConstant ) / targetRatio );
+
+	return inputPot;
+}
 //------------------------------------------------------------------------------
 // METHOD:  ArmUpper::GoToPotTarget()
 // Type:	Private method
@@ -204,7 +286,7 @@ double ArmUpper::CalcPOTTarget(uint targetPosition)
 // *** NOTE TO ALLOW THE LIMIT SWITCHES TO READ THE WAY WE WANT THEM TO IN THE
 // **  CODE - WIRE THEM "NORMAL CLOSED" OR NC.
 //------------------------------------------------------------------------------
-bool  ArmUpper::GoToPotTarget(double inputPotValue)
+bool  ArmUpper::GoToPOTTarget(double inputPotValue)
 {
 	bool   potTargetFound  = false;
 	double targetLowValue  = inputPotValue - TARGET_TOLERANCE;
@@ -213,26 +295,37 @@ bool  ArmUpper::GoToPotTarget(double inputPotValue)
 	if ( pArmPot->Get() >= targetLowValue  &&
 		 pArmPot->Get() <= targetHighValue )
 	{
-		pArmMotor->Set(ALL_STOP);
-		targetMotorSpeed = ALL_STOP;
+		StopArm();
 		potTargetFound   = true;
 	}
 	else
 	{
 		if ( pArmPot->Get() > targetHighValue )  // Arm moving down
 		{
-			pArmMotor->Set(MOTOR_SPEED_DOWN);
-			targetMotorSpeed = MOTOR_SPEED_DOWN;
+			MoveArmDown();
 		}
 		else
 		{
 			if ( pArmPot->Get() < targetLowValue )  // Arm moving up
 			{
-					pArmMotor->Set(MOTOR_SPEED_UP);
-					targetMotorSpeed = MOTOR_SPEED_UP;
+					MoveArmUp();
 			}
 		}
 	}
 
 	return potTargetFound;
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmUpper::RunaArmMotor()
+// Type:	Private method
+//------------------------------------------------------------------------------
+// Runs the arm motor at a given speed.
+//------------------------------------------------------------------------------
+void  ArmUpper::RunArmMotor(float motorSpeed)
+{
+	targetMotorSpeed = motorSpeed;
+
+	pArmMotor->Set(motorSpeed);
+
+	return;
 }

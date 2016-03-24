@@ -23,12 +23,12 @@ class ArmLower
 		void   MoveArmUp();
 		void   MoveArmDown();
 		void   StopArm();
+		double GetTargetPOTInput()   const;
+		uint   GetTargetPosition()   const;
+		double GetTargetPOTOutput()  const;
+		double GetCurrentPosition()  const;
 		float  GetTargetMotorSpeed() const;
 		float  GetMotorSpeed()       const;
-		double GetCurrentPosition()  const;
-		double GetTargetPOTInput()   const;
-		double GetTargetPOTOutput()  const;
-		uint   GetTargetPosition()   const;
 		double GetRatio()            const;
 		double GetConstant()         const;
 

@@ -120,6 +120,46 @@ void  ArmLower::StopArm()
 	return;
 }
 //------------------------------------------------------------------------------
+// METHOD:  ArmLower::GetTargetPOTOutput()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the target Arm position potentiometer reading.
+//------------------------------------------------------------------------------
+double ArmLower::GetTargetPOTInput() const
+{
+	return targetPOTInput;
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmLower::GetTargetPosition()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the target Arm position input value.
+//------------------------------------------------------------------------------
+uint   ArmLower::GetTargetPosition() const
+{
+ 	return targetPosition;
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmLower::GetTargetPOTOutput()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the target Arm position potentiometer reading.
+//------------------------------------------------------------------------------
+double ArmLower::GetTargetPOTOutput() const
+{
+	return targetPOTOutput;
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmLower::GetCurrentPosition()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the current actual Arm position potentiometer reading.
+//------------------------------------------------------------------------------
+double ArmLower::GetCurrentPosition() const
+{
+	return pArmPot->Get();
+}
+//------------------------------------------------------------------------------
 // METHOD:  ArmLower::GetTargetMotorSpeed()
 // Type:	Public accessor method
 //------------------------------------------------------------------------------
@@ -138,46 +178,6 @@ float  ArmLower::GetTargetMotorSpeed() const
 float  ArmLower::GetMotorSpeed() const
 {
 	return pArmMotor->Get();
-}
-//------------------------------------------------------------------------------
-// METHOD:  ArmLower::GetCurrentPosition()
-// Type:	Public accessor method
-//------------------------------------------------------------------------------
-// Returns the current actual Arm position potentiometer reading.
-//------------------------------------------------------------------------------
-double ArmLower::GetCurrentPosition() const
-{
-	return pArmPot->Get();
-}
-//------------------------------------------------------------------------------
-// METHOD:  ArmLower::GetTargetPOTOutput()
-// Type:	Public accessor method
-//------------------------------------------------------------------------------
-// Returns the target Arm position potentiometer reading.
-//------------------------------------------------------------------------------
-double ArmLower::GetTargetPOTInput() const
-{
-	return targetPOTInput;
-}
-//------------------------------------------------------------------------------
-// METHOD:  ArmLower::GetTargetPOTOutput()
-// Type:	Public accessor method
-//------------------------------------------------------------------------------
-// Returns the target Arm position potentiometer reading.
-//------------------------------------------------------------------------------
-double ArmLower::GetTargetPOTOutput() const
-{
-	return targetPOTOutput;
-}
-//------------------------------------------------------------------------------
-// METHOD:  ArmLower::GetTargetPosition()
-// Type:	Public accessor method
-//------------------------------------------------------------------------------
-// Returns the target Arm position input value.
-//------------------------------------------------------------------------------
-uint   ArmLower::GetTargetPosition() const
-{
- 	return targetPosition;
 }
 //------------------------------------------------------------------------------
 // METHOD:  ArmLower::GetRatio()
