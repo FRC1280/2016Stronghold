@@ -13,46 +13,60 @@ class ArmLower
 {
 	public:
 
-		enum  target {kPosition1, kPosition2, kPosition3};
+		enum  target {kTop, kMiddle, kBottom};
 
 		ArmLower(uint armMotorCh, uint armPotCh);
 		~ArmLower();
 
-		void   MoveArm(float inputTarget);
-		bool   MoveArm(uint inputTarget);
+		bool   MoveArmPOTInput(double inputTarget);
+		bool   MoveArmPositionInput(uint inputTarget);
 		void   MoveArmUp();
 		void   MoveArmDown();
 		void   StopArm();
+		double GetTargetPOTInput()   const;
+		uint   GetTargetPosition()   const;
+		double GetTargetPOTOutput()  const;
+		double GetCurrentPosition()  const;
 		float  GetTargetMotorSpeed() const;
 		float  GetMotorSpeed()       const;
-		double GetCurrentPosition()  const;
-		double GetTargetPOTInput()   const;
-		double GetTargetPOTCalc()    const;
-		uint   GetTargetPosition()   const;
+		double GetRatio()            const;
+		double GetConstant()         const;
 
 	private:
-		const float   MOTOR_SPEED_UP           =    1.00;   // CONFIGURE
-		const float   MOTOR_SPEED_DOWN         =   -1.00;   // CONFIGURE
+		const float   MOTOR_SPEED_UP           =    1.00;
+		const float   MOTOR_SPEED_DOWN         =   -1.00;
 		const float   ALL_STOP                 =    0.00;
 
-		const double  ARM_POSITION_1           =   25.0;    // CONFIGURE
-		const double  ARM_POSITION_2           =   50.0;    // CONFIGURE
-		const double  ARM_POSITION_3           =   75.0;    // CONFIGURE
-		const double  TARGET_TOLERANCE         =    1.0;    // CONFIGURE
+		const double  INPUT_POT_FULL_FWD       =   -0.977;  // CONFIGURE
+		const double  INPUT_POT_FULL_BACK      =   -0.906;  // CONFIGURE
 
-		const double  POT_FULL_RANGE           = -100.0;    // CONFIGURE
-		const double  POT_OFFSET               =  100.0;    // CONFIGURE
+		const double  POT_FULL_RANGE           =  194.580;  // CONFIGURE
+		const double  POT_OFFSET               =   -0.308;  // CONFIGURE
 
-		double CalcTargetPotValue(double inputPotValue);
- 		double CalcPOTTarget(uint targetPosition);
- 		bool   GoToPotTarget(double potTarget);
+		const double  OUTPUT_POT_FULL_FWD      =    0.000;  // CONFIGURE
+		const double  OUTPUT_POT_FULL_BACK     =   90.000;  // CONFIGURE
+
+		const double  ARM_TOP                  =   25.0;    // CONFIGURE ROBOT POT TARGET
+		const double  ARM_MIDDLE               =   50.0;    // CONFIGURE ROBOT POT TARGET
+		const double  ARM_BOTTOM               =   75.0;    // CONFIGURE ROBOT POT TARGET
+		const double  TARGET_TOLERANCE         =    1.0;    // CONFIGURE ROBOT POT TOLERANCE
+
+		void   CalcTargetRatioConstant();
+		double CalcOutputPOT(double inputPotValue);
+		double CalcOutputPOT(uint inputPosition);
+		double CalcInputPOT(double outputPotValue);
+ 		bool   GoToPOTTarget(double potTarget);
+		void   RunArmMotor(float motorSpeed);
 
 		Talon               *pArmMotor;
 		AnalogPotentiometer *pArmPot;
 
-		double              targetPOTInput;
-		double              targetPOTCalc;
-		uint                targetPosition;
+		double              targetRatio;         // Calculated value used to convert input POT to output POT
+		double              targetConstant;      // Calculated value used to convert input POT to output POT
+
+		double              targetPOTInput;      // Input from driver station POT
+		double              targetPOTOutput;     // Calculated target robot POT reading
+		uint                targetPosition;      // Input from driver station switches
 		float               targetMotorSpeed;
 };
 

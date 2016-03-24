@@ -8,13 +8,11 @@
 
 #include "../H/ArmLower.h"
 #include "../H/ArmUpper.h"
-#include "../H/CameraLights.h"
 #include "../H/Loader.h"
 #include "../H/Shooter.h"
 #include "../H/Climber.h"
 
 #define CONSOLE
-//#define VISION
 
 //------------------------------------------------------------------------------
 // DEFINE StrongholdRobot CLASS
@@ -69,21 +67,21 @@ class StrongholdRobot : public IterativeRobot
 		static const uint CCI_PORT2				 =  3;  // eStop Robots CCI Inputs
 
 		// Driver Station CCI1 Channels (Uses joystick button references)
-		static const uint LOWER_ARM_FWD_SW_CH    =  1;  // TEMP TO MOVE ARM
-		static const uint LOWER_ARM_REV_SW_CH    =  2;  // TEMP TO MOVE ARM
-		static const uint UPPER_ARM_FWD_SW_CH    =  3;  // TEMP TO MOVE ARM
-		static const uint UPPER_ARM_REV_SW_CH    =  4;  // TEMP TO MOVE ARM
+		static const uint LOWER_ARM_FWD_SW_CH    =  4;  // TEMP TO MOVE ARM
+		static const uint LOWER_ARM_REV_SW_CH    =  3;  // TEMP TO MOVE ARM
+		static const uint UPPER_ARM_FWD_SW_CH    =  8;  // TEMP TO MOVE ARM
+		static const uint UPPER_ARM_REV_SW_CH    =  7;  // TEMP TO MOVE ARM
 
-		static const uint SALLY_PORT_SETUP_SW_CH =  1;  // CONFIGURE
-		static const uint SALLY_PORT_EXEC_SW_CH  =  2;  // CONFIGURE
-		static const uint PORTCULLIS_SETUP_SW_CH =  3;  // CONFIGURE
-		static const uint PORTCULLIS_EXEC_SW_CH  =  4;  // CONFIGURE
-		static const uint CHEVAL_SETUP_SW_CH     =  5;  // CONFIGURE
-		static const uint CHEVAL_EXEC_SW_CH      =  6;  // CONFIGURE
-		static const uint DRAWBRIDGE_SETUP_SW_CH =  7;  // CONFIGURE
-		static const uint DRAWBRIDGE_EXEC_SW_CH  =  8;  // CONFIGURE
-		static const uint ROBOT_LIFT_SETUP_SW_CH =  9;  // CONFIGURE
-		static const uint ROBOT_LIFT_EXEC_SW_CH  = 10;  // CONFIGURE
+		static const uint PORTCULLIS_EXEC_SW_CH  =  1;  // CONFIGURE
+		static const uint PORTCULLIS_SETUP_SW_CH =  2;  // CONFIGURE
+		static const uint DRAWBRIDGE_EXEC_SW_CH  =  3;  // CONFIGURE
+		static const uint DRAWBRIDGE_SETUP_SW_CH =  4;  // CONFIGURE
+		static const uint SALLY_PORT_EXEC_SW_CH  =  5;  // CONFIGURE
+		static const uint SALLY_PORT_SETUP_SW_CH =  6;  // CONFIGURE
+		static const uint CHEVAL_EXEC_SW_CH      =  7;  // CONFIGURE
+		static const uint CHEVAL_SETUP_SW_CH     =  8;  // CONFIGURE
+		static const uint ROBOT_LIFT_EXEC_SW_CH  =  9;  // CONFIGURE
+		static const uint ROBOT_LIFT_SETUP_SW_CH = 10;  // CONFIGURE
 		static const uint LOAD_BALL_SW_CH		 = 11;  // CONFIGURE
 		static const uint EJECT_BALL_SW_CH       = 12;  // CONFIGURE
 
@@ -92,26 +90,12 @@ class StrongholdRobot : public IterativeRobot
 		static const uint AUTO_EXEC_SW_CH		 =  2;  // CONFIGURE
 		static const uint ARM_POT_SW_CH			 =  3;  // CONFIGURE
 		static const uint ARM_TOP_SW_CH          =  4;  // CONFIGURE
-//		static const uint CAMERA_LIGHTS_SW_CH    =  4;  // CONFIGURE
 		static const uint ARM_BOTTOM_SW_CH       =  5;  // CONFIGURE
 		static const uint LOWER_SW_CH			 =  6;  // CONFIGURE
 		static const uint CLIMB_SW_CH    		 =  7;  // CONFIGURE
 		static const uint UNUSED_SW_CH           =  8;  // CONFIGURE (MOMENTARY)
-//		static const uint SHOOT_BALL_SW_CH       =  8;  // CONFIGURE
 		static const uint SHOOTER_MOTOR_SW_CH    =  9;  // CONFIGURE
-
-		static const uint CH01                   =  1;
-		static const uint CH02                   =  2;
-		static const uint CH03                   =  3;
-		static const uint CH04                   =  4;
-		static const uint CH05                   =  5;
-		static const uint CH06                   =  6;
-		static const uint CH07                   =  7;
-		static const uint CH08                   =  8;
-		static const uint CH09                   =  9;
-		static const uint CH10                   =  10;
-		static const uint CH11                   =  11;
-		static const uint CH12                   =  12;
+		static const uint UNUSED_CH              =  9;
 
 		//----------------------------------------------------------------------
 		// ROBOT CHANNELS - INPUTS AND OUTPUTS
@@ -129,9 +113,6 @@ class StrongholdRobot : public IterativeRobot
 		// roboRio Analog Channels
 		static const uint ARM_LOWER_POT_CH 		    =  0;
 		static const uint ARM_UPPER_POT_CH 		    =  1;
-
-		// navX MXP Inertial Measurement Unit (IMU) Constants
-		static const uint8_t IMU_UPDATE_RATE        = 50;
 
 		//----------------------------------------------------------------------
         // ROBOT OUTPUTS
@@ -151,7 +132,6 @@ class StrongholdRobot : public IterativeRobot
 		static const uint ARM_UPPER_MOTOR_CH	  =  9;
 
 		// roboRio Relay Channels
-//		static const uint CAMERA_LIGHTS_CH        =  2;
 
 		// roboRio Solenoid Channels
 
@@ -215,30 +195,13 @@ class StrongholdRobot : public IterativeRobot
         JoystickButton   *pArmPOTSwitch;
 		JoystickButton   *pArmTopSwitch;
 		JoystickButton   *pArmBottomSwitch;
-//		JoystickButton 	 *pCameraLightSwitch;
         JoystickButton   *pShooterMotorSwitch;
         JoystickButton   *pClimberSwitch;
         JoystickButton   *pLowerSwitch;
-
-        JoystickButton   *pCCI1Ch01;
-        JoystickButton   *pCCI1Ch02;
-        JoystickButton   *pCCI1Ch03;
-        JoystickButton   *pCCI1Ch04;
-        JoystickButton   *pCCI1Ch05;
-        JoystickButton   *pCCI1Ch06;
-        JoystickButton   *pCCI1Ch07;
-        JoystickButton   *pCCI1Ch08;
-        JoystickButton   *pCCI1Ch09;
-        JoystickButton   *pCCI1Ch10;
-        JoystickButton   *pCCI1Ch11;
-        JoystickButton   *pCCI1Ch12;
+        JoystickButton   *pUnusedSwitch;
 
 		//----------------------------------------------------------------------
 		// ROBOT INPUT & OUTPUT POINTERS
-		//----------------------------------------------------------------------
-		// navX MXP Inertial Measurement Unit (IMU)
-		SerialPort       *pIMUPort;
-
 		//----------------------------------------------------------------------
 		// Robot Digital Inputs - GPIO Inputs including Encoders
 		//----------------------------------------------------------------------
@@ -247,7 +210,6 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// Robot Digital Outputs - Relays (Spikes)
 		//----------------------------------------------------------------------
-//		CameraLights	*pCameraLights;			// Camera LED lights
 
 		//----------------------------------------------------------------------
 		// Robot Objects
@@ -259,9 +221,6 @@ class StrongholdRobot : public IterativeRobot
 		Shooter         *pBallShooter;
 		Climber			*pClimber;
 
-#ifdef VISION
-		Vision			*pVision;
-#endif
 		//----------------------------------------------------------------------
 		// VARIABLES USED IN CLASS
 		//----------------------------------------------------------------------
@@ -306,12 +265,6 @@ class StrongholdRobot : public IterativeRobot
 		bool prevShootBallSw;
 		bool shootBall;
 		bool shooterReset;
-
-		//----------------------------------------------------------------------
-		// Camera Image Processing
-		//----------------------------------------------------------------------
-		// Camera Switches
-//		bool   lightsOn;
 
 		//----------------------------------------------------------------------
 		// ROBOT INPUTS
@@ -402,23 +355,10 @@ StrongholdRobot::StrongholdRobot()
 	pArmPOTSwitch          = new JoystickButton(pCCI2,ARM_POT_SW_CH);
 	pArmTopSwitch          = new JoystickButton(pCCI2,ARM_TOP_SW_CH);
 	pArmBottomSwitch       = new JoystickButton(pCCI2,ARM_BOTTOM_SW_CH);
-//	pCameraLightSwitch     = new JoystickButton(pCCI1,CAMERA_LIGHTS_SW_CH);
 	pShooterMotorSwitch    = new JoystickButton(pCCI2,SHOOTER_MOTOR_SW_CH);
 	pClimberSwitch         = new JoystickButton(pCCI2,CLIMB_SW_CH);
 	pLowerSwitch 		   = new JoystickButton(pCCI2,LOWER_SW_CH);
-
-	pCCI1Ch01   		  = new JoystickButton(pCCI1,CH01);
-	pCCI1Ch02   		  = new JoystickButton(pCCI1,CH02);
-	pCCI1Ch03   		  = new JoystickButton(pCCI1,CH03);
-	pCCI1Ch04   		  = new JoystickButton(pCCI1,CH04);
-	pCCI1Ch05   		  = new JoystickButton(pCCI1,CH05);
-	pCCI1Ch06   		  = new JoystickButton(pCCI1,CH06);
-	pCCI1Ch07   		  = new JoystickButton(pCCI1,CH07);
-	pCCI1Ch08   		  = new JoystickButton(pCCI1,CH08);
-	pCCI1Ch09   		  = new JoystickButton(pCCI1,CH09);
-	pCCI1Ch10   		  = new JoystickButton(pCCI1,CH10);
-	pCCI1Ch11   		  = new JoystickButton(pCCI1,CH11);
-	pCCI1Ch12   		  = new JoystickButton(pCCI1,CH12);
+	pUnusedSwitch          = new JoystickButton(pCCI2,UNUSED_SW_CH);
 
 	//----------------------------------------------------------------------
 	// ROBOT INPUTS
@@ -426,14 +366,9 @@ StrongholdRobot::StrongholdRobot()
 	// GPIO & Spare Power Inputs
 	// - Autonomous Mode Switches
 	
-	// navX MXP Intertial Measurement Unit (IMU)
-	pIMUPort             = new SerialPort(57600,SerialPort::kMXP);
-
 	//----------------------------------------------------------------------
 	// ROBOT CONTROLS (OUTPUTS)
 	//----------------------------------------------------------------------
-//	pCameraLights		 = new CameraLights(CAMERA_LIGHTS_CH);
-
 	pDriveTrain		     = new RobotDrive(LEFT_FRONT_MOTOR_CH,LEFT_REAR_MOTOR_CH,
 										  RIGHT_FRONT_MOTOR_CH, RIGHT_REAR_MOTOR_CH);
 
@@ -533,7 +468,6 @@ void StrongholdRobot::DisabledInit()
 //------------------------------------------------------------------------------
 // Functions:
 // - Resets the loop counter for autonomous mode
-// - Sets camera lights to desired setting for autonomous mode
 // - Determines which autonomous mode we want to use
 // - Optionally displays the status of the autonomous mode switches for debugging
 //   purposes
@@ -542,9 +476,6 @@ void StrongholdRobot::AutonomousInit()
 {
 	// Reset loop counter
 	loopCount  = 0;
-
-	// Set Robot Components to Default Starting Positions
-//	pCameraLights->TurnOff();                  // CONFIG
 
 	GetAutoModeSwitches();
 	GetRobotSensorInput();
@@ -563,10 +494,6 @@ void StrongholdRobot::AutonomousInit()
 //------------------------------------------------------------------------------
 void StrongholdRobot::TeleopInit()
 {
-#ifdef VISION
-	pVision = new Vision;
-#endif
-
 	// Loop count initialization
 	loopCount      = 0;
 
@@ -638,17 +565,12 @@ void StrongholdRobot::AutonomousPeriodic()
 // - Obtains inputs from the robot (analog and digital sensors)
 // - Moves the arm ator to the target position based on driver station
 //   inputs
-// - Turns camera lights on/off
 // - Sets the drive motor values based on joystick movement
 //------------------------------------------------------------------------------
 void StrongholdRobot::TeleopPeriodic()
 {
 	// Increment & display loop counter
 	loopCount++;
-
-#ifdef VISION
-	pVision->processImage();
-#endif
 
 	// Get inputs from the driver station
 	GetDriverStationInput();
@@ -671,12 +593,6 @@ void StrongholdRobot::TeleopPeriodic()
     // Determine if climber should run
     RunClimber();
 
-	// Turn camera LED lights on or off based on driver station input
-/*	if ( lightsOn )
-		pCameraLights->TurnOn();
-	else
-		pCameraLights->TurnOff();
-*/
 	return;
 }
 
@@ -686,15 +602,10 @@ void StrongholdRobot::TeleopPeriodic()
 //------------------------------------------------------------------------------
 // Obtains the input from the DriverStation required for teleoperated mode.
 // Includes obtaining input for the following switches:
-// - Camera lights switch
 // - Optionally displays driver station values
 //------------------------------------------------------------------------------
 void StrongholdRobot::GetDriverStationInput()
 {
-	// Obtain the position of switches on the driver station
-	// Camera Switches
-//    lightsOn  				 = pCameraLightSwitch->Get();
-
 	rightDriveSpeed		= pDriveStickRight->GetY();
 	leftDriveSpeed		= pDriveStickLeft->GetY();
 	rightDriveSpeed		= rightDriveSpeed * -1;
@@ -717,35 +628,47 @@ void StrongholdRobot::GetDriverStationInput()
 void StrongholdRobot::ShowDSValues()
 {
 	// Show the values for driver station inputs
-//	SmartDashboard::PutBoolean("Top Switch",pTopSwitch->Get());
-//	SmartDashboard::PutBoolean("Bottom Switch",pBottomSwitch->Get());
-//	SmartDashboard::PutBoolean("Camera Lights Switch",lightsOn);
+/*	SmartDashboard::PutBoolean("DS Sally Port Setup",pSallyPortSetupSwitch->Get());
+	SmartDashboard::PutBoolean("DS Sally Port Exec",pSallyPortExecSwitch->Get());
+	SmartDashboard::PutBoolean("DS Portcullis Setup",pPortcullisSetupSwitch->Get());
+	SmartDashboard::PutBoolean("DS Portcullis Exec",pPortcullisExecSwitch->Get());
+	SmartDashboard::PutBoolean("DS Cheval Setup",pChevalSetupSwitch->Get());
+	SmartDashboard::PutBoolean("DS Cheval Exec",pChevalExecSwitch->Get());
+	SmartDashboard::PutBoolean("DS Drawbridge Setup",pDrawbridgeSetupSwitch->Get());
+	SmartDashboard::PutBoolean("DS Drawbridge Exec",pDrawbridgeExecSwitch->Get());
+*/
+	SmartDashboard::PutBoolean("DS Robot Lift Setup",pRobotLiftSetupSwitch->Get());
+/*	SmartDashboard::PutBoolean("DS Robot Lift Exec",pRobotLiftExecSwitch->Get());
 
-//	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
-//	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
- 	SmartDashboard::PutBoolean("Load Ball Switch",pLoadBallSwitch->Get());
- 	SmartDashboard::PutBoolean("Eject Ball Switch",pEjectBallSwitch->Get());
-	SmartDashboard::PutBoolean("Prev Eject Ball Switch",prevEjectBallSw);
-	SmartDashboard::PutBoolean("Prev Shoot Ball Switch",prevShootBallSw);
-	SmartDashboard::PutBoolean("Shoot Ball Switch",pShootBallSwitch->Get());
-	SmartDashboard::PutBoolean("Shooter Motor Switch",pShooterMotorSwitch->Get());
-	SmartDashboard::PutBoolean("Raise Switch",pClimberSwitch->Get());
-	SmartDashboard::PutBoolean("Lower Switch",pLowerSwitch->Get());
-	SmartDashboard::PutBoolean("Arm Exec Switch Auto", pAutoExecSwitch->Get());
-	SmartDashboard::PutBoolean("Arm Pot Switch", pArmPOTSwitch->Get());
+	SmartDashboard::PutBoolean("DS Load Ball",pLoadBallSwitch->Get());
+	SmartDashboard::PutBoolean("DS Eject Ball",pEjectBallSwitch->Get());
+	SmartDashboard::PutBoolean("DS Shoot Ball",pShootBallSwitch->Get());
+*/
+	SmartDashboard::PutBoolean("DS Auto Setup Exec",pAutoExecSwitch->Get());
+/*
+	SmartDashboard::PutBoolean("DS Shooter Motor On",pShooterMotorSwitch->Get());
 
-	SmartDashboard::PutBoolean("CCI1 CH01",pCCI1Ch01->Get());
-	SmartDashboard::PutBoolean("CCI1 CH02",pCCI1Ch02->Get());
-	SmartDashboard::PutBoolean("CCI1 CH03",pCCI1Ch03->Get());
-	SmartDashboard::PutBoolean("CCI1 CH04",pCCI1Ch04->Get());
-/*	SmartDashboard::PutBoolean("CCI1 CH05",pCCI1Ch05->Get());
-	SmartDashboard::PutBoolean("CCI1 CH06",pCCI1Ch06->Get());
-	SmartDashboard::PutBoolean("CCI1 CH07",pCCI1Ch07->Get());
-	SmartDashboard::PutBoolean("CCI1 CH08",pCCI1Ch08->Get());
-	SmartDashboard::PutBoolean("CCI1 CH09",pCCI1Ch09->Get());
-	SmartDashboard::PutBoolean("CCI1 CH10",pCCI1Ch10->Get());
-	SmartDashboard::PutBoolean("CCI1 CH11",pCCI1Ch11->Get());
-	SmartDashboard::PutBoolean("CCI1 CH12",pCCI1Ch12->Get());
+	SmartDashboard::PutBoolean("DS Raise Robot",pClimberSwitch->Get());
+	SmartDashboard::PutBoolean("DS Lower Robot",pLowerSwitch->Get());
+*/
+	SmartDashboard::PutBoolean("DS Arm Use POT",pArmPOTSwitch->Get());
+	SmartDashboard::PutBoolean("DS Arm Top Position",pArmTopSwitch->Get());
+	SmartDashboard::PutBoolean("DS Arm Bottom Position",pArmBottomSwitch->Get());
+/*
+	SmartDashboard::PutBoolean("DS Unused",pUnusedSwitch->Get());
+*/
+	SmartDashboard::PutBoolean("DS Lower Arm Fwd",pLowerArmFwdSwitch->Get());
+	SmartDashboard::PutBoolean("DS Lower Arm Rev",pLowerArmRevSwitch->Get());
+	SmartDashboard::PutBoolean("DS Upper Arm Fwd",pUpperArmFwdSwitch->Get());
+	SmartDashboard::PutBoolean("DS Upper Arm Rev",pUpperArmRevSwitch->Get());
+
+	SmartDashboard::PutNumber("DS Upper Arm POT",pCCI2->GetX());
+	SmartDashboard::PutNumber("DS Lower Arm POT",pCCI2->GetY());
+/*
+ 	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
+ 	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
+ 	SmartDashboard::PutBoolean("Prev Eject Ball Switch",prevEjectBallSw);
+ 	SmartDashboard::PutBoolean("Prev Shoot Ball Switch",prevShootBallSw);
 */
 	return;
 }
@@ -777,52 +700,56 @@ void StrongholdRobot::GetRobotSensorInput()
 void StrongholdRobot::ShowRobotValues()
 {
 //	SmartDashboard::PutNumber("AM Mode",autoMode);
-//	SmartDashboard::PutBoolean("Camera Lights",pCameraLights->GetCameraStatus());
-//	SmartDashboard::PutNumber("Arm POT Current Position",pLowerArm->GetCurrentPosition());
-//	SmartDashboard::PutNumber("Arm POT Target Position",pLowerArm->GetPositionTarget());
-//	SmartDashboard::PutBoolean("Upper Limit Switch",pLowerArm->GetUpperLimitSwitch());
-//	SmartDashboard::PutBoolean("Lower Limit Switch",pLowerArm->GetLowerLimitSwitch());
-//	SmartDashboard::PutNumber("Arm Target Motor Speed",pLowerArm->GetTargetMotorSpeed());
-//	SmartDashboard::PutNumber("Arm Motor Speed",pLowerArm->GetMotorSpeed());
+
+	SmartDashboard::PutNumber("R Lower Arm Ratio",pLowerArm->GetRatio());
+	SmartDashboard::PutNumber("R Lower Arm Constant",pLowerArm->GetConstant());
+	SmartDashboard::PutNumber("R Lower Arm Target POT Input",pLowerArm->GetTargetPOTInput());
+	SmartDashboard::PutNumber("R Lower Arm Target Position",pLowerArm->GetTargetPosition());
+	SmartDashboard::PutNumber("R Lower Arm Target POT Output",pLowerArm->GetTargetPOTOutput());
+	SmartDashboard::PutNumber("R Lower Arm Current POT",pLowerArm->GetCurrentPosition());
+ 	SmartDashboard::PutNumber("R Lower Arm Target Speed",pLowerArm->GetTargetMotorSpeed());
+	SmartDashboard::PutNumber("R Lower Arm Motor Speed",pLowerArm->GetMotorSpeed());
+
+	SmartDashboard::PutNumber("R Upper Arm Ratio",pUpperArm->GetRatio());
+	SmartDashboard::PutNumber("R Upper Arm Constant",pUpperArm->GetConstant());
+	SmartDashboard::PutNumber("R Upper Arm Target POT Input",pUpperArm->GetTargetPOTInput());
+	SmartDashboard::PutNumber("R Upper Arm Target Position",pUpperArm->GetTargetPosition());
+	SmartDashboard::PutNumber("R Upper Arm Target POT Output",pUpperArm->GetTargetPOTOutput());
+	SmartDashboard::PutNumber("R Upper Arm Current POT",pUpperArm->GetCurrentPosition());
+ 	SmartDashboard::PutNumber("R Upper Arm Target Speed",pUpperArm->GetTargetMotorSpeed());
+	SmartDashboard::PutNumber("R Upper Arm Motor Speed",pUpperArm->GetMotorSpeed());
 
 //	SmartDashboard::PutNumber("Loader Motor Speed",pBallLoader->GetMotorSpeed());
+//	SmartDashboard::PutBoolean("Load Ball Mode",loadBall);
+//	SmartDashboard::PutBoolean("Ball Loaded? Limit switch",pBallLoader->GetLoadedSensor());
+//	SmartDashboard::PutBoolean("Ball Loaded? Loader code",pBallLoader->GetBallLoaded());
+//	SmartDashboard::PutBoolean("Ball Loaded? Robot code",ballLoaded);
 
-	SmartDashboard::PutBoolean("Load Ball Mode",loadBall);
-	SmartDashboard::PutBoolean("Ball Loaded? Limit switch",pBallLoader->GetLoadedSensor());
-	SmartDashboard::PutBoolean("Ball Loaded? Loader code",pBallLoader->GetBallLoaded());
-	SmartDashboard::PutBoolean("Ball Loaded? Robot code",ballLoaded);
+//	SmartDashboard::PutBoolean("Eject Ball Mode",ejectBall);
+//	SmartDashboard::PutBoolean("First Eject Loop",pBallLoader->GetFirstEjectLoop());
+//	SmartDashboard::PutNumber("Eject Counter",pBallLoader->GetEjectCounter());
+//	SmartDashboard::PutBoolean("Ball Ejected? Loader code",pBallLoader->GetBallEjected());
+//	SmartDashboard::PutBoolean("Ball Ejected? Robot code",ballEjected);
 
-	SmartDashboard::PutBoolean("Eject Ball Mode",ejectBall);
-	SmartDashboard::PutBoolean("First Eject Loop",pBallLoader->GetFirstEjectLoop());
-	SmartDashboard::PutNumber("Eject Counter",pBallLoader->GetEjectCounter());
-	SmartDashboard::PutBoolean("Ball Ejected? Loader code",pBallLoader->GetBallEjected());
-	SmartDashboard::PutBoolean("Ball Ejected? Robot code",ballEjected);
+//	SmartDashboard::PutBoolean("Shoot Ball Mode",shootBall);
+//	SmartDashboard::PutBoolean("Shooter 1st loop",pBallShooter->GetShooterFirstLoop());
 
-	SmartDashboard::PutBoolean("Shoot Ball Mode",shootBall);
-	SmartDashboard::PutBoolean("Shooter 1st loop",pBallShooter->GetShooterFirstLoop());
+//	SmartDashboard::PutBoolean("Ball in shooter? Limit Switch",
+//			                    pBallLoader->GetBallInShooterSensor());
+//	SmartDashboard::PutBoolean("Ball in shooter? Loader code flag",
+//			                    pBallLoader->GetBallInShooterFlag());
+//	SmartDashboard::PutBoolean("Ball in shooter? Shooter code flag",
+//			                    pBallShooter->GetBallInShooter());
 
-	SmartDashboard::PutBoolean("Ball in shooter? Limit Switch",
-			                    pBallLoader->GetBallInShooterSensor());
-	SmartDashboard::PutBoolean("Ball in shooter? Loader code flag",
-			                    pBallLoader->GetBallInShooterFlag());
-	SmartDashboard::PutBoolean("Ball in shooter? Shooter code flag",
-			                    pBallShooter->GetBallInShooter());
-
-	SmartDashboard::PutBoolean("Shooter Reset-Robot code",shooterReset);
-	SmartDashboard::PutBoolean("Shooter Reset-Shooter code",pBallShooter->GetShooterReset());
-	SmartDashboard::PutBoolean("Shooter Reset prev banner",pBallShooter->GetPrevShooterReset());
-	SmartDashboard::PutBoolean("Shooter Reset-Shooter banner sensor",
-			                    pBallShooter->GetBannerSensor());
-	SmartDashboard::PutNumber("Lower Arm Motor Speed",pLowerArm->GetMotorSpeed());
-	SmartDashboard::PutNumber("Upper Arm Motor Speed",pUpperArm->GetMotorSpeed());
+//	SmartDashboard::PutBoolean("Shooter Reset-Robot code",shooterReset);
+//	SmartDashboard::PutBoolean("Shooter Reset-Shooter code",pBallShooter->GetShooterReset());
+//	SmartDashboard::PutBoolean("Shooter Reset prev banner",pBallShooter->GetPrevShooterReset());
+//	SmartDashboard::PutBoolean("Shooter Reset-Shooter banner sensor",
+//			                    pBallShooter->GetBannerSensor());
 //	SmartDashboard::PutNumber("Shooter Motor Speed",pBallShooter->GetMotorSpeed());
 
 //	SmartDashboard::PutNumber("Climber Motor 1 Speed",pClimber->GetMotor1Speed());
 //	SmartDashboard::PutNumber("Climber Motor 2 Speed",pClimber->GetMotor2Speed());
-
-#ifdef VISION
-	SmartDashboard::PutBoolean("Camera sees bright", pVision->getIsBright());
-#endif
 
 	return;
 }
@@ -842,15 +769,21 @@ void StrongholdRobot::MoveArmToPosition()
 	}
 	else
 	{
-		if ( pLowerArmFwdSwitch->Get() || pLowerArmRevSwitch->Get() ||
-			 pUpperArmFwdSwitch->Get() || pUpperArmRevSwitch->Get()    )
+		if ( pRobotLiftSetupSwitch->Get() )
 		{
-			MoveArmUsingMotorSwitch();
+			if ( pLowerArmFwdSwitch->Get() || pLowerArmRevSwitch->Get() ||
+			     pUpperArmFwdSwitch->Get() || pUpperArmRevSwitch->Get()    )
+		    {
+			    MoveArmUsingMotorSwitch();
+		    }
+		    else
+		    {
+			    pLowerArm->StopArm();
+		     	pUpperArm->StopArm();
+		    }
 		}
 		else
 		{
-			pLowerArm->StopArm();
-			pUpperArm->StopArm();
 			if ( pArmPOTSwitch->Get() )
 			{
 				MoveArmUsingPOT();
@@ -874,6 +807,9 @@ void StrongholdRobot::MoveArmToPosition()
 //------------------------------------------------------------------------------
 void StrongholdRobot::MoveArmUsingPOT()
 {
+	pLowerArm->MoveArmPOTInput(pCCI2->GetY());
+	pUpperArm->MoveArmPOTInput(pCCI2->GetX());
+
 	return;
 }
 //------------------------------------------------------------------------------
@@ -887,35 +823,23 @@ void StrongholdRobot::MoveArmUsingSwitchPosition()
 {
 	if ( pArmTopSwitch->Get() )
 	{
-		lowerArmInPosition   = false;
-		upperArmInPosition   = false;
-		armTarget            = ArmLower::kPosition3;
+		armTarget            = ArmLower::kTop;
 	}
 	else
 	{
 		if ( pArmBottomSwitch->Get() )
 		{
-			lowerArmInPosition = false;
-			upperArmInPosition = false;
-			armTarget          = ArmLower::kPosition1;
+			armTarget          = ArmLower::kBottom;
 		}
 		else
 		{
-			lowerArmInPosition = false;
-			upperArmInPosition = false;
-			armTarget          = ArmLower::kPosition2;
+			armTarget          = ArmLower::kMiddle;
 		}
 	}
 
-	if ( ! lowerArmInPosition )
-	{
-		lowerArmInPosition = pLowerArm->MoveArm(armTarget);
-	}
+	pLowerArm->MoveArmPositionInput(armTarget);
 
-	if ( ! upperArmInPosition )
-	{
-		upperArmInPosition = pUpperArm->MoveArm(armTarget);
-	}
+	pUpperArm->MoveArmPositionInput(armTarget);
 
 	return;
 }
