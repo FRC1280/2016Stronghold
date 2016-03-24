@@ -72,30 +72,29 @@ class StrongholdRobot : public IterativeRobot
 		static const uint UPPER_ARM_FWD_SW_CH    =  8;  // TEMP TO MOVE ARM
 		static const uint UPPER_ARM_REV_SW_CH    =  7;  // TEMP TO MOVE ARM
 
-		static const uint PORTCULLIS_EXEC_SW_CH  =  1;  // CONFIGURE
-		static const uint PORTCULLIS_SETUP_SW_CH =  2;  // CONFIGURE
-		static const uint DRAWBRIDGE_EXEC_SW_CH  =  3;  // CONFIGURE
-		static const uint DRAWBRIDGE_SETUP_SW_CH =  4;  // CONFIGURE
-		static const uint SALLY_PORT_EXEC_SW_CH  =  5;  // CONFIGURE
-		static const uint SALLY_PORT_SETUP_SW_CH =  6;  // CONFIGURE
-		static const uint CHEVAL_EXEC_SW_CH      =  7;  // CONFIGURE
-		static const uint CHEVAL_SETUP_SW_CH     =  8;  // CONFIGURE
-		static const uint ROBOT_LIFT_EXEC_SW_CH  =  9;  // CONFIGURE
-		static const uint ROBOT_LIFT_SETUP_SW_CH = 10;  // CONFIGURE
-		static const uint LOAD_BALL_SW_CH		 = 11;  // CONFIGURE
-		static const uint EJECT_BALL_SW_CH       = 12;  // CONFIGURE
+		static const uint PORTCULLIS_EXEC_SW_CH  =  1;
+		static const uint PORTCULLIS_SETUP_SW_CH =  2;
+		static const uint DRAWBRIDGE_EXEC_SW_CH  =  3;
+		static const uint DRAWBRIDGE_SETUP_SW_CH =  4;
+		static const uint SALLY_PORT_EXEC_SW_CH  =  5;
+		static const uint SALLY_PORT_SETUP_SW_CH =  6;
+		static const uint CHEVAL_EXEC_SW_CH      =  7;
+		static const uint CHEVAL_SETUP_SW_CH     =  8;
+		static const uint ROBOT_LIFT_EXEC_SW_CH  =  9;
+		static const uint ROBOT_LIFT_SETUP_SW_CH = 10;
+		static const uint LOAD_BALL_SW_CH		 = 11;
+		static const uint EJECT_BALL_SW_CH       = 12;
 
 		// Driver Station CCI2 Channels (Uses joystick button references)
-		static const uint SHOOT_BALL_SW_CH       =  1;  // CONFIGURE
-		static const uint AUTO_EXEC_SW_CH		 =  2;  // CONFIGURE
-		static const uint ARM_POT_SW_CH			 =  3;  // CONFIGURE
-		static const uint ARM_TOP_SW_CH          =  4;  // CONFIGURE
-		static const uint ARM_BOTTOM_SW_CH       =  5;  // CONFIGURE
-		static const uint LOWER_SW_CH			 =  6;  // CONFIGURE
-		static const uint CLIMB_SW_CH    		 =  7;  // CONFIGURE
-		static const uint UNUSED_SW_CH           =  8;  // CONFIGURE (MOMENTARY)
-		static const uint SHOOTER_MOTOR_SW_CH    =  9;  // CONFIGURE
-		static const uint UNUSED_CH              =  9;
+		static const uint SHOOT_BALL_SW_CH       =  1;
+		static const uint AUTO_EXEC_SW_CH		 =  2;
+		static const uint ARM_POT_SW_CH			 =  3;
+		static const uint ARM_TOP_SW_CH          =  4;
+		static const uint ARM_BOTTOM_SW_CH       =  5;
+		static const uint LOWER_SW_CH			 =  6;
+		static const uint CLIMB_SW_CH    		 =  7;
+		static const uint UNUSED_SW_CH           =  8;
+		static const uint SHOOTER_MOTOR_SW_CH    =  9;
 
 		//----------------------------------------------------------------------
 		// ROBOT CHANNELS - INPUTS AND OUTPUTS
