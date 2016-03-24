@@ -628,7 +628,7 @@ void StrongholdRobot::GetDriverStationInput()
 void StrongholdRobot::ShowDSValues()
 {
 	// Show the values for driver station inputs
-	SmartDashboard::PutBoolean("DS Sally Port Setup",pSallyPortSetupSwitch->Get());
+/*	SmartDashboard::PutBoolean("DS Sally Port Setup",pSallyPortSetupSwitch->Get());
 	SmartDashboard::PutBoolean("DS Sally Port Exec",pSallyPortExecSwitch->Get());
 	SmartDashboard::PutBoolean("DS Portcullis Setup",pPortcullisSetupSwitch->Get());
 	SmartDashboard::PutBoolean("DS Portcullis Exec",pPortcullisExecSwitch->Get());
@@ -643,20 +643,20 @@ void StrongholdRobot::ShowDSValues()
 	SmartDashboard::PutBoolean("DS Load Ball",pLoadBallSwitch->Get());
 	SmartDashboard::PutBoolean("DS Eject Ball",pEjectBallSwitch->Get());
 	SmartDashboard::PutBoolean("DS Shoot Ball",pShootBallSwitch->Get());
-
+*/
 	SmartDashboard::PutBoolean("DS Auto Setup Exec",pAutoExecSwitch->Get());
-
+/*
 	SmartDashboard::PutBoolean("DS Shooter Motor On",pShooterMotorSwitch->Get());
 
 	SmartDashboard::PutBoolean("DS Raise Robot",pClimberSwitch->Get());
 	SmartDashboard::PutBoolean("DS Lower Robot",pLowerSwitch->Get());
-
+*/
 	SmartDashboard::PutBoolean("DS Arm Use POT",pArmPOTSwitch->Get());
 	SmartDashboard::PutBoolean("DS Arm Top Position",pArmTopSwitch->Get());
 	SmartDashboard::PutBoolean("DS Arm Bottom Position",pArmBottomSwitch->Get());
-
+/*
 	SmartDashboard::PutBoolean("DS Unused",pUnusedSwitch->Get());
-
+*/
 	SmartDashboard::PutBoolean("DS Lower Arm Fwd",pLowerArmFwdSwitch->Get());
 	SmartDashboard::PutBoolean("DS Lower Arm Rev",pLowerArmRevSwitch->Get());
 	SmartDashboard::PutBoolean("DS Upper Arm Fwd",pUpperArmFwdSwitch->Get());
@@ -664,12 +664,12 @@ void StrongholdRobot::ShowDSValues()
 
 	SmartDashboard::PutNumber("DS Upper Arm POT",pCCI2->GetX());
 	SmartDashboard::PutNumber("DS Lower Arm POT",pCCI2->GetY());
-
-//	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
-//	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
-//	SmartDashboard::PutBoolean("Prev Eject Ball Switch",prevEjectBallSw);
-//	SmartDashboard::PutBoolean("Prev Shoot Ball Switch",prevShootBallSw);
-
+/*
+ 	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
+ 	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
+ 	SmartDashboard::PutBoolean("Prev Eject Ball Switch",prevEjectBallSw);
+ 	SmartDashboard::PutBoolean("Prev Shoot Ball Switch",prevShootBallSw);
+*/
 	return;
 }
 #endif
@@ -700,15 +700,21 @@ void StrongholdRobot::GetRobotSensorInput()
 void StrongholdRobot::ShowRobotValues()
 {
 //	SmartDashboard::PutNumber("AM Mode",autoMode);
-//	SmartDashboard::PutNumber("Arm POT Current Position",pLowerArm->GetCurrentPosition());
-//	SmartDashboard::PutNumber("Arm POT Target Position",pLowerArm->GetPositionTarget());
-//	SmartDashboard::PutBoolean("Upper Limit Switch",pLowerArm->GetUpperLimitSwitch());
-//	SmartDashboard::PutBoolean("Lower Limit Switch",pLowerArm->GetLowerLimitSwitch());
-//	SmartDashboard::PutNumber("Arm Target Motor Speed",pLowerArm->GetTargetMotorSpeed());
-//	SmartDashboard::PutNumber("Arm Motor Speed",pLowerArm->GetMotorSpeed());
+
+	SmartDashboard::PutNumber("R Lower Arm Ratio",pLowerArm->GetRatio());
+	SmartDashboard::PutNumber("R Lower Arm Constant",pLowerArm->GetConstant());
+	SmartDashboard::PutNumber("R Lower Arm Target POT Input",pLowerArm->GetTargetPOTInput());
+	SmartDashboard::PutNumber("R Lower Arm Target Position",pLowerArm->GetTargetPosition());
+	SmartDashboard::PutNumber("R Lower Arm Target POT Output",pLowerArm->GetTargetPOTOutput());
+	SmartDashboard::PutNumber("R Lower Arm Current POT",pLowerArm->GetCurrentPosition());
+ 	SmartDashboard::PutNumber("R Lower Arm Target Speed",pLowerArm->GetTargetMotorSpeed());
+	SmartDashboard::PutNumber("R Lower Arm Motor Speed",pLowerArm->GetMotorSpeed());
+
+	SmartDashboard::PutNumber("R Upper Arm Current POT",pUpperArm->GetCurrentPosition());
+ 	SmartDashboard::PutNumber("R Upper Arm Target Speed",pUpperArm->GetTargetMotorSpeed());
+	SmartDashboard::PutNumber("R Upper Arm Motor Speed",pUpperArm->GetMotorSpeed());
 
 //	SmartDashboard::PutNumber("Loader Motor Speed",pBallLoader->GetMotorSpeed());
-
 //	SmartDashboard::PutBoolean("Load Ball Mode",loadBall);
 //	SmartDashboard::PutBoolean("Ball Loaded? Limit switch",pBallLoader->GetLoadedSensor());
 //	SmartDashboard::PutBoolean("Ball Loaded? Loader code",pBallLoader->GetBallLoaded());
@@ -735,11 +741,6 @@ void StrongholdRobot::ShowRobotValues()
 //	SmartDashboard::PutBoolean("Shooter Reset prev banner",pBallShooter->GetPrevShooterReset());
 //	SmartDashboard::PutBoolean("Shooter Reset-Shooter banner sensor",
 //			                    pBallShooter->GetBannerSensor());
-	SmartDashboard::PutNumber("Lower Arm POT",pLowerArm->GetCurrentPosition());
-	SmartDashboard::PutNumber("Upper Arm POT",pUpperArm->GetCurrentPosition());
-
-	SmartDashboard::PutNumber("Lower Arm Motor Speed",pLowerArm->GetMotorSpeed());
-	SmartDashboard::PutNumber("Upper Arm Motor Speed",pUpperArm->GetMotorSpeed());
 //	SmartDashboard::PutNumber("Shooter Motor Speed",pBallShooter->GetMotorSpeed());
 
 //	SmartDashboard::PutNumber("Climber Motor 1 Speed",pClimber->GetMotor1Speed());
@@ -763,7 +764,7 @@ void StrongholdRobot::MoveArmToPosition()
 	}
 	else
 	{
-		if ( pLowerArmFwdSwitch->Get() || pLowerArmRevSwitch->Get() ||
+/*		if ( pLowerArmFwdSwitch->Get() || pLowerArmRevSwitch->Get() ||
 			 pUpperArmFwdSwitch->Get() || pUpperArmRevSwitch->Get()    )
 		{
 			MoveArmUsingMotorSwitch();
@@ -771,7 +772,7 @@ void StrongholdRobot::MoveArmToPosition()
 		else
 		{
 			pLowerArm->StopArm();
-			pUpperArm->StopArm();
+			pUpperArm->StopArm();   */
 			if ( pArmPOTSwitch->Get() )
 			{
 				MoveArmUsingPOT();
@@ -780,7 +781,7 @@ void StrongholdRobot::MoveArmToPosition()
 			{
 				MoveArmUsingSwitchPosition();
 			}
-		}
+//		}
 	}
 
 
@@ -795,6 +796,9 @@ void StrongholdRobot::MoveArmToPosition()
 //------------------------------------------------------------------------------
 void StrongholdRobot::MoveArmUsingPOT()
 {
+	pLowerArm->MoveArmPOTInput(pCCI2->GetY());
+//	pUpperArm->MoveArmPOTInput(pCCI2->GetX());
+
 	return;
 }
 //------------------------------------------------------------------------------
@@ -808,35 +812,23 @@ void StrongholdRobot::MoveArmUsingSwitchPosition()
 {
 	if ( pArmTopSwitch->Get() )
 	{
-		lowerArmInPosition   = false;
-		upperArmInPosition   = false;
 		armTarget            = ArmLower::kTop;
 	}
 	else
 	{
 		if ( pArmBottomSwitch->Get() )
 		{
-			lowerArmInPosition = false;
-			upperArmInPosition = false;
 			armTarget          = ArmLower::kBottom;
 		}
 		else
 		{
-			lowerArmInPosition = false;
-			upperArmInPosition = false;
 			armTarget          = ArmLower::kMiddle;
 		}
 	}
 
-	if ( ! lowerArmInPosition )
-	{
-		lowerArmInPosition = pLowerArm->MoveArmPositionInput(armTarget);
-	}
+	pLowerArm->MoveArmPositionInput(armTarget);
 
-	if ( ! upperArmInPosition )
-	{
-		upperArmInPosition = pUpperArm->MoveArm(armTarget);
-	}
+//	pUpperArm->MoveArm(armTarget);
 
 	return;
 }
