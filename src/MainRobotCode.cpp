@@ -108,6 +108,9 @@ class StrongholdRobot : public IterativeRobot
 		static const uint LOADER_SENSOR_CH          =  9;
 		static const uint BALL_IN_SHOOTER_SENSOR_CH =  8;
 		static const uint SHOOTER_RESET_SENSOR_CH   =  6;
+		static const uint AUTONOMOUS_SW_1_CH        =  0;
+		static const uint AUTONOMOUS_SW_2_CH        =  1;
+		static const uint AUTONOMOUS_SW_3_CH        =  2;
 
 		// roboRio Analog Channels
 		static const uint ARM_LOWER_POT_CH 		    =  0;
@@ -205,7 +208,9 @@ class StrongholdRobot : public IterativeRobot
 		// Robot Digital Inputs - GPIO Inputs including Encoders
 		//----------------------------------------------------------------------
 		// Autonomous Mode Switches
-	
+	    DigitalInput    *pAutoSwitch1;
+	    DigitalInput    *pAutoSwitch2;
+	    DigitalInput    *pAutoSwitch3;
 		//----------------------------------------------------------------------
 		// Robot Digital Outputs - Relays (Spikes)
 		//----------------------------------------------------------------------
@@ -364,7 +369,10 @@ StrongholdRobot::StrongholdRobot()
 	//----------------------------------------------------------------------
 	// GPIO & Spare Power Inputs
 	// - Autonomous Mode Switches
-	
+	pAutoSwitch1         = new DigitalInput(AUTONOMOUS_SW_1_CH);
+	pAutoSwitch2         = new DigitalInput(AUTONOMOUS_SW_2_CH);
+	pAutoSwitch3         = new DigitalInput(AUTONOMOUS_SW_3_CH);
+
 	//----------------------------------------------------------------------
 	// ROBOT CONTROLS (OUTPUTS)
 	//----------------------------------------------------------------------
@@ -698,6 +706,9 @@ void StrongholdRobot::GetRobotSensorInput()
 void StrongholdRobot::ShowRobotValues()
 {
 //	SmartDashboard::PutNumber("AM Mode",autoMode);
+	SmartDashboard::PutBoolean("R AM Switch 1",pAutoSwitch1->Get());
+	SmartDashboard::PutBoolean("R AM Switch 2",pAutoSwitch2->Get());
+	SmartDashboard::PutBoolean("R AM Switch 3",pAutoSwitch3->Get());
 
 	SmartDashboard::PutNumber("R Lower Arm Ratio",pLowerArm->GetRatio());
 	SmartDashboard::PutNumber("R Lower Arm Constant",pLowerArm->GetConstant());
