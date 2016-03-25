@@ -49,7 +49,7 @@ class ArmLower
 		const double  ARM_TOP                  =   25.0;    // CONFIGURE ROBOT POT TARGET
 		const double  ARM_MIDDLE               =   50.0;    // CONFIGURE ROBOT POT TARGET
 		const double  ARM_BOTTOM               =   75.0;    // CONFIGURE ROBOT POT TARGET
-		const double  TARGET_TOLERANCE         =    4.0;    // CONFIGURE ROBOT POT TOLERANCE
+		const double  TARGET_TOLERANCE         =    1.0;    // CONFIGURE ROBOT POT TOLERANCE
 
 		void   CalcTargetRatioConstant();
 		double CalcOutputPOT(double inputPotValue);
