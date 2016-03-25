@@ -64,36 +64,36 @@ class StrongholdRobot : public IterativeRobot
 		static const uint JS_PORT_LEFT           =  0;
 		static const uint JS_PORT_RIGHT			 =  1;
 		static const uint CCI_PORT1        	     =  2;  // eStop Robots CCI Inputs
-		static const uint CCI_PORT2				 =  3;  // eStop Robots CCI Inputs
+//		static const uint CCI_PORT2				 =  3;  // eStop Robots CCI Inputs
 
 		// Driver Station CCI1 Channels (Uses joystick button references)
 		static const uint LOWER_ARM_FWD_SW_CH    =  4;  // TEMP TO MOVE ARM
 		static const uint LOWER_ARM_REV_SW_CH    =  3;  // TEMP TO MOVE ARM
-		static const uint UPPER_ARM_FWD_SW_CH    =  8;  // TEMP TO MOVE ARM
-		static const uint UPPER_ARM_REV_SW_CH    =  7;  // TEMP TO MOVE ARM
+		static const uint UPPER_ARM_FWD_SW_CH    =  5;  // TEMP TO MOVE ARM
+		static const uint UPPER_ARM_REV_SW_CH    =  2;  // TEMP TO MOVE ARM
 
-		static const uint PORTCULLIS_EXEC_SW_CH  =  1;
-		static const uint PORTCULLIS_SETUP_SW_CH =  2;
-		static const uint DRAWBRIDGE_EXEC_SW_CH  =  3;
-		static const uint DRAWBRIDGE_SETUP_SW_CH =  4;
-		static const uint SALLY_PORT_EXEC_SW_CH  =  5;
-		static const uint SALLY_PORT_SETUP_SW_CH =  6;
-		static const uint CHEVAL_EXEC_SW_CH      =  7;
-		static const uint CHEVAL_SETUP_SW_CH     =  8;
-		static const uint ROBOT_LIFT_EXEC_SW_CH  =  9;
-		static const uint ROBOT_LIFT_SETUP_SW_CH = 10;
-		static const uint LOAD_BALL_SW_CH		 = 11;
-		static const uint EJECT_BALL_SW_CH       = 12;
+//		static const uint PORTCULLIS_EXEC_SW_CH  =  1;
+//		static const uint PORTCULLIS_SETUP_SW_CH =  2;
+//		static const uint DRAWBRIDGE_EXEC_SW_CH  =  3;
+//		static const uint DRAWBRIDGE_SETUP_SW_CH =  4;
+//		static const uint SALLY_PORT_EXEC_SW_CH  =  5;
+//		static const uint SALLY_PORT_SETUP_SW_CH =  6;
+//		static const uint CHEVAL_EXEC_SW_CH      =  7;
+//		static const uint CHEVAL_SETUP_SW_CH     =  8;
+//		static const uint ROBOT_LIFT_EXEC_SW_CH  =  9;
+//		static const uint ROBOT_LIFT_SETUP_SW_CH =  8;
+		static const uint LOAD_BALL_SW_CH		 = 10;
+		static const uint EJECT_BALL_SW_CH       = 11;
 
 		// Driver Station CCI2 Channels (Uses joystick button references)
 		static const uint SHOOT_BALL_SW_CH       =  1;
-		static const uint AUTO_EXEC_SW_CH		 =  2;
-		static const uint ARM_POT_SW_CH			 =  3;
-		static const uint ARM_TOP_SW_CH          =  4;
-		static const uint ARM_BOTTOM_SW_CH       =  5;
-		static const uint LOWER_SW_CH			 =  6;
-		static const uint CLIMB_SW_CH    		 =  7;
-		static const uint UNUSED_SW_CH           =  8;
+//		static const uint AUTO_EXEC_SW_CH		 =  2;
+		static const uint ARM_POT_SW_CH			 =  8;
+//		static const uint ARM_TOP_SW_CH          =  4;
+//		static const uint ARM_BOTTOM_SW_CH       =  5;
+ 		static const uint LOWER_SW_CH			 =  7;
+		static const uint CLIMB_SW_CH    		 =  6;
+//		static const uint UNUSED_SW_CH           =  8;
 		static const uint SHOOTER_MOTOR_SW_CH    =  9;
 
 		//----------------------------------------------------------------------
@@ -108,6 +108,9 @@ class StrongholdRobot : public IterativeRobot
 		static const uint LOADER_SENSOR_CH          =  9;
 		static const uint BALL_IN_SHOOTER_SENSOR_CH =  8;
 		static const uint SHOOTER_RESET_SENSOR_CH   =  6;
+		static const uint AUTONOMOUS_SW_1_CH        =  0;
+		static const uint AUTONOMOUS_SW_2_CH        =  1;
+		static const uint AUTONOMOUS_SW_3_CH        =  2;
 
 		// roboRio Analog Channels
 		static const uint ARM_LOWER_POT_CH 		    =  0;
@@ -167,7 +170,7 @@ class StrongholdRobot : public IterativeRobot
 		Joystick		 *pDriveStickLeft;
 		Joystick		 *pDriveStickRight;
 		Joystick         *pCCI1;             // CCI
-		Joystick 		 *pCCI2;
+//		Joystick 		 *pCCI2;
 
 		// eStop Robotics Custom Control Interface (CCI) #1
 		JoystickButton   *pLowerArmFwdSwitch;
@@ -175,29 +178,29 @@ class StrongholdRobot : public IterativeRobot
 		JoystickButton   *pUpperArmFwdSwitch;
 		JoystickButton   *pUpperArmRevSwitch;
 
-		JoystickButton   *pSallyPortSetupSwitch;
-		JoystickButton   *pSallyPortExecSwitch;
-		JoystickButton   *pPortcullisSetupSwitch;
-		JoystickButton   *pPortcullisExecSwitch;
-		JoystickButton   *pChevalSetupSwitch;
-		JoystickButton   *pChevalExecSwitch;
-		JoystickButton   *pDrawbridgeSetupSwitch;
-		JoystickButton   *pDrawbridgeExecSwitch;
-		JoystickButton   *pRobotLiftSetupSwitch;
-		JoystickButton   *pRobotLiftExecSwitch;
+//		JoystickButton   *pSallyPortSetupSwitch;
+//		JoystickButton   *pSallyPortExecSwitch;
+//		JoystickButton   *pPortcullisSetupSwitch;
+//		JoystickButton   *pPortcullisExecSwitch;
+//		JoystickButton   *pChevalSetupSwitch;
+//		JoystickButton   *pChevalExecSwitch;
+//		JoystickButton   *pDrawbridgeSetupSwitch;
+//		JoystickButton   *pDrawbridgeExecSwitch;
+//		JoystickButton   *pRobotLiftSetupSwitch;
+//		JoystickButton   *pRobotLiftExecSwitch;
 		JoystickButton   *pLoadBallSwitch;
 		JoystickButton   *pEjectBallSwitch;
 
 		// eStop Robotics Custom Control Interface (CCI) #2
         JoystickButton   *pShootBallSwitch;
-        JoystickButton   *pAutoExecSwitch;
+//      JoystickButton   *pAutoExecSwitch;
         JoystickButton   *pArmPOTSwitch;
-		JoystickButton   *pArmTopSwitch;
-		JoystickButton   *pArmBottomSwitch;
+//		JoystickButton   *pArmTopSwitch;
+//		JoystickButton   *pArmBottomSwitch;
         JoystickButton   *pShooterMotorSwitch;
         JoystickButton   *pClimberSwitch;
         JoystickButton   *pLowerSwitch;
-        JoystickButton   *pUnusedSwitch;
+ //     JoystickButton   *pUnusedSwitch;
 
 		//----------------------------------------------------------------------
 		// ROBOT INPUT & OUTPUT POINTERS
@@ -205,7 +208,9 @@ class StrongholdRobot : public IterativeRobot
 		// Robot Digital Inputs - GPIO Inputs including Encoders
 		//----------------------------------------------------------------------
 		// Autonomous Mode Switches
-	
+	    DigitalInput    *pAutoSwitch1;
+	    DigitalInput    *pAutoSwitch2;
+	    DigitalInput    *pAutoSwitch3;
 		//----------------------------------------------------------------------
 		// Robot Digital Outputs - Relays (Spikes)
 		//----------------------------------------------------------------------
@@ -327,7 +332,7 @@ StrongholdRobot::StrongholdRobot()
 	pDriveStickLeft		   = new Joystick(JS_PORT_LEFT);
 	pDriveStickRight	   = new Joystick(JS_PORT_RIGHT);
 	pCCI1                  = new Joystick(CCI_PORT1); // CCI uses joystick object
-	pCCI2				   = new Joystick(CCI_PORT2);
+//	pCCI2				   = new Joystick(CCI_PORT2);
 
 	// CCI 1 Switches
 	pLowerArmFwdSwitch     = new JoystickButton(pCCI1,LOWER_ARM_FWD_SW_CH);
@@ -335,36 +340,39 @@ StrongholdRobot::StrongholdRobot()
 	pUpperArmFwdSwitch     = new JoystickButton(pCCI1,UPPER_ARM_FWD_SW_CH);
 	pUpperArmRevSwitch     = new JoystickButton(pCCI1,UPPER_ARM_REV_SW_CH);
 
-	pSallyPortSetupSwitch  = new JoystickButton(pCCI1,SALLY_PORT_SETUP_SW_CH);
-	pSallyPortExecSwitch   = new JoystickButton(pCCI1,SALLY_PORT_EXEC_SW_CH);
-	pPortcullisSetupSwitch = new JoystickButton(pCCI1,PORTCULLIS_SETUP_SW_CH);
-	pPortcullisExecSwitch  = new JoystickButton(pCCI1,PORTCULLIS_EXEC_SW_CH);
-	pChevalSetupSwitch     = new JoystickButton(pCCI1,CHEVAL_SETUP_SW_CH);
-	pChevalExecSwitch      = new JoystickButton(pCCI1,CHEVAL_EXEC_SW_CH);
-	pDrawbridgeSetupSwitch = new JoystickButton(pCCI1,DRAWBRIDGE_SETUP_SW_CH);
-	pDrawbridgeExecSwitch  = new JoystickButton(pCCI1,DRAWBRIDGE_EXEC_SW_CH);
-	pRobotLiftSetupSwitch  = new JoystickButton(pCCI1,ROBOT_LIFT_SETUP_SW_CH);
-	pRobotLiftExecSwitch   = new JoystickButton(pCCI1,ROBOT_LIFT_EXEC_SW_CH);
+//	pSallyPortSetupSwitch  = new JoystickButton(pCCI1,SALLY_PORT_SETUP_SW_CH);
+//	pSallyPortExecSwitch   = new JoystickButton(pCCI1,SALLY_PORT_EXEC_SW_CH);
+//	pPortcullisSetupSwitch = new JoystickButton(pCCI1,PORTCULLIS_SETUP_SW_CH);
+//	pPortcullisExecSwitch  = new JoystickButton(pCCI1,PORTCULLIS_EXEC_SW_CH);
+//	pChevalSetupSwitch     = new JoystickButton(pCCI1,CHEVAL_SETUP_SW_CH);
+//	pChevalExecSwitch      = new JoystickButton(pCCI1,CHEVAL_EXEC_SW_CH);
+//	pDrawbridgeSetupSwitch = new JoystickButton(pCCI1,DRAWBRIDGE_SETUP_SW_CH);
+//	pDrawbridgeExecSwitch  = new JoystickButton(pCCI1,DRAWBRIDGE_EXEC_SW_CH);
+//	pRobotLiftSetupSwitch  = new JoystickButton(pCCI1,ROBOT_LIFT_SETUP_SW_CH);
+//	pRobotLiftExecSwitch   = new JoystickButton(pCCI1,ROBOT_LIFT_EXEC_SW_CH);
 	pLoadBallSwitch 	   = new JoystickButton(pCCI1,LOAD_BALL_SW_CH);
 	pEjectBallSwitch	   = new JoystickButton(pCCI1,EJECT_BALL_SW_CH);
 
 	// CCI 2 Switches
-	pShootBallSwitch 	   = new JoystickButton(pCCI2,SHOOT_BALL_SW_CH);
-	pAutoExecSwitch        = new JoystickButton(pCCI2,AUTO_EXEC_SW_CH);
-	pArmPOTSwitch          = new JoystickButton(pCCI2,ARM_POT_SW_CH);
-	pArmTopSwitch          = new JoystickButton(pCCI2,ARM_TOP_SW_CH);
-	pArmBottomSwitch       = new JoystickButton(pCCI2,ARM_BOTTOM_SW_CH);
-	pShooterMotorSwitch    = new JoystickButton(pCCI2,SHOOTER_MOTOR_SW_CH);
-	pClimberSwitch         = new JoystickButton(pCCI2,CLIMB_SW_CH);
-	pLowerSwitch 		   = new JoystickButton(pCCI2,LOWER_SW_CH);
-	pUnusedSwitch          = new JoystickButton(pCCI2,UNUSED_SW_CH);
+	pShootBallSwitch 	   = new JoystickButton(pCCI1,SHOOT_BALL_SW_CH);
+//	pAutoExecSwitch        = new JoystickButton(pCCI2,AUTO_EXEC_SW_CH);
+	pArmPOTSwitch          = new JoystickButton(pCCI1,ARM_POT_SW_CH);
+//	pArmTopSwitch          = new JoystickButton(pCCI2,ARM_TOP_SW_CH);
+//	pArmBottomSwitch       = new JoystickButton(pCCI2,ARM_BOTTOM_SW_CH);
+	pShooterMotorSwitch    = new JoystickButton(pCCI1,SHOOTER_MOTOR_SW_CH);
+	pClimberSwitch         = new JoystickButton(pCCI1,CLIMB_SW_CH);
+	pLowerSwitch 		   = new JoystickButton(pCCI1,LOWER_SW_CH);
+//	pUnusedSwitch          = new JoystickButton(pCCI2,UNUSED_SW_CH);
 
 	//----------------------------------------------------------------------
 	// ROBOT INPUTS
 	//----------------------------------------------------------------------
 	// GPIO & Spare Power Inputs
 	// - Autonomous Mode Switches
-	
+	pAutoSwitch1         = new DigitalInput(AUTONOMOUS_SW_1_CH);
+	pAutoSwitch2         = new DigitalInput(AUTONOMOUS_SW_2_CH);
+	pAutoSwitch3         = new DigitalInput(AUTONOMOUS_SW_3_CH);
+
 	//----------------------------------------------------------------------
 	// ROBOT CONTROLS (OUTPUTS)
 	//----------------------------------------------------------------------
@@ -403,7 +411,6 @@ StrongholdRobot::StrongholdRobot()
 	shooterReset		  = true;
 	rightDriveSpeed       = 0.0;
 	leftDriveSpeed        = 0.0;
-//	lightsOn              = false;  // CONFIG
 
 	return;
 }
@@ -476,10 +483,10 @@ void StrongholdRobot::AutonomousInit()
 	// Reset loop counter
 	loopCount  = 0;
 
-	GetAutoModeSwitches();
+/*	GetAutoModeSwitches();
 	GetRobotSensorInput();
 	ShowAMStatus();
-
+*/
 	return;
 }
 //------------------------------------------------------------------------------
@@ -636,33 +643,33 @@ void StrongholdRobot::ShowDSValues()
 	SmartDashboard::PutBoolean("DS Drawbridge Setup",pDrawbridgeSetupSwitch->Get());
 	SmartDashboard::PutBoolean("DS Drawbridge Exec",pDrawbridgeExecSwitch->Get());
 */
-	SmartDashboard::PutBoolean("DS Robot Lift Setup",pRobotLiftSetupSwitch->Get());
-/*	SmartDashboard::PutBoolean("DS Robot Lift Exec",pRobotLiftExecSwitch->Get());
+	SmartDashboard::PutBoolean("DS Arm Use POT",pArmPOTSwitch->Get());
+//	SmartDashboard::PutBoolean("DS Robot Lift Exec",pRobotLiftExecSwitch->Get());
 
 	SmartDashboard::PutBoolean("DS Load Ball",pLoadBallSwitch->Get());
 	SmartDashboard::PutBoolean("DS Eject Ball",pEjectBallSwitch->Get());
 	SmartDashboard::PutBoolean("DS Shoot Ball",pShootBallSwitch->Get());
-*/
-	SmartDashboard::PutBoolean("DS Auto Setup Exec",pAutoExecSwitch->Get());
-/*
+
+//	SmartDashboard::PutBoolean("DS Auto Setup Exec",pAutoExecSwitch->Get());
+
 	SmartDashboard::PutBoolean("DS Shooter Motor On",pShooterMotorSwitch->Get());
 
 	SmartDashboard::PutBoolean("DS Raise Robot",pClimberSwitch->Get());
 	SmartDashboard::PutBoolean("DS Lower Robot",pLowerSwitch->Get());
-*/
-	SmartDashboard::PutBoolean("DS Arm Use POT",pArmPOTSwitch->Get());
-	SmartDashboard::PutBoolean("DS Arm Top Position",pArmTopSwitch->Get());
-	SmartDashboard::PutBoolean("DS Arm Bottom Position",pArmBottomSwitch->Get());
-/*
-	SmartDashboard::PutBoolean("DS Unused",pUnusedSwitch->Get());
-*/
+
+//	SmartDashboard::PutBoolean("DS Arm Use POT",pArmPOTSwitch->Get());
+//	SmartDashboard::PutBoolean("DS Arm Top Position",pArmTopSwitch->Get());
+//	SmartDashboard::PutBoolean("DS Arm Bottom Position",pArmBottomSwitch->Get());
+
+//	SmartDashboard::PutBoolean("DS Unused",pUnusedSwitch->Get());
+
 	SmartDashboard::PutBoolean("DS Lower Arm Fwd",pLowerArmFwdSwitch->Get());
 	SmartDashboard::PutBoolean("DS Lower Arm Rev",pLowerArmRevSwitch->Get());
 	SmartDashboard::PutBoolean("DS Upper Arm Fwd",pUpperArmFwdSwitch->Get());
 	SmartDashboard::PutBoolean("DS Upper Arm Rev",pUpperArmRevSwitch->Get());
 
-	SmartDashboard::PutNumber("DS Upper Arm POT",pCCI2->GetX());
-	SmartDashboard::PutNumber("DS Lower Arm POT",pCCI2->GetY());
+	SmartDashboard::PutNumber("DS Upper Arm POT",pCCI1->GetX());
+	SmartDashboard::PutNumber("DS Lower Arm POT",pCCI1->GetY());
 /*
  	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
  	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
@@ -699,6 +706,9 @@ void StrongholdRobot::GetRobotSensorInput()
 void StrongholdRobot::ShowRobotValues()
 {
 //	SmartDashboard::PutNumber("AM Mode",autoMode);
+	SmartDashboard::PutBoolean("R AM Switch 1",pAutoSwitch1->Get());
+	SmartDashboard::PutBoolean("R AM Switch 2",pAutoSwitch2->Get());
+	SmartDashboard::PutBoolean("R AM Switch 3",pAutoSwitch3->Get());
 
 	SmartDashboard::PutNumber("R Lower Arm Ratio",pLowerArm->GetRatio());
 	SmartDashboard::PutNumber("R Lower Arm Constant",pLowerArm->GetConstant());
@@ -762,38 +772,23 @@ void StrongholdRobot::ShowRobotValues()
 //------------------------------------------------------------------------------
 void StrongholdRobot::MoveArmToPosition()
 {
-	if ( pAutoExecSwitch->Get() )
+	if ( pArmPOTSwitch->Get() )
 	{
-		// Do nothing
+		MoveArmUsingPOT();
 	}
 	else
 	{
-		if ( pRobotLiftSetupSwitch->Get() )
-		{
-			if ( pLowerArmFwdSwitch->Get() || pLowerArmRevSwitch->Get() ||
-			     pUpperArmFwdSwitch->Get() || pUpperArmRevSwitch->Get()    )
-		    {
-			    MoveArmUsingMotorSwitch();
-		    }
-		    else
-		    {
-			    pLowerArm->StopArm();
-		     	pUpperArm->StopArm();
-		    }
-		}
-		else
-		{
-			if ( pArmPOTSwitch->Get() )
-			{
-				MoveArmUsingPOT();
-			}
-			else
-			{
-				MoveArmUsingSwitchPosition();
-			}
-		}
+		if ( pLowerArmFwdSwitch->Get() || pLowerArmRevSwitch->Get() ||
+		     pUpperArmFwdSwitch->Get() || pUpperArmRevSwitch->Get()    )
+	    {
+		    MoveArmUsingMotorSwitch();
+	    }
+	    else
+	    {
+		    pLowerArm->StopArm();
+	     	pUpperArm->StopArm();
+	    }
 	}
-
 
 	return;
 }
@@ -806,8 +801,8 @@ void StrongholdRobot::MoveArmToPosition()
 //------------------------------------------------------------------------------
 void StrongholdRobot::MoveArmUsingPOT()
 {
-	pLowerArm->MoveArmPOTInput(pCCI2->GetY());
-	pUpperArm->MoveArmPOTInput(pCCI2->GetX());
+	pLowerArm->MoveArmPOTInput(pCCI1->GetY());
+	pUpperArm->MoveArmPOTInput(pCCI1->GetX());
 
 	return;
 }
@@ -820,7 +815,7 @@ void StrongholdRobot::MoveArmUsingPOT()
 //------------------------------------------------------------------------------
 void StrongholdRobot::MoveArmUsingSwitchPosition()
 {
-	if ( pArmTopSwitch->Get() )
+/*	if ( pArmTopSwitch->Get() )
 	{
 		armTarget            = ArmLower::kTop;
 	}
@@ -839,7 +834,7 @@ void StrongholdRobot::MoveArmUsingSwitchPosition()
 	pLowerArm->MoveArmPositionInput(armTarget);
 
 	pUpperArm->MoveArmPositionInput(armTarget);
-
+*/
 	return;
 }
 //------------------------------------------------------------------------------
@@ -1059,13 +1054,6 @@ void StrongholdRobot::GetAutoModeSwitches()
 //------------------------------------------------------------------------------
 void StrongholdRobot::RunAutonomousMode()
 {
-/*	if ( loopCount <= 100)
-	{
-//		pDriveTrain->TankDrive(0.5 , 0.5);
-//		AMDriveRobot(0.5 , 0.5);
-		loopCount++;
-	}
-*/
 	return;
 }
 //------------------------------------------------------------------------------

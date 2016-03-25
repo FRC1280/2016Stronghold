@@ -33,23 +33,23 @@ class ArmUpper
 		double GetConstant()         const;
 
 	private:
-		const float   MOTOR_SPEED_UP           =    1.00;
-		const float   MOTOR_SPEED_DOWN         =   -1.00;
+		const float   MOTOR_SPEED_UP           =   -1.00;
+		const float   MOTOR_SPEED_DOWN         =    1.00;
 		const float   ALL_STOP                 =    0.00;
 
 		const double  INPUT_POT_FULL_FWD       =   -1.000;   // CONFIGURE
 		const double  INPUT_POT_FULL_BACK      =    1.000;   // CONFIGURE
 
-		const double  POT_FULL_RANGE           = -3600.0;    // CONFIGURE
-		const double  POT_OFFSET               =  3081.6;    // CONFIGURE
+		const double  POT_FULL_RANGE           =  3600.0;    // CONFIGURE
+		const double  POT_OFFSET               = -1852.1;    // CONFIGURE
 
-		const double  OUTPUT_POT_FULL_FWD      =    0.000;   // CONFIGURE
-		const double  OUTPUT_POT_FULL_BACK     =  270.000;   // CONFIGURE
+		const double  OUTPUT_POT_FULL_FWD      =    6.000;   // CONFIGURE
+		const double  OUTPUT_POT_FULL_BACK     =  355.000;   // CONFIGURE
 
 		const double  ARM_TOP                  =    25.0;    // CONFIGURE
 		const double  ARM_MIDDLE               =    50.0;    // CONFIGURE
 		const double  ARM_BOTTOM               =    75.0;    // CONFIGURE
-		const double  TARGET_TOLERANCE         =     1.0;
+		const double  TARGET_TOLERANCE         =     4.0;
 
 		void   CalcTargetRatioConstant();
 		double CalcOutputPOT(double inputPotValue);

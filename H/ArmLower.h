@@ -40,11 +40,11 @@ class ArmLower
 		const double  INPUT_POT_FULL_FWD       =   -1.000;  // CONFIGURE
 		const double  INPUT_POT_FULL_BACK      =   -0.953;  // CONFIGURE
 
-		const double  POT_FULL_RANGE           =  194.580;  // CONFIGURE
-		const double  POT_OFFSET               =   -0.308;  // CONFIGURE
+		const double  POT_FULL_RANGE           = -264.735;  // CONFIGURE
+		const double  POT_OFFSET               =  188.376;  // CONFIGURE
 
 		const double  OUTPUT_POT_FULL_FWD      =    0.000;  // CONFIGURE
-		const double  OUTPUT_POT_FULL_BACK     =   90.000;  // CONFIGURE
+		const double  OUTPUT_POT_FULL_BACK     =  100.000;  // CONFIGURE
 
 		const double  ARM_TOP                  =   25.0;    // CONFIGURE ROBOT POT TARGET
 		const double  ARM_MIDDLE               =   50.0;    // CONFIGURE ROBOT POT TARGET
