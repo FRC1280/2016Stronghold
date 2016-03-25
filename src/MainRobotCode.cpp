@@ -81,18 +81,18 @@ class StrongholdRobot : public IterativeRobot
 //		static const uint CHEVAL_EXEC_SW_CH      =  7;
 //		static const uint CHEVAL_SETUP_SW_CH     =  8;
 //		static const uint ROBOT_LIFT_EXEC_SW_CH  =  9;
-		static const uint ROBOT_LIFT_SETUP_SW_CH =  8;
+//		static const uint ROBOT_LIFT_SETUP_SW_CH =  8;
 		static const uint LOAD_BALL_SW_CH		 = 10;
 		static const uint EJECT_BALL_SW_CH       = 11;
 
 		// Driver Station CCI2 Channels (Uses joystick button references)
 		static const uint SHOOT_BALL_SW_CH       =  1;
 //		static const uint AUTO_EXEC_SW_CH		 =  2;
-//		static const uint ARM_POT_SW_CH			 =  3;
+		static const uint ARM_POT_SW_CH			 =  8;
 //		static const uint ARM_TOP_SW_CH          =  4;
 //		static const uint ARM_BOTTOM_SW_CH       =  5;
- 		static const uint LOWER_SW_CH			 =  6;
-		static const uint CLIMB_SW_CH    		 =  7;
+ 		static const uint LOWER_SW_CH			 =  7;
+		static const uint CLIMB_SW_CH    		 =  6;
 //		static const uint UNUSED_SW_CH           =  8;
 		static const uint SHOOTER_MOTOR_SW_CH    =  9;
 
@@ -183,7 +183,7 @@ class StrongholdRobot : public IterativeRobot
 //		JoystickButton   *pChevalExecSwitch;
 //		JoystickButton   *pDrawbridgeSetupSwitch;
 //		JoystickButton   *pDrawbridgeExecSwitch;
-		JoystickButton   *pRobotLiftSetupSwitch;
+//		JoystickButton   *pRobotLiftSetupSwitch;
 //		JoystickButton   *pRobotLiftExecSwitch;
 		JoystickButton   *pLoadBallSwitch;
 		JoystickButton   *pEjectBallSwitch;
@@ -191,7 +191,7 @@ class StrongholdRobot : public IterativeRobot
 		// eStop Robotics Custom Control Interface (CCI) #2
         JoystickButton   *pShootBallSwitch;
 //      JoystickButton   *pAutoExecSwitch;
-//      JoystickButton   *pArmPOTSwitch;
+        JoystickButton   *pArmPOTSwitch;
 //		JoystickButton   *pArmTopSwitch;
 //		JoystickButton   *pArmBottomSwitch;
         JoystickButton   *pShooterMotorSwitch;
@@ -343,7 +343,7 @@ StrongholdRobot::StrongholdRobot()
 //	pChevalExecSwitch      = new JoystickButton(pCCI1,CHEVAL_EXEC_SW_CH);
 //	pDrawbridgeSetupSwitch = new JoystickButton(pCCI1,DRAWBRIDGE_SETUP_SW_CH);
 //	pDrawbridgeExecSwitch  = new JoystickButton(pCCI1,DRAWBRIDGE_EXEC_SW_CH);
-	pRobotLiftSetupSwitch  = new JoystickButton(pCCI1,ROBOT_LIFT_SETUP_SW_CH);
+//	pRobotLiftSetupSwitch  = new JoystickButton(pCCI1,ROBOT_LIFT_SETUP_SW_CH);
 //	pRobotLiftExecSwitch   = new JoystickButton(pCCI1,ROBOT_LIFT_EXEC_SW_CH);
 	pLoadBallSwitch 	   = new JoystickButton(pCCI1,LOAD_BALL_SW_CH);
 	pEjectBallSwitch	   = new JoystickButton(pCCI1,EJECT_BALL_SW_CH);
@@ -351,7 +351,7 @@ StrongholdRobot::StrongholdRobot()
 	// CCI 2 Switches
 	pShootBallSwitch 	   = new JoystickButton(pCCI1,SHOOT_BALL_SW_CH);
 //	pAutoExecSwitch        = new JoystickButton(pCCI2,AUTO_EXEC_SW_CH);
-//	pArmPOTSwitch          = new JoystickButton(pCCI2,ARM_POT_SW_CH);
+	pArmPOTSwitch          = new JoystickButton(pCCI1,ARM_POT_SW_CH);
 //	pArmTopSwitch          = new JoystickButton(pCCI2,ARM_TOP_SW_CH);
 //	pArmBottomSwitch       = new JoystickButton(pCCI2,ARM_BOTTOM_SW_CH);
 	pShooterMotorSwitch    = new JoystickButton(pCCI1,SHOOTER_MOTOR_SW_CH);
@@ -635,7 +635,7 @@ void StrongholdRobot::ShowDSValues()
 	SmartDashboard::PutBoolean("DS Drawbridge Setup",pDrawbridgeSetupSwitch->Get());
 	SmartDashboard::PutBoolean("DS Drawbridge Exec",pDrawbridgeExecSwitch->Get());
 */
-	SmartDashboard::PutBoolean("DS Robot Lift Setup",pRobotLiftSetupSwitch->Get());
+	SmartDashboard::PutBoolean("DS Arm Use POT",pArmPOTSwitch->Get());
 //	SmartDashboard::PutBoolean("DS Robot Lift Exec",pRobotLiftExecSwitch->Get());
 
 	SmartDashboard::PutBoolean("DS Load Ball",pLoadBallSwitch->Get());
@@ -761,37 +761,23 @@ void StrongholdRobot::ShowRobotValues()
 //------------------------------------------------------------------------------
 void StrongholdRobot::MoveArmToPosition()
 {
-//	if ( pAutoExecSwitch->Get() )
-//	{
-//		// Do nothing
-//	}
-//	else
-//	{
-		if ( pRobotLiftSetupSwitch->Get() )
-		{
-			if ( pLowerArmFwdSwitch->Get() || pLowerArmRevSwitch->Get() ||
-			     pUpperArmFwdSwitch->Get() || pUpperArmRevSwitch->Get()    )
-		    {
-			    MoveArmUsingMotorSwitch();
-		    }
-		    else
-		    {
-			    pLowerArm->StopArm();
-		     	pUpperArm->StopArm();
-		    }
-		}
-		else
-		{
-//			if ( pArmPOTSwitch->Get() )
-//			{
-				MoveArmUsingPOT();
-//			}
-//			else
-//			{
-//				MoveArmUsingSwitchPosition();
-//			}
-		}
-//	}
+	if ( pArmPOTSwitch->Get() )
+	{
+		MoveArmUsingPOT();
+	}
+	else
+	{
+		if ( pLowerArmFwdSwitch->Get() || pLowerArmRevSwitch->Get() ||
+		     pUpperArmFwdSwitch->Get() || pUpperArmRevSwitch->Get()    )
+	    {
+		    MoveArmUsingMotorSwitch();
+	    }
+	    else
+	    {
+		    pLowerArm->StopArm();
+	     	pUpperArm->StopArm();
+	    }
+	}
 
 	return;
 }

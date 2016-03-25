@@ -302,13 +302,13 @@ bool  ArmLower::GoToPOTTarget(double inputPotValue)
 	{
 		if ( pArmPot->Get() > targetHighValue )  // Arm moving down
 		{
-			MoveArmDown();
+			MoveArmUp();
 		}
 		else
 		{
 			if ( pArmPot->Get() < targetLowValue )  // Arm moving up
 			{
-					MoveArmUp();
+					MoveArmDown();
 			}
 		}
 	}
