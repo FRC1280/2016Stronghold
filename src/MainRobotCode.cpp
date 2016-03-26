@@ -1381,6 +1381,8 @@ void StrongholdRobot::AMTurnRight()
 //------------------------------------------------------------------------------
 void StrongholdRobot::AMShootHigh()
 {
+	AMDriveStop();
+
 	if ( loopCount == am6S3ShootStart )
 	{
 		shootBall   = true;
