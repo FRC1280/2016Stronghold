@@ -145,14 +145,14 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
         // Autonomous mode timings (Starts and Durations)
 		static const uint  AM2_S1_START            = 100;
-		static const uint  AM2_S1_DRIVE_FAST       = 350;
+		static const uint  AM2_S1_DRIVE_FAST       = 315;
 
 		static const uint  AM3_S1_START            =   0;
-		static const uint  AM3_S1_DRIVE_FAST       = 350;
+		static const uint  AM3_S1_DRIVE_FAST       = 315;
 
         // Robot Set Drive Speeds
-		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.750;
-		const float AM_DRIVE_FWD_LEFT_FAST_SPEED  =  0.750;
+		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.850;
+		const float AM_DRIVE_FWD_LEFT_FAST_SPEED  =  0.850;
 		const float AM_DRIVE_STOP                 =  0.000;
 
         //----------------------------------------------------------------------
@@ -285,6 +285,7 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// Autonomous Mode Timings
 		//----------------------------------------------------------------------
+		uint am2S1DriveFastStart =   0;
 		uint am2S1DriveFastEnd   =   0;
 
 		uint am3S1DriveFastStart =   0;
@@ -742,7 +743,7 @@ void StrongholdRobot::ShowRobotValues()
 	SmartDashboard::PutNumber("R Lower Arm Target Position",pLowerArm->GetTargetPosition());
 	SmartDashboard::PutNumber("R Lower Arm Target POT Output",pLowerArm->GetTargetPOTOutput());
 	SmartDashboard::PutNumber("R Lower Arm Current POT",pLowerArm->GetCurrentPosition());
-// 	SmartDashboard::PutNumber("R Lower Arm Target Speed",pLowerArm->GetTargetMotorSpeed());
+ 	SmartDashboard::PutNumber("R Lower Arm Target Speed",pLowerArm->GetTargetMotorSpeed());
 	SmartDashboard::PutNumber("R Lower Arm Motor Speed",pLowerArm->GetMotorSpeed());
 
 //	SmartDashboard::PutNumber("R Upper Arm Ratio",pUpperArm->GetRatio());
