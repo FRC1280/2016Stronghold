@@ -50,10 +50,6 @@ class StrongholdRobot : public IterativeRobot
 		void   AutonomousPeriodic();
 		void   TeleopPeriodic();
 
-		//Autonomous
-		void   AMDriveRobot(float driveLeft, float driveRight);
-
-
 	private:
 		//----------------------------------------------------------------------
 		// CONSTANTS USED IN CLASS
@@ -103,14 +99,13 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 
 		// roboRio GPIO Channels
-		static const uint TOP_LIMIT_SW_CH		    =  0;
-		static const uint BOTTOM_LIMIT_SW_CH	    =  1;
-		static const uint LOADER_SENSOR_CH          =  9;
-		static const uint BALL_IN_SHOOTER_SENSOR_CH =  8;
-		static const uint SHOOTER_RESET_SENSOR_CH   =  6;
 		static const uint AUTONOMOUS_SW_1_CH        =  0;
 		static const uint AUTONOMOUS_SW_2_CH        =  1;
 		static const uint AUTONOMOUS_SW_3_CH        =  2;
+		static const uint SHOOTER_RESET_SENSOR_CH   =  6;
+		static const uint BOTTOM_STOP_SENSOR_CH	    =  7;  // NORMAL CLOSE
+		static const uint BALL_IN_SHOOTER_SENSOR_CH =  8;  // NORMAL CLOSE
+		static const uint LOADER_SENSOR_CH          =  9;  // NORMAL CLOSE
 
 		// roboRio Analog Channels
 		static const uint ARM_LOWER_POT_CH 		    =  0;
@@ -148,16 +143,27 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// AUTONOMOUS MODE ROBOT CONTROL CONSTANTS (OUTPUTS)
 		//----------------------------------------------------------------------
-        // Robot drive variables
+        // Autonomous mode timings (Starts and Durations)
+		static const uint  AM2_S1_START            = 100;
+		static const uint  AM2_S1_DRIVE_FAST       = 315;
+
+		static const uint  AM3_S1_START            =   0;
+		static const uint  AM3_S1_DRIVE_FAST       = 315;
 
         // Robot Set Drive Speeds
+		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.850;
+		const float AM_DRIVE_FWD_LEFT_FAST_SPEED  =  0.850;
+		const float AM_DRIVE_STOP                 =  0.000;
 
         //----------------------------------------------------------------------
 		// AUTONOMOUS MODE ROBOT STATE & TIMING TRACKING
 		// Used to determine what robot is or should be doing in autonomous mode
 		//----------------------------------------------------------------------
         // Autonomous Mode States
-        enum autoModeStates {kAutoModeOff};
+        enum autoModeStates {kAM1Off, kAM2DriveLowBar, kAM3DriveOnly
+        				   , kAM4TurnLowBar, kAM5LowBarShootLow
+						   , kAM6LowBarShootHigh, kAM7LowBarShootLow2
+        				   , kAM8LowBarShootHigh2};
 
 		//----------------------------------------------------------------------
 		// POINTERS FOR REQUIRED OBJECTS
@@ -271,11 +277,20 @@ class StrongholdRobot : public IterativeRobot
 		bool shooterReset;
 
 		//----------------------------------------------------------------------
-		// ROBOT INPUTS
-		//----------------------------------------------------------------------
 		// Autonomous Mode Switches & variables
 		//----------------------------------------------------------------------
 		uint autoMode;
+		uint autoModeSelected    = 0;
+
+		//----------------------------------------------------------------------
+		// Autonomous Mode Timings
+		//----------------------------------------------------------------------
+		uint am2S1DriveFastStart =   0;
+		uint am2S1DriveFastEnd   =   0;
+
+		uint am3S1DriveFastStart =   0;
+		uint am3S1DriveFastEnd   =   0;
+
 		//----------------------------------------------------------------------
 		// CUSTOM METHODS SPECIFIC TO TEAM 1280 ROBOT
 		//----------------------------------------------------------------------
@@ -303,6 +318,11 @@ class StrongholdRobot : public IterativeRobot
 		void   GetAutoModeSwitches();
 		void   RunAutonomousMode();
 		void   ShowAMStatus();
+		void   AM1Off();
+		void   AM2DriveLowBar();
+		void   AM3DriveOnly();
+		void   AMDriveFwdFast();
+		void   AMDriveStop();
 };
 //------------------------------------------------------------------------------
 // INITIALIZE STATIC CONSTANTS
@@ -379,7 +399,8 @@ StrongholdRobot::StrongholdRobot()
 	pDriveTrain		     = new RobotDrive(LEFT_FRONT_MOTOR_CH,LEFT_REAR_MOTOR_CH,
 										  RIGHT_FRONT_MOTOR_CH, RIGHT_REAR_MOTOR_CH);
 
-	pLowerArm			 = new ArmLower(ARM_LOWER_MOTOR_CH, ARM_LOWER_POT_CH);
+	pLowerArm			 = new ArmLower(ARM_LOWER_MOTOR_CH, ARM_LOWER_POT_CH
+			                          , BOTTOM_STOP_SENSOR_CH);
 	pUpperArm			 = new ArmUpper(ARM_UPPER_MOTOR_CH, ARM_UPPER_POT_CH);
 	
 	pBallLoader			 = new Loader(LOADER_MOTOR_CH, LOADER_SENSOR_CH, BALL_IN_SHOOTER_SENSOR_CH);
@@ -395,7 +416,7 @@ StrongholdRobot::StrongholdRobot()
 	loopCount      = 0;
 
 	// Initialize robot control variables
-	autoMode              = kAutoModeOff;
+	autoMode              = kAM1Off;
 	lowerArmInPosition    = true;
 	upperArmInPosition    = true;
 	armTarget             = 0;
@@ -483,10 +504,12 @@ void StrongholdRobot::AutonomousInit()
 	// Reset loop counter
 	loopCount  = 0;
 
-/*	GetAutoModeSwitches();
+	CalcAutoModeTimings();
+
+	GetAutoModeSwitches();
 	GetRobotSensorInput();
 	ShowAMStatus();
-*/
+
 	return;
 }
 //------------------------------------------------------------------------------
@@ -547,6 +570,8 @@ void StrongholdRobot::AutonomousPeriodic()
     // Increment & display loop counter
 	loopCount++;
 
+	GetAutoModeSwitches();
+
 	GetRobotSensorInput();
 	
 	ShowAMStatus();
@@ -575,6 +600,8 @@ void StrongholdRobot::AutonomousPeriodic()
 //------------------------------------------------------------------------------
 void StrongholdRobot::TeleopPeriodic()
 {
+	ShowAMStatus();
+
 	// Increment & display loop counter
 	loopCount++;
 
@@ -612,10 +639,8 @@ void StrongholdRobot::TeleopPeriodic()
 //------------------------------------------------------------------------------
 void StrongholdRobot::GetDriverStationInput()
 {
-	rightDriveSpeed		= pDriveStickRight->GetY();
-	leftDriveSpeed		= pDriveStickLeft->GetY();
-	rightDriveSpeed		= rightDriveSpeed * -1;
-	leftDriveSpeed		= leftDriveSpeed * -1;
+	rightDriveSpeed		= -1 * pDriveStickRight->GetY();
+	leftDriveSpeed		= -1 * pDriveStickLeft->GetY();
 
 #ifdef CONSOLE
     ShowDSValues();
@@ -710,8 +735,10 @@ void StrongholdRobot::ShowRobotValues()
 	SmartDashboard::PutBoolean("R AM Switch 2",pAutoSwitch2->Get());
 	SmartDashboard::PutBoolean("R AM Switch 3",pAutoSwitch3->Get());
 
-	SmartDashboard::PutNumber("R Lower Arm Ratio",pLowerArm->GetRatio());
-	SmartDashboard::PutNumber("R Lower Arm Constant",pLowerArm->GetConstant());
+	SmartDashboard::PutBoolean("R Lower Arm Limit Sw",pLowerArm->GetStopSensor());
+
+//	SmartDashboard::PutNumber("R Lower Arm Ratio",pLowerArm->GetRatio());
+//	SmartDashboard::PutNumber("R Lower Arm Constant",pLowerArm->GetConstant());
 	SmartDashboard::PutNumber("R Lower Arm Target POT Input",pLowerArm->GetTargetPOTInput());
 	SmartDashboard::PutNumber("R Lower Arm Target Position",pLowerArm->GetTargetPosition());
 	SmartDashboard::PutNumber("R Lower Arm Target POT Output",pLowerArm->GetTargetPOTOutput());
@@ -719,13 +746,13 @@ void StrongholdRobot::ShowRobotValues()
  	SmartDashboard::PutNumber("R Lower Arm Target Speed",pLowerArm->GetTargetMotorSpeed());
 	SmartDashboard::PutNumber("R Lower Arm Motor Speed",pLowerArm->GetMotorSpeed());
 
-	SmartDashboard::PutNumber("R Upper Arm Ratio",pUpperArm->GetRatio());
-	SmartDashboard::PutNumber("R Upper Arm Constant",pUpperArm->GetConstant());
+//	SmartDashboard::PutNumber("R Upper Arm Ratio",pUpperArm->GetRatio());
+//	SmartDashboard::PutNumber("R Upper Arm Constant",pUpperArm->GetConstant());
 	SmartDashboard::PutNumber("R Upper Arm Target POT Input",pUpperArm->GetTargetPOTInput());
 	SmartDashboard::PutNumber("R Upper Arm Target Position",pUpperArm->GetTargetPosition());
 	SmartDashboard::PutNumber("R Upper Arm Target POT Output",pUpperArm->GetTargetPOTOutput());
 	SmartDashboard::PutNumber("R Upper Arm Current POT",pUpperArm->GetCurrentPosition());
- 	SmartDashboard::PutNumber("R Upper Arm Target Speed",pUpperArm->GetTargetMotorSpeed());
+// 	SmartDashboard::PutNumber("R Upper Arm Target Speed",pUpperArm->GetTargetMotorSpeed());
 	SmartDashboard::PutNumber("R Upper Arm Motor Speed",pUpperArm->GetMotorSpeed());
 
 //	SmartDashboard::PutNumber("Loader Motor Speed",pBallLoader->GetMotorSpeed());
@@ -1034,7 +1061,23 @@ void StrongholdRobot::RunClimber()
 
 	return;
 }
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::CalcAutoModeTimings()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Obtains the autonomous mode switch values from the robot and determines
+// which autonomous mode we want to run.
+//------------------------------------------------------------------------------
+void StrongholdRobot::CalcAutoModeTimings()
+{
+    am2S1DriveFastStart   =  AM2_S1_START;
+    am2S1DriveFastEnd     =  am2S1DriveFastStart + AM2_S1_DRIVE_FAST;
 
+    am3S1DriveFastStart   =  AM3_S1_START;
+    am3S1DriveFastEnd     =  am3S1DriveFastStart + AM3_S1_DRIVE_FAST;
+
+	return;
+}
 //------------------------------------------------------------------------------
 // METHOD:  StrongholdRobot::GetAutoModeSwitches()
 // Type:	Public accessor for StrongholdRobot class
@@ -1044,6 +1087,73 @@ void StrongholdRobot::RunClimber()
 //------------------------------------------------------------------------------
 void StrongholdRobot::GetAutoModeSwitches()
 {
+	if ( pAutoSwitch1->Get() )
+	{
+		if ( pAutoSwitch2->Get() )
+		{
+			if ( pAutoSwitch3->Get() )
+			{
+				// Autonomous Mode 8 - On On On
+				autoMode         = kAM8LowBarShootHigh2;
+				autoModeSelected = 8;
+			}
+			else
+			{
+				// Autonomous Mode 6 - On On Off
+				autoMode = kAM6LowBarShootHigh;
+				autoModeSelected = 6;
+			}
+		}
+		else
+		{
+			if ( pAutoSwitch3->Get() )
+			{
+				// Autonomous Mode 7 - On Off On
+				autoMode = kAM7LowBarShootLow2;
+				autoModeSelected  = 7;
+			}
+			else
+			{
+				// Autonomous Mode 5 - On Off Off
+				autoMode = kAM5LowBarShootLow;
+				autoModeSelected  = 5;
+			}
+		}
+	}
+	else
+	{
+		if ( pAutoSwitch2->Get() )
+		{
+			if ( pAutoSwitch3->Get() )
+			{
+				// Autonomous Mode 4 - Off On On
+				autoMode = kAM4TurnLowBar;
+				autoModeSelected = 4;
+			}
+			else
+			{
+				// Autonomous Mode 2 - Off On Off
+				autoMode = kAM2DriveLowBar;
+				autoModeSelected  = 2;
+			}
+		}
+		else
+		{
+			if ( pAutoSwitch3->Get() )
+			{
+				// Autonomous Mode 3 - Off Off On
+				autoMode = kAM3DriveOnly;
+				autoModeSelected = 3;
+			}
+			else
+			{
+				// Autonomous Mode 1 - Off Off Off
+				autoMode = kAM1Off;
+				autoModeSelected = 1;
+			}
+		}
+	}
+
 	return;
 }
 //------------------------------------------------------------------------------
@@ -1054,6 +1164,39 @@ void StrongholdRobot::GetAutoModeSwitches()
 //------------------------------------------------------------------------------
 void StrongholdRobot::RunAutonomousMode()
 {
+	switch ( autoMode )
+	{
+		case kAM1Off:
+			AM1Off();
+			break;
+
+		case kAM2DriveLowBar:
+			AM2DriveLowBar();
+			break;
+
+		case kAM3DriveOnly:
+			 AM3DriveOnly();
+			 break;
+
+		case kAM4TurnLowBar:
+			 break;
+
+		case kAM5LowBarShootLow:
+			 break;
+
+		case kAM6LowBarShootHigh:
+			 break;
+
+		case kAM7LowBarShootLow2:
+			 break;
+
+		case kAM8LowBarShootHigh2:
+			 break;
+
+		default:
+		 	break;
+	}
+
 	return;
 }
 //------------------------------------------------------------------------------
@@ -1064,5 +1207,99 @@ void StrongholdRobot::RunAutonomousMode()
 //------------------------------------------------------------------------------
 void StrongholdRobot::ShowAMStatus()
 {
+	SmartDashboard::PutNumber("Autonomous Mode",autoModeSelected);
+
+	SmartDashboard::PutNumber("Loop Counter",loopCount);
+/*	SmartDashboard::PutNumber("AM3S1 Start",am3S1DriveSlowStart);
+	SmartDashboard::PutNumber("AM3S1 End",am3S1DriveSlowEnd);
+	SmartDashboard::PutNumber("AM3S2 Start",am3S2DriveFastStart);
+	SmartDashboard::PutNumber("AM3S2 End",am3S2DriveFastEnd);
+	SmartDashboard::PutNumber("AM3S3 Start",am3S3DriveSlowStart);
+	SmartDashboard::PutNumber("AM3S3 End",am3S3DriveSlowEnd);
+*/
+	SmartDashboard::PutBoolean("R AM Switch 1",pAutoSwitch1->Get());
+	SmartDashboard::PutBoolean("R AM Switch 2",pAutoSwitch2->Get());
+	SmartDashboard::PutBoolean("R AM Switch 3",pAutoSwitch3->Get());
+
+	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::AM1Off()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Does nothing when autonomous mode is turned off
+//------------------------------------------------------------------------------
+void StrongholdRobot::AM1Off()
+{
+	// Do nothing
+	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::AM2DriveLowBar()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Lowers arm and drives robot through low bar defense
+//------------------------------------------------------------------------------
+void StrongholdRobot::AM2DriveLowBar()
+{
+	if ( loopCount >= am2S1DriveFastStart  &&
+		 loopCount <  am2S1DriveFastEnd        )
+	{
+		AMDriveFwdFast();
+	}
+
+	if ( loopCount >= am2S1DriveFastEnd       )
+	{
+		AMDriveStop();
+	}
+
+	pLowerArm->MoveArmPositionInput(ArmLower::kBottom);
+	pUpperArm->MoveArmPositionInput(ArmUpper::kBottom);
+
+	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::AM3DriveOnly()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Does nothing when autonomous mode is turned off
+//------------------------------------------------------------------------------
+void StrongholdRobot::AM3DriveOnly()
+{
+	if ( loopCount >= am3S1DriveFastStart  &&
+		 loopCount <  am3S1DriveFastEnd        )
+	{
+		AMDriveFwdFast();
+	}
+
+	if ( loopCount >= am3S1DriveFastEnd       )
+	{
+		AMDriveStop();
+	}
+
+	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::AMDriveFwdFast()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Does nothing when autonomous mode is turned off
+//------------------------------------------------------------------------------
+void StrongholdRobot::AMDriveFwdFast()
+{
+	pDriveTrain->TankDrive(AM_DRIVE_FWD_LEFT_FAST_SPEED,AM_DRIVE_FWD_RIGHT_FAST_SPEED);
+
+	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::AMDriveStop()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Does nothing when autonomous mode is turned off
+//------------------------------------------------------------------------------
+void StrongholdRobot::AMDriveStop()
+{
+	pDriveTrain->TankDrive(AM_DRIVE_STOP,AM_DRIVE_STOP);
+
 	return;
 }
