@@ -150,16 +150,16 @@ class StrongholdRobot : public IterativeRobot
 		static const uint  AM3_S1_START            =   0;
 		static const uint  AM3_S1_DRIVE_FAST       = 315;
 
-		static const uint  AM6_S1_START            =   0;
+		static const uint  AM6_S1_START            = 100;
 		static const uint  AM6_S1_DRIVE            = 315;
-		static const uint  AM6_S2_TURN_RT          =  50;
+		static const uint  AM6_S2_TURN_RT          = 100;
 		static const uint  AM6_S3_SHOOT            = 150;
 
         // Robot Set Drive Speeds
 		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.850;
 		const float AM_DRIVE_FWD_LEFT_FAST_SPEED  =  0.850;
-		const float AM_TURN_RIGHT_RIGHT_SPEED     =  1.000;
-		const float AM_TURN_RIGHT_LEFT_SPEED      = -1.000;
+		const float AM_TURN_RIGHT_RIGHT_SPEED     = -1.000;
+		const float AM_TURN_RIGHT_LEFT_SPEED      =  1.000;
 		const float AM_DRIVE_STOP                 =  0.000;
 
         //----------------------------------------------------------------------
@@ -545,6 +545,8 @@ void StrongholdRobot::TeleopInit()
 
 	lowerArmInPosition = true;
 	upperArmInPosition = true;
+
+	shootBall = false;
 
 	return;
 }
@@ -1279,7 +1281,6 @@ void StrongholdRobot::AM2DriveLowBar()
 	}
 
 	pLowerArm->MoveArmPositionInput(ArmLower::kBottom);
-	pUpperArm->MoveArmPositionInput(ArmUpper::kBottom);
 
 	return;
 }
@@ -1312,6 +1313,8 @@ void StrongholdRobot::AM3DriveOnly()
 //------------------------------------------------------------------------------
 void StrongholdRobot::AM6DriveShoot()
 {
+	pLowerArm->MoveArmPositionInput(ArmLower::kBottom);
+
 	if ( loopCount >= am6S1DriveStart  &&
 		 loopCount <  am6S1DriveEnd        )
 	{
@@ -1330,7 +1333,7 @@ void StrongholdRobot::AM6DriveShoot()
 		AMShootHigh();
 	}
 
-	if ( loopCount >= am6S1DriveEnd       )
+	if ( loopCount >= am6S3ShootEnd       )
 	{
 		AMDriveStop();
 	}
