@@ -89,10 +89,10 @@ bool  ArmUpper::MoveArmPositionInput(uint inputTarget)
 //------------------------------------------------------------------------------
 void  ArmUpper::MoveArmUp()
 {
-	if ( pArmPot->Get() <= ARM_BACK_STOP_POT )
-		RunArmMotor(MOTOR_SPEED_UP);
-	else
+	if ( pArmPot->Get() <= ARM_FWD_STOP_POT )
 		StopArm();
+	else
+		RunArmMotor(MOTOR_SPEED_UP);
 
 	return;
 }
@@ -105,10 +105,10 @@ void  ArmUpper::MoveArmUp()
 //------------------------------------------------------------------------------
 void  ArmUpper::MoveArmDown()
 {
-	if ( pArmPot->Get() >= ARM_FWD_STOP_POT )
-		RunArmMotor(MOTOR_SPEED_DOWN);
-	else
+	if ( pArmPot->Get() >= ARM_BACK_STOP_POT )
 		StopArm();
+	else
+		RunArmMotor(MOTOR_SPEED_DOWN);
 
 	return;
 }

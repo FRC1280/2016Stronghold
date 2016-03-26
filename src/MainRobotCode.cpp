@@ -144,11 +144,11 @@ class StrongholdRobot : public IterativeRobot
 		// AUTONOMOUS MODE ROBOT CONTROL CONSTANTS (OUTPUTS)
 		//----------------------------------------------------------------------
         // Autonomous mode timings (Starts and Durations)
-		static const uint  AM2_S1_START            =   0;
-		static const uint  AM2_S1_DRIVE_FAST       = 400;
+		static const uint  AM2_S1_START            = 100;
+		static const uint  AM2_S1_DRIVE_FAST       = 350;
 
 		static const uint  AM3_S1_START            =   0;
-		static const uint  AM3_S1_DRIVE_FAST       = 400;
+		static const uint  AM3_S1_DRIVE_FAST       = 350;
 
         // Robot Set Drive Speeds
 		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.750;
@@ -285,11 +285,10 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// Autonomous Mode Timings
 		//----------------------------------------------------------------------
-		uint am2S1DriveFastStart = 0;
-		uint am2S1DriveFastEnd   = 0;
+		uint am2S1DriveFastEnd   =   0;
 
-		uint am3S1DriveFastStart = 0;
-		uint am3S1DriveFastEnd   = 0;
+		uint am3S1DriveFastStart =   0;
+		uint am3S1DriveFastEnd   =   0;
 
 		//----------------------------------------------------------------------
 		// CUSTOM METHODS SPECIFIC TO TEAM 1280 ROBOT
