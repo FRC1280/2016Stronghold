@@ -8,16 +8,17 @@
 // - Arm motor PWM channel
 // - Arm potentiometer analog channel
 //------------------------------------------------------------------------------
-ArmLower::ArmLower(uint armMotorCh, uint armPotCh)
+ArmLower::ArmLower(uint armMotorCh, uint armPotCh, uint armSensorCh)
 {
 	pArmMotor         = new Talon(armMotorCh);
 	pArmPot           = new AnalogPotentiometer(armPotCh, POT_FULL_RANGE, POT_OFFSET);
+	pArmStopSensor    = new DigitalInput(armSensorCh);
 
 	// Initialize class variables
 	targetRatio       = 0.0;
 	targetConstant    = 0.0;
 	targetPOTInput    = 0.0;
-	targetPOTOutput     = 0.0;
+	targetPOTOutput   = 0.0;
 	targetPosition    = 0;
 	targetMotorSpeed  = 0.0;
 
@@ -89,7 +90,10 @@ bool  ArmLower::MoveArmPositionInput(uint inputTarget)
 //------------------------------------------------------------------------------
 void  ArmLower::MoveArmUp()
 {
-	RunArmMotor(MOTOR_SPEED_UP);
+	if ( pArmPot->Get() <= OUTPUT_POT_FULL_FWD )
+		RunArmMotor(MOTOR_SPEED_UP);
+	else
+		StopArm();
 
 	return;
 }
@@ -102,7 +106,11 @@ void  ArmLower::MoveArmUp()
 //------------------------------------------------------------------------------
 void  ArmLower::MoveArmDown()
 {
-	RunArmMotor(MOTOR_SPEED_DOWN);
+	if ( pArmStopSensor->Get() ||
+		 pArmPot->Get() >= OUTPUT_POT_FULL_BACK )
+		StopArm();
+	else
+		RunArmMotor(MOTOR_SPEED_DOWN);
 
 	return;
 }
@@ -178,6 +186,16 @@ float  ArmLower::GetTargetMotorSpeed() const
 float  ArmLower::GetMotorSpeed() const
 {
 	return pArmMotor->Get();
+}
+//------------------------------------------------------------------------------
+// METHOD:  ArmLower::GetStopSensor()
+// Type:	Public accessor method
+//------------------------------------------------------------------------------
+// Returns the current actual Arm motor speed.
+//------------------------------------------------------------------------------
+bool   ArmLower::GetStopSensor() const
+{
+	return pArmStopSensor->Get();
 }
 //------------------------------------------------------------------------------
 // METHOD:  ArmLower::GetRatio()
