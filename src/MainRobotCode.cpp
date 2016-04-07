@@ -1313,6 +1313,8 @@ void StrongholdRobot::AM1Off()
 //------------------------------------------------------------------------------
 void StrongholdRobot::AM2DriveLowBar()
 {
+	pLowerArm->MoveArmPositionInput(ArmLower::kBottom);
+
 	if ( loopCount >= am2S1DriveFwdStart  &&
 		 loopCount <  am2S1DriveFwdEnd        )
 	{
@@ -1323,8 +1325,6 @@ void StrongholdRobot::AM2DriveLowBar()
 	{
 		AMDriveStop();
 	}
-
-	pLowerArm->MoveArmPositionInput(ArmLower::kBottom);
 
 	return;
 }
