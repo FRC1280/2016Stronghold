@@ -41,17 +41,17 @@ class ArmUpper
 		const double  INPUT_POT_FULL_BACK      =    1.000;   // CONFIGURE
 
 		const double  POT_FULL_RANGE           =  3600.0;    // CONFIGURE
-		const double  POT_OFFSET               = -1861.1;    // CONFIGURE
+		const double  POT_OFFSET               = -1533.0;    // CONFIGURE
 
-		const double  OUTPUT_POT_FULL_FWD      =    6.000;   // CONFIGURE
+		const double  OUTPUT_POT_FULL_FWD      =   15.000;   // CONFIGURE
 		const double  OUTPUT_POT_FULL_BACK     =  360.000;   // CONFIGURE
 
 		const double  ARM_TOP                  =    75.0;    // CONFIGURE
 		const double  ARM_MIDDLE               =    50.0;    // CONFIGURE
-		const double  ARM_BOTTOM               =     6.0;    // CONFIGURE
+		const double  ARM_BOTTOM               =   360.0;    // CONFIGURE
 		const double  TARGET_TOLERANCE         =     4.0;    // CONFIGURE
-		const double  ARM_FWD_STOP_POT         =     6.0;    // CONFIGURE
-		const double  ARM_BACK_STOP_POT        =   190.0;    // CONFIGURE
+		const double  ARM_FWD_STOP_POT         =   180.0;    // CONFIGURE
+		const double  ARM_BACK_STOP_POT        =   360.0;    // CONFIGURE
 
 		void   CalcTargetRatioConstant();
 		double CalcOutputPOT(double inputPotValue);
