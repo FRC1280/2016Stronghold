@@ -144,22 +144,33 @@ class StrongholdRobot : public IterativeRobot
 		// AUTONOMOUS MODE ROBOT CONTROL CONSTANTS (OUTPUTS)
 		//----------------------------------------------------------------------
         // Autonomous mode timings (Starts and Durations)
-		static const uint  AM2_S1_START            = 100;
-		static const uint  AM2_S1_DRIVE_FAST       = 315;
+		// For durations, 50 loops is approximately 1 second.
+		static const uint  AM2_S1_START            = 100;  // CONFIGURE
+		static const uint  AM2_S1_DRIVE_FWD        = 315;  // CONFIGURE
 
-		static const uint  AM3_S1_START            =   0;
-		static const uint  AM3_S1_DRIVE_FAST       = 315;
+		static const uint  AM3_S1_START            =   0;  // CONFIGURE
+		static const uint  AM3_S1_DRIVE_FWD        = 315;  // CONFIGURE
 
-		static const uint  AM6_S1_START            = 100;
-		static const uint  AM6_S1_DRIVE            = 315;
-		static const uint  AM6_S2_TURN_RT          = 100;
-		static const uint  AM6_S3_SHOOT            = 150;
+		static const uint  AM4_S1_START            = 100;  // CONFIGURE
+		static const uint  AM4_S1_DRIVE_FWD        = 315;  // CONFIGURE
+		static const uint  AM4_S2_TURN_AROUND      = 100;  // CONFIGURE
+		static const uint  AM4_S3_DRIVE_FWD        = 315;  // CONFIGURE
 
-        // Robot Set Drive Speeds
-		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.850;
-		const float AM_DRIVE_FWD_LEFT_FAST_SPEED  =  0.850;
-		const float AM_TURN_RIGHT_RIGHT_SPEED     = -1.000;
-		const float AM_TURN_RIGHT_LEFT_SPEED      =  1.000;
+		static const uint  AM5_S1_START            = 100;  // CONFIGURE
+		static const uint  AM5_S1_DRIVE            = 315;  // CONFIGURE
+		static const uint  AM5_S2_TURN_RT          = 100;  // CONFIGURE
+		static const uint  AM5_S3_EJECT            = 100;  // CONFIGURE
+
+		static const uint  AM6_S1_START            = 100;  // CONFIGURE
+		static const uint  AM6_S1_DRIVE            = 315;  // CONFIGURE
+		static const uint  AM6_S2_TURN_RT          = 100;  // CONFIGURE
+		static const uint  AM6_S3_SHOOT            = 150;  // CONFIGURE
+
+        // Robot Drive Speeds
+		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.850;  // CONFIGURE
+		const float AM_DRIVE_FWD_LEFT_FAST_SPEED  =  0.850;  // CONFIGURE
+		const float AM_TURN_RIGHT_RIGHT_SPEED     = -1.000;  // CONFIGURE
+		const float AM_TURN_RIGHT_LEFT_SPEED      =  1.000;  // CONFIGURE
 		const float AM_DRIVE_STOP                 =  0.000;
 
         //----------------------------------------------------------------------
@@ -292,18 +303,32 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
 		// Autonomous Mode Timings
 		//----------------------------------------------------------------------
-		uint am2S1DriveFastStart =   0;
-		uint am2S1DriveFastEnd   =   0;
+		uint am2S1DriveFwdStart   =   0;
+		uint am2S1DriveFwdEnd     =   0;
 
-		uint am3S1DriveFastStart =   0;
-		uint am3S1DriveFastEnd   =   0;
+		uint am3S1DriveFwdStart   =   0;
+		uint am3S1DriveFwdEnd     =   0;
 
-		uint am6S1DriveStart     =   0;
-		uint am6S1DriveEnd       =   0;
-		uint am6S2TurnRtStart    =   0;
-		uint am6S2TurnRtEnd      =   0;
-		uint am6S3ShootStart     =   0;
-		uint am6S3ShootEnd       =   0;
+		uint am4S1DriveFwdStart   =   0;
+		uint am4S1DriveFwdEnd     =   0;
+		uint am4S2TurnAroundStart =   0;
+		uint am4S2TurnAroundEnd   =   0;
+		uint am4S3DriveFwdStart   =   0;
+		uint am4S3DriveFwdEnd     =   0;
+
+		uint am5S1DriveStart      =   0;
+		uint am5S1DriveEnd        =   0;
+		uint am5S2TurnRtStart     =   0;
+		uint am5S2TurnRtEnd       =   0;
+		uint am5S3EjectStart      =   0;
+		uint am5S3EjectEnd        =   0;
+
+		uint am6S1DriveStart      =   0;
+		uint am6S1DriveEnd        =   0;
+		uint am6S2TurnRtStart     =   0;
+		uint am6S2TurnRtEnd       =   0;
+		uint am6S3ShootStart      =   0;
+		uint am6S3ShootEnd        =   0;
 
 		//----------------------------------------------------------------------
 		// CUSTOM METHODS SPECIFIC TO TEAM 1280 ROBOT
@@ -335,10 +360,13 @@ class StrongholdRobot : public IterativeRobot
 		void   AM1Off();
 		void   AM2DriveLowBar();
 		void   AM3DriveOnly();
-		void   AM6DriveShoot();
-		void   AMDriveFwdFast();
+		void   AM4LowBarTwice();
+		void   AM5DriveShootLow();
+		void   AM6DriveShootHigh();
+		void   AMDriveFwd();
 		void   AMDriveStop();
 		void   AMTurnRight();
+		void   AMShootLow();
 		void   AMShootHigh();
 };
 //------------------------------------------------------------------------------
@@ -1089,18 +1117,32 @@ void StrongholdRobot::RunClimber()
 //------------------------------------------------------------------------------
 void StrongholdRobot::CalcAutoModeTimings()
 {
-    am2S1DriveFastStart   =  AM2_S1_START;
-    am2S1DriveFastEnd     =  am2S1DriveFastStart + AM2_S1_DRIVE_FAST;
+    am2S1DriveFwdStart    =  AM2_S1_START;
+    am2S1DriveFwdEnd      =  am2S1DriveFwdStart   + AM2_S1_DRIVE_FWD;
 
-    am3S1DriveFastStart   =  AM3_S1_START;
-    am3S1DriveFastEnd     =  am3S1DriveFastStart + AM3_S1_DRIVE_FAST;
+    am3S1DriveFwdStart    =  AM3_S1_START;
+    am3S1DriveFwdEnd      =  am3S1DriveFwdStart   + AM3_S1_DRIVE_FWD;
+
+    am4S1DriveFwdStart    =  AM4_S1_START;
+    am4S1DriveFwdEnd      =  am4S1DriveFwdStart   + AM4_S1_DRIVE_FWD;
+    am4S2TurnAroundStart  =  am4S1DriveFwdEnd;
+    am4S2TurnAroundEnd    =  am4S2TurnAroundStart + AM4_S2_TURN_AROUND;
+    am4S3DriveFwdStart    =  am4S2TurnAroundEnd;
+    am4S3DriveFwdEnd      =  am4S3DriveFwdStart   + AM4_S3_DRIVE_FWD;
+
+    am5S1DriveStart       =  AM5_S1_START;
+    am5S1DriveEnd         =  am5S1DriveStart      + AM5_S1_DRIVE;
+    am5S2TurnRtStart      =  am5S1DriveEnd;
+    am5S2TurnRtEnd        =  am5S2TurnRtStart     + AM5_S2_TURN_RT;
+    am5S3EjectStart       =  am5S2TurnRtEnd;
+    am5S3EjectEnd         =  am5S3EjectStart      + AM5_S3_EJECT;
 
     am6S1DriveStart       =  AM6_S1_START;
-    am6S1DriveEnd         =  am6S1DriveStart + AM6_S1_DRIVE;
+    am6S1DriveEnd         =  am6S1DriveStart      + AM6_S1_DRIVE;
     am6S2TurnRtStart      =  am6S1DriveEnd;
-    am6S2TurnRtEnd        =  am6S2TurnRtStart + AM6_S2_TURN_RT;
+    am6S2TurnRtEnd        =  am6S2TurnRtStart     + AM6_S2_TURN_RT;
     am6S3ShootStart       =  am6S2TurnRtEnd;
-    am6S3ShootEnd         =  am6S3ShootStart  + AM6_S3_SHOOT;
+    am6S3ShootEnd         =  am6S3ShootStart      + AM6_S3_SHOOT;
 
 	return;
 }
@@ -1205,13 +1247,15 @@ void StrongholdRobot::RunAutonomousMode()
 			 break;
 
 		case kAM4TurnLowBar:
+			 AM4LowBarTwice();
 			 break;
 
 		case kAM5LowBarShootLow:
+			 AM5DriveShootLow();
 			 break;
 
 		case kAM6LowBarShootHigh:
-			 AM6DriveShoot();
+			 AM6DriveShootHigh();
 			 break;
 
 		case kAM7LowBarShootLow2:
@@ -1239,8 +1283,8 @@ void StrongholdRobot::ShowAMStatus()
 	SmartDashboard::PutNumber("Loop Counter",loopCount);
 /*	SmartDashboard::PutNumber("AM3S1 Start",am3S1DriveSlowStart);
 	SmartDashboard::PutNumber("AM3S1 End",am3S1DriveSlowEnd);
-	SmartDashboard::PutNumber("AM3S2 Start",am3S2DriveFastStart);
-	SmartDashboard::PutNumber("AM3S2 End",am3S2DriveFastEnd);
+	SmartDashboard::PutNumber("AM3S2 Start",am3S2DriveFwdStart);
+	SmartDashboard::PutNumber("AM3S2 End",am3S2DriveFwdEnd);
 	SmartDashboard::PutNumber("AM3S3 Start",am3S3DriveSlowStart);
 	SmartDashboard::PutNumber("AM3S3 End",am3S3DriveSlowEnd);
 */
@@ -1269,13 +1313,13 @@ void StrongholdRobot::AM1Off()
 //------------------------------------------------------------------------------
 void StrongholdRobot::AM2DriveLowBar()
 {
-	if ( loopCount >= am2S1DriveFastStart  &&
-		 loopCount <  am2S1DriveFastEnd        )
+	if ( loopCount >= am2S1DriveFwdStart  &&
+		 loopCount <  am2S1DriveFwdEnd        )
 	{
-		AMDriveFwdFast();
+		AMDriveFwd();
 	}
 
-	if ( loopCount >= am2S1DriveFastEnd       )
+	if ( loopCount >= am2S1DriveFwdEnd       )
 	{
 		AMDriveStop();
 	}
@@ -1292,13 +1336,13 @@ void StrongholdRobot::AM2DriveLowBar()
 //------------------------------------------------------------------------------
 void StrongholdRobot::AM3DriveOnly()
 {
-	if ( loopCount >= am3S1DriveFastStart  &&
-		 loopCount <  am3S1DriveFastEnd        )
+	if ( loopCount >= am3S1DriveFwdStart  &&
+		 loopCount <  am3S1DriveFwdEnd        )
 	{
-		AMDriveFwdFast();
+		AMDriveFwd();
 	}
 
-	if ( loopCount >= am3S1DriveFastEnd       )
+	if ( loopCount >= am3S1DriveFwdEnd       )
 	{
 		AMDriveStop();
 	}
@@ -1306,19 +1350,89 @@ void StrongholdRobot::AM3DriveOnly()
 	return;
 }
 //------------------------------------------------------------------------------
-// METHOD:  StrongholdRobot::AM6DriveShoot()
+// METHOD:  StrongholdRobot::AM4LowBarTwice()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Does nothing when autonomous mode is turned off
+//------------------------------------------------------------------------------
+void StrongholdRobot::AM4LowBarTwice()
+{
+	pLowerArm->MoveArmPositionInput(ArmLower::kBottom);
+
+	if ( loopCount >= am4S1DriveFwdStart  &&
+		 loopCount <  am4S1DriveFwdEnd        )
+	{
+		AMDriveFwd();
+	}
+
+	if ( loopCount >= am4S2TurnAroundStart &&
+		 loopCount <  am4S2TurnAroundEnd      )
+	{
+		AMTurnRight();
+	}
+
+	if ( loopCount >= am4S3DriveFwdStart  &&
+		 loopCount <  am4S3DriveFwdEnd        )
+	{
+		AMDriveFwd();
+	}
+
+	if ( loopCount >= am4S3DriveFwdEnd        )
+	{
+		AMDriveStop();
+	}
+
+	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::AM5DriveShootLow()
 // Type:	Public accessor for StrongholdRobot class
 //------------------------------------------------------------------------------
 // Lowers the arm, drives the robot forward, turns right and shoots the ball.
 //------------------------------------------------------------------------------
-void StrongholdRobot::AM6DriveShoot()
+void StrongholdRobot::AM5DriveShootLow()
+{
+	pLowerArm->MoveArmPositionInput(ArmLower::kBottom);
+
+	if ( loopCount >= am5S1DriveStart  &&
+		 loopCount <  am5S1DriveEnd        )
+	{
+		AMDriveFwd();
+	}
+
+	if ( loopCount >= am5S2TurnRtStart &&
+		 loopCount <  am5S2TurnRtEnd      )
+	{
+		AMTurnRight();
+	}
+
+	if ( loopCount >= am5S3EjectStart   &&
+		 loopCount <  am5S3EjectEnd       )
+	{
+		AMShootLow();
+	}
+
+	if ( loopCount >= am5S3EjectEnd       )
+	{
+		AMDriveStop();
+	}
+
+	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::AM6DriveShootHigh()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Lowers the arm, drives the robot forward, turns right and shoots the ball.
+//------------------------------------------------------------------------------
+void StrongholdRobot::AM6DriveShootHigh()
 {
 	pLowerArm->MoveArmPositionInput(ArmLower::kBottom);
 
 	if ( loopCount >= am6S1DriveStart  &&
 		 loopCount <  am6S1DriveEnd        )
 	{
-		AMDriveFwdFast();
+		AMDriveFwd();
 	}
 
 	if ( loopCount >= am6S2TurnRtStart &&
@@ -1341,12 +1455,12 @@ void StrongholdRobot::AM6DriveShoot()
 	return;
 }
 //------------------------------------------------------------------------------
-// METHOD:  StrongholdRobot::AMDriveFwdFast()
+// METHOD:  StrongholdRobot::AMDriveFwd()
 // Type:	Public accessor for StrongholdRobot class
 //------------------------------------------------------------------------------
 // Does nothing when autonomous mode is turned off
 //------------------------------------------------------------------------------
-void StrongholdRobot::AMDriveFwdFast()
+void StrongholdRobot::AMDriveFwd()
 {
 	pDriveTrain->TankDrive(AM_DRIVE_FWD_LEFT_FAST_SPEED,AM_DRIVE_FWD_RIGHT_FAST_SPEED);
 
@@ -1377,6 +1491,21 @@ void StrongholdRobot::AMTurnRight()
 	return;
 }
 //------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::AMShootLow()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+// Ejects ball in low target
+//------------------------------------------------------------------------------
+void StrongholdRobot::AMShootLow()
+{
+	pBallLoader->EjectBall();
+
+	ballLoaded  = false;
+	ballEjected = true;
+
+	return;
+}
+//------------------------------------------------------------------------------
 // METHOD:  StrongholdRobot::AMShootHigh()
 // Type:	Public accessor for StrongholdRobot class
 //------------------------------------------------------------------------------
@@ -1384,8 +1513,6 @@ void StrongholdRobot::AMTurnRight()
 //------------------------------------------------------------------------------
 void StrongholdRobot::AMShootHigh()
 {
-	AMDriveStop();
-
 	if ( loopCount == am6S3ShootStart )
 	{
 		shootBall   = true;
