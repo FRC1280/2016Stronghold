@@ -700,7 +700,7 @@ void StrongholdRobot::TeleopPeriodic()
     RunClimber();
 
     // Determine if camera lights should be turned on or off
-    CheckCameraLightButton();
+    CheckCameraLightSwitch();
 
 	return;
 }
