@@ -146,28 +146,28 @@ class StrongholdRobot : public IterativeRobot
         // Autonomous mode timings (Starts and Durations)
 		// For durations, 50 loops is approximately 1 second.
 		static const uint  AM2_S1_START            = 100;  // CONFIGURE
-		static const uint  AM2_S1_DRIVE_FWD        = 315;  // CONFIGURE
+		static const uint  AM2_S1_DRIVE_FWD        = 255;  // CONFIGURE
 
 		static const uint  AM3_S1_START            =   0;  // CONFIGURE
-		static const uint  AM3_S1_DRIVE_FWD        = 315;  // CONFIGURE
+		static const uint  AM3_S1_DRIVE_FWD        = 255;  // CONFIGURE
 
 		static const uint  AM4_S1_START            = 100;  // CONFIGURE
-		static const uint  AM4_S1_DRIVE_FWD        = 315;  // CONFIGURE
-		static const uint  AM4_S2_TURN_AROUND      = 100;  // CONFIGURE
-		static const uint  AM4_S3_DRIVE_FWD        = 315;  // CONFIGURE
+		static const uint  AM4_S1_DRIVE_FWD        = 225;  // CONFIGURE
+		static const uint  AM4_S2_TURN_AROUND      =  50;  // CONFIGURE
+		static const uint  AM4_S3_DRIVE_FWD        = 225;  // CONFIGURE
 
 		static const uint  AM5_S1_START            = 100;  // CONFIGURE
-		static const uint  AM5_S1_DRIVE            = 315;  // CONFIGURE
+		static const uint  AM5_S1_DRIVE            = 225;  // CONFIGURE
 		static const uint  AM5_S2_TURN_RT          = 100;  // CONFIGURE
-		static const uint  AM5_S3_EJECT            = 100;  // CONFIGURE
+		static const uint  AM5_S3_EJECT            = 150;  // CONFIGURE
 
 		static const uint  AM6_S1_START            = 100;  // CONFIGURE
-		static const uint  AM6_S1_DRIVE            = 315;  // CONFIGURE
-		static const uint  AM6_S2_TURN_RT          = 100;  // CONFIGURE
-		static const uint  AM6_S3_SHOOT            = 150;  // CONFIGURE
+		static const uint  AM6_S1_DRIVE            = 225;  // CONFIGURE
+		static const uint  AM6_S2_TURN_RT          =  25;  // CONFIGURE
+		static const uint  AM6_S3_SHOOT            = 250;  // CONFIGURE
 
         // Robot Drive Speeds
-		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.850;  // CONFIGURE
+		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.900;  // CONFIGURE
 		const float AM_DRIVE_FWD_LEFT_FAST_SPEED  =  0.850;  // CONFIGURE
 		const float AM_TURN_RIGHT_RIGHT_SPEED     = -1.000;  // CONFIGURE
 		const float AM_TURN_RIGHT_LEFT_SPEED      =  1.000;  // CONFIGURE
@@ -1313,6 +1313,8 @@ void StrongholdRobot::AM1Off()
 //------------------------------------------------------------------------------
 void StrongholdRobot::AM2DriveLowBar()
 {
+	pLowerArm->MoveArmPositionInput(ArmLower::kBottom);
+
 	if ( loopCount >= am2S1DriveFwdStart  &&
 		 loopCount <  am2S1DriveFwdEnd        )
 	{
@@ -1323,8 +1325,6 @@ void StrongholdRobot::AM2DriveLowBar()
 	{
 		AMDriveStop();
 	}
-
-	pLowerArm->MoveArmPositionInput(ArmLower::kBottom);
 
 	return;
 }

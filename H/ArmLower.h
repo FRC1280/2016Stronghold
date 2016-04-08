@@ -45,11 +45,11 @@ class ArmLower
 		const double  POT_OFFSET               =  177.0;    // CONFIGURE
 
 		const double  OUTPUT_POT_FULL_FWD      =    3.000;  // CONFIGURE
-		const double  OUTPUT_POT_FULL_BACK     =  110.000;  // CONFIGURE
+		const double  OUTPUT_POT_FULL_BACK     =  105.000;  // CONFIGURE
 
 		const double  ARM_TOP                  =   75.0;    // CONFIGURE ROBOT POT TARGET
 		const double  ARM_MIDDLE               =   50.0;    // CONFIGURE ROBOT POT TARGET
-		const double  ARM_BOTTOM               =    0.0;    // CONFIGURE ROBOT POT TARGET
+		const double  ARM_BOTTOM               =    3.0;    // CONFIGURE ROBOT POT TARGET
 		const double  TARGET_TOLERANCE         =    1.0;    // CONFIGURE ROBOT POT TOLERANCE
 
 		void   CalcTargetRatioConstant();
