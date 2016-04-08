@@ -42,7 +42,7 @@ class ArmLower
 		const double  INPUT_POT_FULL_BACK      =   -0.953;  // CONFIGURE
 
 		const double  POT_FULL_RANGE           = -265.0;    // CONFIGURE
-		const double  POT_OFFSET               =  177.0;    // CONFIGURE
+		const double  POT_OFFSET               =  215.0;    // CONFIGURE
 
 		const double  OUTPUT_POT_FULL_FWD      =    3.000;  // CONFIGURE
 		const double  OUTPUT_POT_FULL_BACK     =  105.000;  // CONFIGURE
