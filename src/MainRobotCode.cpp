@@ -771,6 +771,8 @@ void StrongholdRobot::ShowDSValues()
 
 	SmartDashboard::PutNumber("DS Upper Arm POT",pCCI1->GetX());
 	SmartDashboard::PutNumber("DS Lower Arm POT",pCCI1->GetY());
+
+	SmartDashboard::PutBoolean("DS Light Button",pCameraLightButton->Get());
 /*
  	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
  	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
@@ -830,6 +832,9 @@ void StrongholdRobot::ShowRobotValues()
 	SmartDashboard::PutNumber("R Upper Arm Current POT",pUpperArm->GetCurrentPosition());
 // 	SmartDashboard::PutNumber("R Upper Arm Target Speed",pUpperArm->GetTargetMotorSpeed());
 	SmartDashboard::PutNumber("R Upper Arm Motor Speed",pUpperArm->GetMotorSpeed());
+
+	SmartDashboard::PutBoolean("R Prev Camera Button",prevCameraLightButton);
+	SmartDashboard::PutBoolean("R Camera Lights",pCameraLight->GetCameraStatus());
 
 //	SmartDashboard::PutNumber("Loader Motor Speed",pBallLoader->GetMotorSpeed());
 //	SmartDashboard::PutBoolean("Load Ball Mode",loadBall);
