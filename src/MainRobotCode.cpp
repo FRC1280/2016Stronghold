@@ -8,6 +8,7 @@
 
 #include "../H/ArmLower.h"
 #include "../H/ArmUpper.h"
+#include "../H/CameraLights.h"
 #include "../H/Loader.h"
 #include "../H/Shooter.h"
 #include "../H/Climber.h"
@@ -62,6 +63,9 @@ class StrongholdRobot : public IterativeRobot
 		static const uint CCI_PORT1        	     =  2;  // eStop Robots CCI Inputs
 //		static const uint CCI_PORT2				 =  3;  // eStop Robots CCI Inputs
 
+		// Joystick Button (right joystick)
+		static const uint CAMERA_LIGHT_SW_CH     =  1;
+
 		// Driver Station CCI1 Channels (Uses joystick button references)
 		static const uint LOWER_ARM_FWD_SW_CH    =  4;  // TEMP TO MOVE ARM
 		static const uint LOWER_ARM_REV_SW_CH    =  3;  // TEMP TO MOVE ARM
@@ -97,7 +101,6 @@ class StrongholdRobot : public IterativeRobot
 		//----------------------------------------------------------------------
         // ROBOT INPUTS
 		//----------------------------------------------------------------------
-
 		// roboRio GPIO Channels
 		static const uint AUTONOMOUS_SW_1_CH        =  0;
 		static const uint AUTONOMOUS_SW_2_CH        =  1;
@@ -110,6 +113,9 @@ class StrongholdRobot : public IterativeRobot
 		// roboRio Analog Channels
 		static const uint ARM_LOWER_POT_CH 		    =  0;
 		static const uint ARM_UPPER_POT_CH 		    =  1;
+
+		// roboRio Relay Channels
+		static const uint CAMERA_LIGHT_CH           =  0;
 
 		//----------------------------------------------------------------------
         // ROBOT OUTPUTS
@@ -196,6 +202,9 @@ class StrongholdRobot : public IterativeRobot
 		Joystick         *pCCI1;             // CCI
 //		Joystick 		 *pCCI2;
 
+		// Joystick Buttons - Right Joystick
+		JoystickButton   *pCameraLightButton;
+
 		// eStop Robotics Custom Control Interface (CCI) #1
 		JoystickButton   *pLowerArmFwdSwitch;
 		JoystickButton   *pLowerArmRevSwitch;
@@ -248,6 +257,7 @@ class StrongholdRobot : public IterativeRobot
 		ArmUpper		*pUpperArm;
 		Shooter         *pBallShooter;
 		Climber			*pClimber;
+		CameraLights    *pCameraLight;
 
 		//----------------------------------------------------------------------
 		// VARIABLES USED IN CLASS
@@ -293,6 +303,10 @@ class StrongholdRobot : public IterativeRobot
 		bool prevShootBallSw;
 		bool shootBall;
 		bool shooterReset;
+		//----------------------------------------------------------------------
+		// Camera Light
+		//----------------------------------------------------------------------
+		bool prevCameraLightButton;
 
 		//----------------------------------------------------------------------
 		// Autonomous Mode Switches & variables
@@ -351,6 +365,7 @@ class StrongholdRobot : public IterativeRobot
 		void   ShootBall();
 		void   CheckShootBallSwitch();
 		void   RunClimber();
+		void   CheckCameraLightSwitch();
 
 		// Autonomous mode methods
 		void   CalcAutoModeTimings();
@@ -398,6 +413,9 @@ StrongholdRobot::StrongholdRobot()
 	pDriveStickRight	   = new Joystick(JS_PORT_RIGHT);
 	pCCI1                  = new Joystick(CCI_PORT1); // CCI uses joystick object
 //	pCCI2				   = new Joystick(CCI_PORT2);
+
+	// Joystick Buttons (Right Joystick)
+	pCameraLightButton     = new JoystickButton(pDriveStickRight,CAMERA_LIGHT_SW_CH);
 
 	// CCI 1 Switches
 	pLowerArmFwdSwitch     = new JoystickButton(pCCI1,LOWER_ARM_FWD_SW_CH);
@@ -454,6 +472,8 @@ StrongholdRobot::StrongholdRobot()
 
 	pClimber		     = new Climber(CLIMBER_MOTOR1_CH, CLIMBER_MOTOR2_CH);
 
+	pCameraLight         = new CameraLights(CAMERA_LIGHT_CH);
+
 	//----------------------------------------------------------------------
 	// INITIALIZE VARIABLES
 	//----------------------------------------------------------------------
@@ -477,6 +497,8 @@ StrongholdRobot::StrongholdRobot()
 	shooterReset		  = true;
 	rightDriveSpeed       = 0.0;
 	leftDriveSpeed        = 0.0;
+
+	prevCameraLightButton = false;
 
 	return;
 }
@@ -555,6 +577,8 @@ void StrongholdRobot::AutonomousInit()
 	GetRobotSensorInput();
 	ShowAMStatus();
 
+	pCameraLight->TurnOff();
+
 	return;
 }
 //------------------------------------------------------------------------------
@@ -575,6 +599,8 @@ void StrongholdRobot::TeleopInit()
 	upperArmInPosition = true;
 
 	shootBall = false;
+
+	pCameraLight->TurnOn();
 
 	return;
 }
@@ -672,6 +698,9 @@ void StrongholdRobot::TeleopPeriodic()
 
     // Determine if climber should run
     RunClimber();
+
+    // Determine if camera lights should be turned on or off
+    CheckCameraLightButton();
 
 	return;
 }
@@ -1105,6 +1134,31 @@ void StrongholdRobot::RunClimber()
 			pClimber->StopClimber();
 		}
 	}
+
+	return;
+}
+//------------------------------------------------------------------------------
+// METHOD:  StrongholdRobot::CheckCameraLightSwitch()
+// Type:	Public accessor for StrongholdRobot class
+//------------------------------------------------------------------------------
+//
+//------------------------------------------------------------------------------
+void StrongholdRobot::CheckCameraLightSwitch()
+{
+	if ( !prevCameraLightButton      &&
+		  pCameraLightButton->Get()     )
+	{
+		if ( pCameraLight->GetCameraStatus() )
+		{
+			pCameraLight->TurnOff();
+		}
+		else
+		{
+			pCameraLight->TurnOn();
+		}
+	}
+
+	prevCameraLightButton = pCameraLightButton->Get();
 
 	return;
 }
