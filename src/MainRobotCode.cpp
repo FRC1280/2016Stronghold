@@ -146,10 +146,10 @@ class StrongholdRobot : public IterativeRobot
         // Autonomous mode timings (Starts and Durations)
 		// For durations, 50 loops is approximately 1 second.
 		static const uint  AM2_S1_START            = 100;  // CONFIGURE
-		static const uint  AM2_S1_DRIVE_FWD        = 255;  // CONFIGURE
+		static const uint  AM2_S1_DRIVE_FWD        = 200;  // CONFIGURE
 
 		static const uint  AM3_S1_START            =   0;  // CONFIGURE
-		static const uint  AM3_S1_DRIVE_FWD        = 255;  // CONFIGURE
+		static const uint  AM3_S1_DRIVE_FWD        = 200;  // CONFIGURE
 
 		static const uint  AM4_S1_START            = 100;  // CONFIGURE
 		static const uint  AM4_S1_DRIVE_FWD        = 225;  // CONFIGURE
