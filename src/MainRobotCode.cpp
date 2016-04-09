@@ -169,7 +169,7 @@ class StrongholdRobot : public IterativeRobot
 
 		static const uint  AM6_S1_START            = 100;  // CONFIGURE
 		static const uint  AM6_S1_DRIVE            = 210;  // CONFIGURE
-		static const uint  AM6_S2_TURN_RT          =  30;  // CONFIGURE
+		static const uint  AM6_S2_TURN_RT          =  37;  // CONFIGURE
 		static const uint  AM6_S3_SHOOT            = 250;  // CONFIGURE
 
         // Robot Drive Speeds
