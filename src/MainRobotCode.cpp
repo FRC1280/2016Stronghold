@@ -168,12 +168,13 @@ class StrongholdRobot : public IterativeRobot
 		static const uint  AM5_S3_EJECT            = 150;  // CONFIGURE
 
 		static const uint  AM6_S1_START            = 100;  // CONFIGURE
-		static const uint  AM6_S1_DRIVE            = 210;  // CONFIGURE
-		static const uint  AM6_S2_TURN_RT          =  37;  // CONFIGURE
-		static const uint  AM6_S3_SHOOT            = 250;  // CONFIGURE
+		static const uint  AM6_S1_DRIVE            = 215;  // CONFIGURE
+		static const uint  AM6_S2_TURN_RT          =   7;  // CONFIGURE
+		static const uint  AM6_S3_PRE_SHOOT        = 100;  // CONFIGURE
+		static const uint  AM6_S4_SHOOT            = 250;  // CONFIGURE
 
         // Robot Drive Speeds
-		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.900;  // CONFIGURE
+		const float AM_DRIVE_FWD_RIGHT_FAST_SPEED =  0.850;  // CONFIGURE
 		const float AM_DRIVE_FWD_LEFT_FAST_SPEED  =  0.850;  // CONFIGURE
 		const float AM_TURN_RIGHT_RIGHT_SPEED     = -1.000;  // CONFIGURE
 		const float AM_TURN_RIGHT_LEFT_SPEED      =  1.000;  // CONFIGURE
@@ -341,8 +342,10 @@ class StrongholdRobot : public IterativeRobot
 		uint am6S1DriveEnd        =   0;
 		uint am6S2TurnRtStart     =   0;
 		uint am6S2TurnRtEnd       =   0;
-		uint am6S3ShootStart      =   0;
-		uint am6S3ShootEnd        =   0;
+		uint am6S3PreShootStart   =   0;
+		uint am6S3PreShootEnd     =   0;
+		uint am6S4ShootStart      =   0;
+		uint am6S4ShootEnd        =   0;
 
 		//----------------------------------------------------------------------
 		// CUSTOM METHODS SPECIFIC TO TEAM 1280 ROBOT
@@ -772,7 +775,7 @@ void StrongholdRobot::ShowDSValues()
 	SmartDashboard::PutNumber("DS Upper Arm POT",pCCI1->GetX());
 	SmartDashboard::PutNumber("DS Lower Arm POT",pCCI1->GetY());
 
-	SmartDashboard::PutBoolean("DS Light Button",pCameraLightButton->Get());
+//	SmartDashboard::PutBoolean("DS Light Button",pCameraLightButton->Get());
 /*
  	SmartDashboard::PutNumber("Left JoyStick",pDriveStickLeft->GetY());
  	SmartDashboard::PutNumber("Right JoyStick",pDriveStickRight->GetY());
@@ -833,37 +836,37 @@ void StrongholdRobot::ShowRobotValues()
 // 	SmartDashboard::PutNumber("R Upper Arm Target Speed",pUpperArm->GetTargetMotorSpeed());
 	SmartDashboard::PutNumber("R Upper Arm Motor Speed",pUpperArm->GetMotorSpeed());
 
-	SmartDashboard::PutBoolean("R Prev Camera Button",prevCameraLightButton);
-	SmartDashboard::PutBoolean("R Camera Lights",pCameraLight->GetCameraStatus());
+//	SmartDashboard::PutBoolean("R Prev Camera Button",prevCameraLightButton);
+//	SmartDashboard::PutBoolean("R Camera Lights",pCameraLight->GetCameraStatus());
 
 //	SmartDashboard::PutNumber("Loader Motor Speed",pBallLoader->GetMotorSpeed());
-//	SmartDashboard::PutBoolean("Load Ball Mode",loadBall);
-//	SmartDashboard::PutBoolean("Ball Loaded? Limit switch",pBallLoader->GetLoadedSensor());
-//	SmartDashboard::PutBoolean("Ball Loaded? Loader code",pBallLoader->GetBallLoaded());
-//	SmartDashboard::PutBoolean("Ball Loaded? Robot code",ballLoaded);
+//	SmartDashboard::PutBoolean("R Load Ball Mode",loadBall);
+//	SmartDashboard::PutBoolean("R Ball Loaded? Limit switch",pBallLoader->GetLoadedSensor());
+//	SmartDashboard::PutBoolean("R Ball Loaded? Loader code",pBallLoader->GetBallLoaded());
+ 	SmartDashboard::PutBoolean("R Ball Loaded? Robot code",ballLoaded);
 
-//	SmartDashboard::PutBoolean("Eject Ball Mode",ejectBall);
-//	SmartDashboard::PutBoolean("First Eject Loop",pBallLoader->GetFirstEjectLoop());
-//	SmartDashboard::PutNumber("Eject Counter",pBallLoader->GetEjectCounter());
-//	SmartDashboard::PutBoolean("Ball Ejected? Loader code",pBallLoader->GetBallEjected());
-//	SmartDashboard::PutBoolean("Ball Ejected? Robot code",ballEjected);
+//	SmartDashboard::PutBoolean("R Eject Ball Mode",ejectBall);
+//	SmartDashboard::PutBoolean("R First Eject Loop",pBallLoader->GetFirstEjectLoop());
+//	SmartDashboard::PutNumber("R Eject Counter",pBallLoader->GetEjectCounter());
+//	SmartDashboard::PutBoolean("R Ball Ejected? Loader code",pBallLoader->GetBallEjected());
+ 	SmartDashboard::PutBoolean("R Ball Ejected? Robot code",ballEjected);
 
-//	SmartDashboard::PutBoolean("Shoot Ball Mode",shootBall);
-//	SmartDashboard::PutBoolean("Shooter 1st loop",pBallShooter->GetShooterFirstLoop());
+ 	SmartDashboard::PutBoolean("R Shoot Ball Mode",shootBall);
+//	SmartDashboard::PutBoolean("R Shooter 1st loop",pBallShooter->GetShooterFirstLoop());
 
-//	SmartDashboard::PutBoolean("Ball in shooter? Limit Switch",
-//			                    pBallLoader->GetBallInShooterSensor());
-//	SmartDashboard::PutBoolean("Ball in shooter? Loader code flag",
-//			                    pBallLoader->GetBallInShooterFlag());
-//	SmartDashboard::PutBoolean("Ball in shooter? Shooter code flag",
-//			                    pBallShooter->GetBallInShooter());
+ 	SmartDashboard::PutBoolean("R Ball in shooter? Limit Switch",
+ 			                    pBallLoader->GetBallInShooterSensor());
+ 	SmartDashboard::PutBoolean("R Ball in shooter? Loader code flag",
+ 			                    pBallLoader->GetBallInShooterFlag());
+ 	SmartDashboard::PutBoolean("R Ball in shooter? Shooter code flag",
+ 			                    pBallShooter->GetBallInShooter());
 
-//	SmartDashboard::PutBoolean("Shooter Reset-Robot code",shooterReset);
-//	SmartDashboard::PutBoolean("Shooter Reset-Shooter code",pBallShooter->GetShooterReset());
-//	SmartDashboard::PutBoolean("Shooter Reset prev banner",pBallShooter->GetPrevShooterReset());
-//	SmartDashboard::PutBoolean("Shooter Reset-Shooter banner sensor",
-//			                    pBallShooter->GetBannerSensor());
-//	SmartDashboard::PutNumber("Shooter Motor Speed",pBallShooter->GetMotorSpeed());
+ 	SmartDashboard::PutBoolean("R Shooter Reset-Robot code",shooterReset);
+ 	SmartDashboard::PutBoolean("R Shooter Reset-Shooter code",pBallShooter->GetShooterReset());
+//	SmartDashboard::PutBoolean("R Shooter Reset prev banner",pBallShooter->GetPrevShooterReset());
+// 	SmartDashboard::PutBoolean("R Shooter Reset-Shooter banner sensor",
+// 			                    pBallShooter->GetBannerSensor());
+//	SmartDashboard::PutNumber("R Shooter Motor Speed",pBallShooter->GetMotorSpeed());
 
 //	SmartDashboard::PutNumber("Climber Motor 1 Speed",pClimber->GetMotor1Speed());
 //	SmartDashboard::PutNumber("Climber Motor 2 Speed",pClimber->GetMotor2Speed());
@@ -1200,8 +1203,10 @@ void StrongholdRobot::CalcAutoModeTimings()
     am6S1DriveEnd         =  am6S1DriveStart      + AM6_S1_DRIVE;
     am6S2TurnRtStart      =  am6S1DriveEnd;
     am6S2TurnRtEnd        =  am6S2TurnRtStart     + AM6_S2_TURN_RT;
-    am6S3ShootStart       =  am6S2TurnRtEnd;
-    am6S3ShootEnd         =  am6S3ShootStart      + AM6_S3_SHOOT;
+    am6S3PreShootStart    =  am6S2TurnRtEnd;
+    am6S3PreShootEnd      =  am6S3PreShootStart   + AM6_S3_PRE_SHOOT;
+    am6S4ShootStart       =  am6S3PreShootEnd;
+    am6S4ShootEnd         =  am6S4ShootStart      + AM6_S4_SHOOT;
 
 	return;
 }
@@ -1500,13 +1505,19 @@ void StrongholdRobot::AM6DriveShootHigh()
 		AMTurnRight();
 	}
 
-	if ( loopCount >= am6S3ShootStart   &&
-		 loopCount <  am6S3ShootEnd       )
+	if ( loopCount >= am6S3PreShootStart &&
+		 loopCount <  am6S3PreShootEnd      )
 	{
 		AMShootHigh();
 	}
 
-	if ( loopCount >= am6S3ShootEnd       )
+	if ( loopCount >= am6S4ShootStart   &&
+		 loopCount <  am6S4ShootEnd       )
+	{
+		AMShootHigh();
+	}
+
+	if ( loopCount >= am6S4ShootEnd       )
 	{
 		AMDriveStop();
 	}
@@ -1572,7 +1583,8 @@ void StrongholdRobot::AMShootLow()
 //------------------------------------------------------------------------------
 void StrongholdRobot::AMShootHigh()
 {
-	if ( loopCount == am6S3ShootStart )
+	if ( loopCount ==  am6S3PreShootStart ||
+	     loopCount ==  am6S4ShootStart       )
 	{
 		shootBall   = true;
 		ballLoaded  = true;
