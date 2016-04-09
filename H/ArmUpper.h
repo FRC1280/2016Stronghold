@@ -41,7 +41,7 @@ class ArmUpper
 		const double  INPUT_POT_FULL_BACK      =    1.000;   // CONFIGURE
 
 		const double  POT_FULL_RANGE           =  3600.0;    // CONFIGURE
-		const double  POT_OFFSET               = -1528.0;    // CONFIGURE
+		const double  POT_OFFSET               = -1533.0;    // CONFIGURE
 
 		const double  OUTPUT_POT_FULL_FWD      =   15.000;   // CONFIGURE
 		const double  OUTPUT_POT_FULL_BACK     =  360.000;   // CONFIGURE
